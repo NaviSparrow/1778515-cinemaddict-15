@@ -1,7 +1,7 @@
 # Проект «Киноман»
 
 * Студент: [Иван Горобец](https://up.htmlacademy.ru/ecmascript/15/user/1778515).
-* Наставник: `Неизвестно`.
+* Наставник: [Даниил Царёв](https://htmlacademy.ru/profile/id945835).
 
 ---
 
