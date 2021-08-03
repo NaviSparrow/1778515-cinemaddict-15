@@ -8,8 +8,9 @@ import { createStatisticsTemplate } from './view/statistics.js';
 import { createUserProfileTemplate } from './view/user.js';
 import { createFilmsSectionTemplate } from './view/films.js';
 import { createFilmsListExtraTemplate } from './view/films-list-extra.js';
+import { generateFilmCard } from './mock/film-card.js';
 
-const CARDS_COUNT = 5;
+const CARDS_COUNT = 15;
 const EXTRA_CARDS_COUNT = 2;
 const TOP_RATED_FILMS = 0;
 const MOST_COMMENTED_FILMS = 1;
@@ -23,19 +24,21 @@ const mainSection = document.querySelector('.main');
 const userProfile = document.querySelector('.header');
 const footerStatistics = document.querySelector('.footer__statistics');
 
+const filmCards = new Array(CARDS_COUNT).fill().map(() => generateFilmCard());
+
 const render = (container, template, place = 'beforeend') => container.insertAdjacentHTML(place, template);
 
 const renderExtraSection = (container) => {
   for (let i = 0; i < EXTRA_CARDS_COUNT; i++) {
-    render(container, createFilmCardTemplate());
+    render(container, createFilmCardTemplate(filmCards[i]));
   }
 };
 
 render(userProfile, createUserProfileTemplate());
 render(mainSection, createMainMenuTemplate());
 render(mainSection, createSortTemplate());
-
 render(mainSection, createFilmsSectionTemplate());
+
 const filmsSection = document.querySelector('.films');
 
 render(filmsSection, createFilmsListTemplate());
@@ -43,7 +46,7 @@ render(filmsSection, createFilmsListTemplate());
 const filmsListSection = filmsSection.querySelector('.films-list');
 const filmsListContainer = filmsListSection.querySelector('.films-list__container');
 for (let i = 0; i < CARDS_COUNT; i++) {
-  render(filmsListContainer, createFilmCardTemplate());
+  render(filmsListContainer, createFilmCardTemplate(filmCards[i]));
 }
 
 render(filmsListSection, createShowMoreButtonTemplate());
@@ -55,7 +58,6 @@ const topRatedfilms = extraSections[TOP_RATED_FILMS].querySelector('.films-list_
 const mostCommentedFilms = extraSections[MOST_COMMENTED_FILMS].querySelector('.films-list__container');
 renderExtraSection(topRatedfilms);
 renderExtraSection(mostCommentedFilms);
-
 
 render(footerStatistics, createStatisticsTemplate());
 // render(document.body, createPopupTemplate());
