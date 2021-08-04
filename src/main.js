@@ -13,6 +13,7 @@ import { render } from './utils/utils.js';
 import { generateFilters } from './mock/filters.js';
 
 const CARDS_COUNT = 15;
+const CARDS_PER_STEP = 5;
 const EXTRA_CARDS_COUNT = 2;
 const TOP_RATED_FILMS = 0;
 const MOST_COMMENTED_FILMS = 1;
@@ -28,9 +29,6 @@ const footerStatistics = document.querySelector('.footer__statistics');
 
 const filmCards = new Array(CARDS_COUNT).fill().map(() => generateFilmCard());
 const filters = generateFilters(filmCards);
-console.log(filmCards);
-console.log(filters.watchList());
-
 
 const renderExtraSection = (container) => {
   for (let i = 0; i < EXTRA_CARDS_COUNT; i++) {
@@ -49,11 +47,29 @@ render(filmsSection, createFilmsListTemplate());
 
 const filmsListSection = filmsSection.querySelector('.films-list');
 const filmsListContainer = filmsListSection.querySelector('.films-list__container');
-for (let i = 0; i < CARDS_COUNT; i++) {
+for (let i = 0; i < Math.min(filmCards.length, CARDS_PER_STEP); i++) {
   render(filmsListContainer, createFilmCardTemplate(filmCards[i]));
 }
 
-render(filmsListSection, createShowMoreButtonTemplate());
+if (filmCards.length > CARDS_PER_STEP) {
+  let renderedFilmsCount = CARDS_PER_STEP;
+  render(filmsListSection, createShowMoreButtonTemplate());
+  const showMoreButton = filmsListSection.querySelector('.films-list__show-more');
+
+  const showMoreButtonHandler = (evt) => {
+    evt.preventDefault();
+    filmCards
+      .slice(renderedFilmsCount, renderedFilmsCount + CARDS_PER_STEP)
+      .forEach((filmCard) => render(filmsListContainer, createFilmCardTemplate(filmCard)));
+    renderedFilmsCount += CARDS_PER_STEP;
+
+    if (renderedFilmsCount >= filmCards.length) {
+      showMoreButton.remove();
+    }
+  };
+
+  showMoreButton.addEventListener('click', showMoreButtonHandler);
+}
 
 render(filmsSection, createFilmsListExtraTemplate());
 const extraSections = filmsSection.querySelectorAll('.films-list--extra');
@@ -64,4 +80,4 @@ renderExtraSection(topRatedfilms);
 renderExtraSection(mostCommentedFilms);
 
 render(footerStatistics, createStatisticsTemplate());
-// render(document.body, createPopupTemplate(filmCards[0]));
+render(document.body, createPopupTemplate(filmCards[0]));
