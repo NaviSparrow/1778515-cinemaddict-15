@@ -79,5 +79,5 @@ const mostCommentedFilms = extraSections[MOST_COMMENTED_FILMS].querySelector('.f
 renderExtraSection(topRatedfilms);
 renderExtraSection(mostCommentedFilms);
 
-render(footerStatistics, createStatisticsTemplate());
+render(footerStatistics, createStatisticsTemplate(filters));
 render(document.body, createPopupTemplate(filmCards[0]));
