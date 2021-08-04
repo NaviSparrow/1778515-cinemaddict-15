@@ -1,1 +1,1 @@
-export const createStatisticsTemplate = () => '<p>130 291 movies inside</p>';
+export const createStatisticsTemplate = (filters) => `<p>${filters.all()} movies inside</p>`;
