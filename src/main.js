@@ -9,6 +9,8 @@ import { createUserProfileTemplate } from './view/user.js';
 import { createFilmsSectionTemplate } from './view/films.js';
 import { createFilmsListExtraTemplate } from './view/films-list-extra.js';
 import { generateFilmCard } from './mock/film-card.js';
+import { render } from './utils/utils.js';
+import { generateFilters } from './mock/filters.js';
 
 const CARDS_COUNT = 15;
 const EXTRA_CARDS_COUNT = 2;
@@ -25,8 +27,10 @@ const userProfile = document.querySelector('.header');
 const footerStatistics = document.querySelector('.footer__statistics');
 
 const filmCards = new Array(CARDS_COUNT).fill().map(() => generateFilmCard());
+const filters = generateFilters(filmCards);
+console.log(filmCards);
+console.log(filters.watchList());
 
-const render = (container, template, place = 'beforeend') => container.insertAdjacentHTML(place, template);
 
 const renderExtraSection = (container) => {
   for (let i = 0; i < EXTRA_CARDS_COUNT; i++) {
@@ -35,7 +39,7 @@ const renderExtraSection = (container) => {
 };
 
 render(userProfile, createUserProfileTemplate());
-render(mainSection, createMainMenuTemplate());
+render(mainSection, createMainMenuTemplate(filters));
 render(mainSection, createSortTemplate());
 render(mainSection, createFilmsSectionTemplate());
 
@@ -60,4 +64,4 @@ renderExtraSection(topRatedfilms);
 renderExtraSection(mostCommentedFilms);
 
 render(footerStatistics, createStatisticsTemplate());
-// render(document.body, createPopupTemplate());
+// render(document.body, createPopupTemplate(filmCards[0]));
