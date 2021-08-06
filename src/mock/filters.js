@@ -1,10 +1,8 @@
-export const generateFilters = (films) => {
-  const filtersForFilms = {
-    all: () => films.length,
-    watchList: () => films.filter((film) => film.isAddtoWatchList).length,
-    history: () => films.filter((film) => film.isWhatched).length,
-    favorite: () => films.filter((film) => film.isFavorite).length,
-  };
-  return filtersForFilms;
-};
+export const generateFilters = (films) => (
+  {
+    countFilmsInAll: () => films.length,
+    countFilmsInWatchList: () => films.filter((film) => film.isAddtoWatchList).length,
+    countFilmsInHistory: () => films.filter((film) => film.isWhatched).length,
+    countFilmsInFavorite: () => films.filter((film) => film.isFavorite).length,
+  });
 

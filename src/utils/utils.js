@@ -1,8 +1,8 @@
-const getRandomFloat = (min, max, precision = 0) => {
+const getRandomFloat = (min, max, precision) => {
   const result = (Math.random() * (max - min + 0.1)) + min;
   return Number(result.toFixed(precision));
 };
-const getRandomInteger = (min, max) => getRandomFloat(min, max);
+const getRandomInteger = (min, max) => getRandomFloat(min, max, 0);
 
 const getRandomArrayElement = (array) => array[getRandomInteger(0, array.length - 1)];
 
@@ -11,15 +11,12 @@ const getRandomArray = (array, max, min = 1) => {
   return newArray.slice(0, getRandomInteger(min, max));
 };
 
-const setClassName = (condition, trueClassName, falseClassName = '') => condition ? trueClassName : falseClassName;
-
-const render = (container, template, place = 'beforeend') => container.insertAdjacentHTML(place, template);
+const applyClassName = (condition, trueClassName, falseClassName = '') => condition ? trueClassName : falseClassName;
 
 export {
   getRandomFloat,
   getRandomInteger,
   getRandomArrayElement,
   getRandomArray,
-  setClassName,
-  render
+  applyClassName
 };

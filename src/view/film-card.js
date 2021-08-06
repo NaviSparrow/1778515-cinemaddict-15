@@ -1,13 +1,13 @@
-import { setClassName } from '../utils/utils.js';
+import { applyClassName } from '../utils/utils.js';
 import dayjs from 'dayjs';
 
 export const createFilmCardTemplate = (filmCard) => {
   const {title, rating, year, duration, ganre, poster, description, comments, isAddtoWatchList, isWhatched, isFavorite} = filmCard;
   const formatYear = dayjs(year).format('YYYY');
   const buttonClassName =  'film-card__controls-item--active';
-  const watchListClassName = setClassName(isAddtoWatchList, buttonClassName);
-  const watchedClassName = setClassName(isWhatched, buttonClassName);
-  const favoriteClassName = setClassName(isFavorite, buttonClassName);
+  const watchListClassName = applyClassName(isAddtoWatchList, buttonClassName);
+  const watchedClassName = applyClassName(isWhatched, buttonClassName);
+  const favoriteClassName = applyClassName(isFavorite, buttonClassName);
   const fullDescription = description.join(' ');
 
   const getShortDescription = () => `${fullDescription.slice(0, 139)}...`;

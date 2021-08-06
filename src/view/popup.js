@@ -1,13 +1,13 @@
-import { setClassName } from '../utils/utils.js';
+import { applyClassName } from '../utils/utils.js';
 import dayjs from 'dayjs';
 
 export const createPopupTemplate = (filmCard) => {
   const {title, rating, duration, genres, poster, description, comments, originalTitle, director, writers, actors, releaseDate, country, ageRating, isAddtoWatchList, isWhatched, isFavorite} = filmCard;
-  const date = dayjs(releaseDate).format('DD MMMM YYYY');
+  const formatDate = dayjs(releaseDate).format('DD MMMM YYYY');
   const buttonClassName =  'film-details__control-button--active';
-  const watchListClassName = setClassName(isAddtoWatchList, buttonClassName);
-  const watchedClassName = setClassName(isWhatched, buttonClassName);
-  const favoriteClassName = setClassName(isFavorite, buttonClassName);
+  const watchListClassName = applyClassName(isAddtoWatchList, buttonClassName);
+  const watchedClassName = applyClassName(isWhatched, buttonClassName);
+  const favoriteClassName = applyClassName(isFavorite, buttonClassName);
 
   const createGenres = (genresList) => genresList.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 
@@ -46,7 +46,7 @@ export const createPopupTemplate = (filmCard) => {
         </tr>
         <tr class="film-details__row">
           <td class="film-details__term">Release Date</td>
-          <td class="film-details__cell">${date}</td>
+          <td class="film-details__cell">${formatDate}</td>
         </tr>
         <tr class="film-details__row">
           <td class="film-details__term">Runtime</td>
