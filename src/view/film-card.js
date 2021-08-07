@@ -9,7 +9,6 @@ export const createFilmCardTemplate = (filmCard) => {
   const watchedClassName = applyClassName(isWhatched, buttonClassName);
   const favoriteClassName = applyClassName(isFavorite, buttonClassName);
   const fullDescription = description.join(' ');
-
   const getShortDescription = () => `${fullDescription.slice(0, 139)}...`;
 
   return `<article class="film-card">

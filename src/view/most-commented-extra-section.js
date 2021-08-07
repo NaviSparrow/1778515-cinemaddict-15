@@ -1,14 +1,19 @@
 import {createElement} from '../utils/dom-utils.js';
 
-const createShowMoreButtonTemplate = () => '<button class="films-list__show-more">Show more</button>';
+const createMostCommentedFilmsTemplate = () => (
+  `<section class="films-list films-list--extra">
+      <h2 class="films-list__title">Most commented</h2>
+      <div class="films-list__container"></div>
+    </section>`
+);
 
-export default class ShowMoreButton {
+export default class MostCommentedFilms {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createShowMoreButtonTemplate();
+    return createMostCommentedFilmsTemplate();
   }
 
   getElement() {
