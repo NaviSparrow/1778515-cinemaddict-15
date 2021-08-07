@@ -5,8 +5,8 @@ import MostCommentedFilmsView from './view/most-commented-extra-section';
 import SortView from './view/sort.js';
 import UserProfileView from './view/user.js';
 import ShowMoreButtonView from './view/show-more-button.js';
+import FiltersView from './view/filters-menu';
 import { createFilmCardTemplate } from './view/film-card.js';
-import { createMainMenuTemplate } from './view/filters-menu';
 import { createPopupTemplate } from './view/popup.js';
 import { createStatisticsTemplate } from './view/statistics.js';
 import { generateFilmCard } from './mock/film-card.js';
@@ -31,7 +31,7 @@ const renderExtraSection = (container) => {
 };
 
 renderElement(header, new UserProfileView().getElement(), RenderPlace.BEFOREEND);
-renderTemplate(mainSection, createMainMenuTemplate(filters), RenderPlace.BEFOREEND);
+renderElement(mainSection, new FiltersView(filters).getElement(), RenderPlace.BEFOREEND);
 renderElement(mainSection, new SortView().getElement(), RenderPlace.BEFOREEND);
 
 const filmsSectionComponent = new FilmsSectionView();
