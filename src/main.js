@@ -7,7 +7,7 @@ import UserProfileView from './view/user.js';
 import ShowMoreButtonView from './view/show-more-button.js';
 import FiltersView from './view/filters-menu';
 import FilmCardView from './view/film-card.js';
-import { createPopupTemplate } from './view/popup.js';
+import FilmPopupView from './view/popup.js';
 import { createStatisticsTemplate } from './view/statistics.js';
 import { generateFilmCard } from './mock/film-card.js';
 import { RenderPlace, renderTemplate, renderElement } from './utils/dom-utils.js';
@@ -74,4 +74,4 @@ renderExtraSection(topRatedFilms.getElement().querySelector('.films-list__contai
 renderExtraSection(mostCommentedFilms.getElement().querySelector('.films-list__container'));
 
 renderTemplate(footerStatistics, createStatisticsTemplate(filmCards), RenderPlace.BEFOREEND);
-renderTemplate(document.body, createPopupTemplate(filmCards[0]), RenderPlace.BEFOREEND);
+renderElement(document.body, new FilmPopupView(filmCards[0]).getElement(), RenderPlace.BEFOREEND);

@@ -1,7 +1,8 @@
 import { applyClassName } from '../utils/utils.js';
+import {createElement} from '../utils/dom-utils.js';
 import dayjs from 'dayjs';
 
-export const createPopupTemplate = (filmCard) => {
+const createPopupTemplate = (filmCard) => {
   const {title, rating, duration, genres, poster, description, comments, originalTitle, director, writers, actors, releaseDate, country, ageRating, isAddtoWatchList, isWhatched, isFavorite} = filmCard;
   const formatDate = dayjs(releaseDate).format('DD MMMM YYYY');
   const buttonClassName =  'film-details__control-button--active';
@@ -176,3 +177,25 @@ export const createPopupTemplate = (filmCard) => {
   </form>
 </section>`;
 };
+
+export default class FilmPopup {
+  constructor(filmCard) {
+    this._filmCard = filmCard;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPopupTemplate(this._filmCard);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  returnElement() {
+    this._element = null;
+  }
+}
