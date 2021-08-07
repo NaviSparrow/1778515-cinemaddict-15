@@ -5,7 +5,7 @@ const RenderPlace = {
   AFTEREND: 'afterend',
 };
 
-const renderElement = (container, element, place) => {
+const render = (container, element, place) => {
   switch (place){
     case RenderPlace.AFTERBEGIN:
       container.prepend(element);
@@ -16,8 +16,6 @@ const renderElement = (container, element, place) => {
   }
 };
 
-const renderTemplate = (container, template, place) => container.insertAdjacentHTML(place, template);
-
 const createElement = (template) => {
   const newElement = document.createElement('div');
   newElement.innerHTML = template;
@@ -26,7 +24,6 @@ const createElement = (template) => {
 
 export {
   RenderPlace,
-  renderElement,
-  renderTemplate,
+  render,
   createElement
 };
