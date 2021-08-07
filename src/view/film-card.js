@@ -1,7 +1,8 @@
 import { applyClassName } from '../utils/utils.js';
+import {createElement} from '../utils/dom-utils.js';
 import dayjs from 'dayjs';
 
-export const createFilmCardTemplate = (filmCard) => {
+const createFilmCardTemplate = (filmCard) => {
   const {title, rating, year, duration, ganre, poster, description, comments, isAddtoWatchList, isWhatched, isFavorite} = filmCard;
   const formatYear = dayjs(year).format('YYYY');
   const buttonClassName =  'film-card__controls-item--active';
@@ -29,3 +30,25 @@ export const createFilmCardTemplate = (filmCard) => {
     </div>
   </article>`;
 };
+
+export default class FilmCard {
+  constructor(filmCard) {
+    this._filmCard = filmCard;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._filmCard);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  returnElement() {
+    this._element = null;
+  }
+}

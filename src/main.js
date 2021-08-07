@@ -6,7 +6,7 @@ import SortView from './view/sort.js';
 import UserProfileView from './view/user.js';
 import ShowMoreButtonView from './view/show-more-button.js';
 import FiltersView from './view/filters-menu';
-import { createFilmCardTemplate } from './view/film-card.js';
+import FilmCardView from './view/film-card.js';
 import { createPopupTemplate } from './view/popup.js';
 import { createStatisticsTemplate } from './view/statistics.js';
 import { generateFilmCard } from './mock/film-card.js';
@@ -26,7 +26,7 @@ const footerStatistics = document.querySelector('.footer__statistics');
 
 const renderExtraSection = (container) => {
   for (let i = 0; i < EXTRA_CARDS_COUNT; i++) {
-    renderTemplate(container, createFilmCardTemplate(filmCards[i]), RenderPlace.BEFOREEND);
+    renderTemplate(container, new FilmCardView(filmCards[i]).getTemplate(), RenderPlace.BEFOREEND);
   }
 };
 
@@ -40,7 +40,7 @@ renderElement(filmsSectionComponent.getElement(), new FilmsListView().getElement
 
 const filmsListContainer = filmsSectionComponent.getElement().querySelector('.films-list__container');
 for (let i = 0; i < Math.min(filmCards.length, CARDS_PER_STEP); i++) {
-  renderTemplate(filmsListContainer, createFilmCardTemplate(filmCards[i]), RenderPlace.BEFOREEND);
+  renderTemplate(filmsListContainer, new FilmCardView(filmCards[i]).getTemplate(), RenderPlace.BEFOREEND);
 }
 
 if (filmCards.length > CARDS_PER_STEP) {
@@ -52,7 +52,7 @@ if (filmCards.length > CARDS_PER_STEP) {
     evt.preventDefault();
     filmCards
       .slice(renderedFilmsCount, renderedFilmsCount + CARDS_PER_STEP)
-      .forEach((filmCard) => renderTemplate(filmsListContainer, createFilmCardTemplate(filmCard), RenderPlace.BEFOREEND));
+      .forEach((filmCard) => renderTemplate(filmsListContainer, new FilmCardView(filmCard).getTemplate(), RenderPlace.BEFOREEND));
     renderedFilmsCount += CARDS_PER_STEP;
 
     if (renderedFilmsCount >= filmCards.length) {
