@@ -1,17 +1,17 @@
 import FilmsSectionView  from './view/films.js';
 import FilmsListView from './view/films-list.js';
-import TopRatedFilmsView from './view/top-rated-extra-section.js';
-import MostCommentedFilmsView from './view/most-commented-extra-section';
-import SortView from './view/sort.js';
-import UserProfileView from './view/user.js';
-import ShowMoreButtonView from './view/show-more-button.js';
-import FiltersView from './view/filters-menu';
 import FilmCardView from './view/film-card.js';
 import FilmPopupView from './view/popup.js';
-import { createStatisticsTemplate } from './view/statistics.js';
+import ShowMoreButtonView from './view/show-more-button.js';
+import TopRatedFilmsView from './view/top-rated-extra-section.js';
+import MostCommentedFilmsView from './view/most-commented-extra-section';
+import FiltersView from './view/filters-menu';
+import SortView from './view/sort.js';
+import UserProfileView from './view/user.js';
+import StatisticsView from './view/statistics.js';
 import { generateFilmCard } from './mock/film-card.js';
-import { RenderPlace, renderTemplate, renderElement } from './utils/dom-utils.js';
 import { generateFilters } from './mock/filters.js';
+import { RenderPlace, renderTemplate, renderElement } from './utils/dom-utils.js';
 
 const CARDS_COUNT = 15;
 const CARDS_PER_STEP = 5;
@@ -60,7 +60,6 @@ if (filmCards.length > CARDS_PER_STEP) {
       showMoreButton.removeElement();
     }
   };
-
   showMoreButton.getElement().addEventListener('click', showMoreButtonHandler);
 }
 
@@ -73,5 +72,5 @@ renderElement(filmsSectionComponent.getElement(), mostCommentedFilms.getElement(
 renderExtraSection(topRatedFilms.getElement().querySelector('.films-list__container'));
 renderExtraSection(mostCommentedFilms.getElement().querySelector('.films-list__container'));
 
-renderTemplate(footerStatistics, createStatisticsTemplate(filmCards), RenderPlace.BEFOREEND);
+renderElement(footerStatistics, new StatisticsView(filmCards).getElement(), RenderPlace.BEFOREEND);
 renderElement(document.body, new FilmPopupView(filmCards[0]).getElement(), RenderPlace.BEFOREEND);
