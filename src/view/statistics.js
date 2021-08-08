@@ -19,7 +19,7 @@ export default class Statistics {
     return this._element;
   }
 
-  returnElement() {
+  removeElement() {
     this._element = null;
   }
 }

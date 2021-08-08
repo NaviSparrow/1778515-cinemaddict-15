@@ -48,7 +48,7 @@ export default class FilmCard {
     return this._element;
   }
 
-  returnElement() {
+  removeElement() {
     this._element = null;
   }
 }

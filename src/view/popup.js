@@ -195,7 +195,7 @@ export default class FilmPopup {
     return this._element;
   }
 
-  returnElement() {
+  removeElement() {
     this._element = null;
   }
 }
