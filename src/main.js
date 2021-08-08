@@ -1,17 +1,17 @@
-import FilmsSectionView  from './view/films.js';
+import FilmsSectionView  from './view/films-section.js';
 import FilmsListView from './view/films-list.js';
 import FilmCardView from './view/film-card.js';
-import FilmPopupView from './view/popup.js';
+import FilmPopupView from './view/film-popup.js';
 import ShowMoreButtonView from './view/show-more-button.js';
-import TopRatedFilmsView from './view/top-rated-extra-section.js';
-import MostCommentedFilmsView from './view/most-commented-extra-section';
-import FiltersView from './view/filters-menu';
+import TopRatedFilmsView from './view/top-rated-films.js';
+import MostCommentedFilmsView from './view/most-commented-films.js';
+import FiltersView from './view/filters.js';
 import SortView from './view/sort.js';
-import UserProfileView from './view/user.js';
+import UserProfileView from './view/user-profile.js';
 import StatisticsView from './view/statistics.js';
 import { generateFilmCard } from './mock/film-card.js';
 import { generateFilters } from './mock/filters.js';
-import { RenderPlace, render } from './utils/dom-utils.js';
+import { RenderPlace, Selector, TypeOfEvent, render } from './utils/dom-utils.js';
 
 const CARDS_COUNT = 15;
 const CARDS_PER_STEP = 5;
@@ -39,10 +39,10 @@ const renderFilmCard = (container, filmCard) => {
     document.body.classList.remove('hide-overflow');
   };
 
-  filmCardComponent.getElement().querySelector('.film-card__title').addEventListener('click', openOnClickHandler);
-  filmCardComponent.getElement().querySelector('.film-card__poster').addEventListener('click', openOnClickHandler);
-  filmCardComponent.getElement().querySelector('.film-card__comments').addEventListener('click', openOnClickHandler);
-  filmPopupComponent.getElement().querySelector('.film-details__close-btn').addEventListener('click', closeOnClickHandler);
+  filmCardComponent.applyListener(Selector.TITLE, TypeOfEvent.CLICK, openOnClickHandler);
+  filmCardComponent.applyListener(Selector.POSTER, TypeOfEvent.CLICK, openOnClickHandler);
+  filmCardComponent.applyListener(Selector.COMMENTS, TypeOfEvent.CLICK, openOnClickHandler);
+  filmPopupComponent.applyListener(Selector.CLOSE_BUTTON, TypeOfEvent.CLICK, closeOnClickHandler);
 
   render(container, filmCardComponent.getElement(), RenderPlace.BEFOREEND);
 };
@@ -97,5 +97,5 @@ render(filmsSectionComponent.getElement(), mostCommentedFilms.getElement(), Rend
 renderExtraSection(topRatedFilms.getElement().querySelector('.films-list__container'));
 renderExtraSection(mostCommentedFilms.getElement().querySelector('.films-list__container'));
 
-render(footerStatistics, new StatisticsView(filmCards).getElement(), RenderPlace.BEFOREEND);
+render(footerStatistics, new StatisticsView(filmCards.length).getElement(), RenderPlace.BEFOREEND);
 

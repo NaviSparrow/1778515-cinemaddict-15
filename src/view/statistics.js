@@ -1,15 +1,15 @@
 import {createElement} from '../utils/dom-utils.js';
 
-const createStatisticsTemplate = (films) => `<p>${films.length} movies inside</p>`;
+const createStatisticsTemplate = (filmsLength) => `<p>${filmsLength} movies inside</p>`;
 
 export default class Statistics {
-  constructor(films) {
-    this._films = films;
+  constructor(filmsLength) {
+    this._filmsLength = filmsLength;
     this._element = null;
   }
 
   getTemplate() {
-    return createStatisticsTemplate(this._films);
+    return createStatisticsTemplate(this._filmsLength);
   }
 
   getElement() {

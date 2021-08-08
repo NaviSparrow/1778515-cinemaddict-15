@@ -2,8 +2,8 @@ import { applyClassName } from '../utils/utils.js';
 import {createElement} from '../utils/dom-utils.js';
 import dayjs from 'dayjs';
 
-const createFilmCardTemplate = (filmCard) => {
-  const {title, rating, year, duration, ganre, poster, description, comments, isAddtoWatchList, isWhatched, isFavorite} = filmCard;
+const createFilmCardTemplate = (film) => {
+  const {title, rating, year, duration, ganre, poster, description, comments, isAddtoWatchList, isWhatched, isFavorite} = film;
   const formatYear = dayjs(year).format('YYYY');
   const buttonClassName =  'film-card__controls-item--active';
   const watchListClassName = applyClassName(isAddtoWatchList, buttonClassName);
@@ -32,13 +32,13 @@ const createFilmCardTemplate = (filmCard) => {
 };
 
 export default class FilmCard {
-  constructor(filmCard) {
-    this._filmCard = filmCard;
+  constructor(film) {
+    this._film = film;
     this._element = null;
   }
 
   getTemplate() {
-    return createFilmCardTemplate(this._filmCard);
+    return createFilmCardTemplate(this._film);
   }
 
   getElement() {
@@ -46,6 +46,10 @@ export default class FilmCard {
       this._element = createElement(this.getTemplate());
     }
     return this._element;
+  }
+
+  applyListener (selector, type, callback) {
+    this.getElement().querySelector(selector).addEventListener(type, callback);
   }
 
   removeElement() {

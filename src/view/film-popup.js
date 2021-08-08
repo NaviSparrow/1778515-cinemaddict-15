@@ -195,6 +195,10 @@ export default class FilmPopup {
     return this._element;
   }
 
+  applyListener (selector, type, callback) {
+    this.getElement().querySelector(selector).addEventListener(type, callback);
+  }
+
   removeElement() {
     this._element = null;
   }
