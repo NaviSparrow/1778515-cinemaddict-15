@@ -1,5 +1,5 @@
 import { applyClassName } from '../utils/utils.js';
-import {createElement} from '../utils/dom-utils.js';
+import {createElement, Selector, TypeOfEvent} from '../utils/dom-utils.js';
 import dayjs from 'dayjs';
 
 const createPopupTemplate = (filmCard) => {
@@ -195,8 +195,8 @@ export default class FilmPopup {
     return this._element;
   }
 
-  applyListener (selector, type, callback) {
-    this.getElement().querySelector(selector).addEventListener(type, callback);
+  applyClosePopupListener (callback) {
+    this.getElement().querySelector(Selector.CLOSE_BUTTON).addEventListener(TypeOfEvent.CLICK, callback);
   }
 
   removeElement() {

@@ -11,7 +11,7 @@ import UserProfileView from './view/user-profile.js';
 import StatisticsView from './view/statistics.js';
 import { generateFilmCard } from './mock/film-card.js';
 import { generateFilters } from './mock/filters.js';
-import { RenderPlace, Selector, TypeOfEvent, render } from './utils/dom-utils.js';
+import {RenderPlace, render, isEscEvent} from './utils/dom-utils.js';
 
 const CARDS_COUNT = 15;
 const CARDS_PER_STEP = 5;
@@ -26,23 +26,30 @@ const renderFilmCard = (container, filmCard) => {
 
   const findPopup = () => document.body.querySelector('.film-details');
 
+  const closeOnClickHandler = () => {
+    document.body.removeChild(filmPopupComponent.getElement());
+    document.body.classList.remove('hide-overflow');
+  };
+
+  const closeOnKeydownHandler = (evt) => {
+    if (isEscEvent(evt)) {
+      evt.preventDefault();
+      document.body.removeChild(filmPopupComponent.getElement());
+      document.body.classList.remove('hide-overflow');
+    }
+  };
+
   const openOnClickHandler = () => {
     if(findPopup()) {
       document.body.removeChild(findPopup());
     }
     document.body.appendChild(filmPopupComponent.getElement());
     document.body.classList.add('hide-overflow');
+    document.addEventListener('keydown', closeOnKeydownHandler, {once: true});
   };
 
-  const closeOnClickHandler = () => {
-    document.body.removeChild(filmPopupComponent.getElement());
-    document.body.classList.remove('hide-overflow');
-  };
-
-  filmCardComponent.applyListener(Selector.TITLE, TypeOfEvent.CLICK, openOnClickHandler);
-  filmCardComponent.applyListener(Selector.POSTER, TypeOfEvent.CLICK, openOnClickHandler);
-  filmCardComponent.applyListener(Selector.COMMENTS, TypeOfEvent.CLICK, openOnClickHandler);
-  filmPopupComponent.applyListener(Selector.CLOSE_BUTTON, TypeOfEvent.CLICK, closeOnClickHandler);
+  filmCardComponent.applyOpenPopupListeners(openOnClickHandler);
+  filmPopupComponent.applyClosePopupListener(closeOnClickHandler);
 
   render(container, filmCardComponent.getElement(), RenderPlace.BEFOREEND);
 };

@@ -34,10 +34,13 @@ const createElement = (template) => {
   return newElement.firstChild;
 };
 
+const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
+
 export {
   RenderPlace,
   Selector,
   TypeOfEvent,
   render,
-  createElement
+  createElement,
+  isEscEvent
 };

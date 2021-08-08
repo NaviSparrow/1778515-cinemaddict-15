@@ -1,5 +1,5 @@
 import { applyClassName } from '../utils/utils.js';
-import {createElement} from '../utils/dom-utils.js';
+import {createElement, Selector, TypeOfEvent} from '../utils/dom-utils.js';
 import dayjs from 'dayjs';
 
 const createFilmCardTemplate = (film) => {
@@ -48,8 +48,10 @@ export default class FilmCard {
     return this._element;
   }
 
-  applyListener (selector, type, callback) {
-    this.getElement().querySelector(selector).addEventListener(type, callback);
+  applyOpenPopupListeners (callback) {
+    this.getElement().querySelector(Selector.TITLE).addEventListener('click', callback);
+    this.getElement().querySelector(Selector.POSTER).addEventListener('click', callback);
+    this.getElement().querySelector(Selector.COMMENTS).addEventListener('click', callback);
   }
 
   removeElement() {
