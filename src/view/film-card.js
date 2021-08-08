@@ -49,9 +49,9 @@ export default class FilmCard {
   }
 
   applyOpenPopupListeners (callback) {
-    this.getElement().querySelector(Selector.TITLE).addEventListener('click', callback);
-    this.getElement().querySelector(Selector.POSTER).addEventListener('click', callback);
-    this.getElement().querySelector(Selector.COMMENTS).addEventListener('click', callback);
+    this.getElement().querySelector(Selector.TITLE).addEventListener(TypeOfEvent.CLICK, callback);
+    this.getElement().querySelector(Selector.POSTER).addEventListener(TypeOfEvent.CLICK, callback);
+    this.getElement().querySelector(Selector.COMMENTS).addEventListener(TypeOfEvent.CLICK, callback);
   }
 
   removeElement() {
