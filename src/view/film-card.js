@@ -1,15 +1,15 @@
 import { applyClassName } from '../utils/utils.js';
+import {createElement, Selector, TypeOfEvent} from '../utils/dom-utils.js';
 import dayjs from 'dayjs';
 
-export const createFilmCardTemplate = (filmCard) => {
-  const {title, rating, year, duration, ganre, poster, description, comments, isAddtoWatchList, isWhatched, isFavorite} = filmCard;
+const createFilmCardTemplate = (film) => {
+  const {title, rating, year, duration, ganre, poster, description, comments, isAddtoWatchList, isWhatched, isFavorite} = film;
   const formatYear = dayjs(year).format('YYYY');
   const buttonClassName =  'film-card__controls-item--active';
   const watchListClassName = applyClassName(isAddtoWatchList, buttonClassName);
   const watchedClassName = applyClassName(isWhatched, buttonClassName);
   const favoriteClassName = applyClassName(isFavorite, buttonClassName);
   const fullDescription = description.join(' ');
-
   const getShortDescription = () => `${fullDescription.slice(0, 139)}...`;
 
   return `<article class="film-card">
@@ -30,3 +30,31 @@ export const createFilmCardTemplate = (filmCard) => {
     </div>
   </article>`;
 };
+
+export default class FilmCard {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  applyOpenPopupListeners (callback) {
+    this.getElement().querySelector(Selector.TITLE).addEventListener(TypeOfEvent.CLICK, callback);
+    this.getElement().querySelector(Selector.POSTER).addEventListener(TypeOfEvent.CLICK, callback);
+    this.getElement().querySelector(Selector.COMMENTS).addEventListener(TypeOfEvent.CLICK, callback);
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

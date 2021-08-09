@@ -1,15 +1,14 @@
 import {createElement} from '../utils/dom-utils.js';
 
-const createStatisticsTemplate = (filmsLength) => `<p>${filmsLength} movies inside</p>`;
+const createFilmsSectionTemplate = () => '<section class="films"></section>';
 
-export default class Statistics {
-  constructor(filmsLength) {
-    this._filmsLength = filmsLength;
+export default class FilmsSection {
+  constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createStatisticsTemplate(this._filmsLength);
+    return createFilmsSectionTemplate();
   }
 
   getElement() {
