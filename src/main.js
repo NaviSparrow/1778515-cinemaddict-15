@@ -64,7 +64,7 @@ const renderSection = (sectionContainer, films) => {
   const filmsListComponent = new FilmsListView();
 
   if (films.length === 0) {
-    render(filmsSectionComponent.getElement(), new NoFilmsInDatabaseView().getElement(), RenderPlace.BEFOREEND);
+    render(mainSection, new NoFilmsInDatabaseView().getElement(), RenderPlace.BEFOREEND);
     return;
   }
 
