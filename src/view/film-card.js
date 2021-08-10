@@ -1,6 +1,7 @@
 import { applyClassName } from '../utils/utils.js';
-import {createElement, Selector, TypeOfEvent} from '../utils/dom-utils.js';
+import AbstractView from './abstract.js';
 import dayjs from 'dayjs';
+import { Selector, TypeOfEvent } from '../utils/dom-utils.js';
 
 const createFilmCardTemplate = (film) => {
   const {title, rating, year, duration, ganre, poster, description, comments, isAddtoWatchList, isWhatched, isFavorite} = film;
@@ -31,30 +32,19 @@ const createFilmCardTemplate = (film) => {
   </article>`;
 };
 
-export default class FilmCard {
+export default class FilmCard extends AbstractView {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
   applyOpenPopupListeners (callback) {
     this.getElement().querySelector(Selector.TITLE).addEventListener(TypeOfEvent.CLICK, callback);
     this.getElement().querySelector(Selector.POSTER).addEventListener(TypeOfEvent.CLICK, callback);
     this.getElement().querySelector(Selector.COMMENTS).addEventListener(TypeOfEvent.CLICK, callback);
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
