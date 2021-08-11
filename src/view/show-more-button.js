@@ -1,5 +1,5 @@
 import AbstractView from './abstract.js';
-import { Selector, TypeOfEvent } from '../utils/dom-utils.js';
+import {TypeOfEvent } from '../utils/dom-utils.js';
 
 const createShowMoreButtonTemplate = () => '<button class="films-list__show-more">Show more</button>';
 
