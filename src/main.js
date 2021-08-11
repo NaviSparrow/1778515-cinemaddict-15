@@ -32,15 +32,14 @@ const renderFilmCard = (container, filmCard) => {
   const findPopup = () => document.body.querySelector('.film-details');
 
   const closeOnClickHandler = () => {
-    document.body.removeChild(filmPopupComponent.getElement());
+    remove(filmPopupComponent);
     document.body.classList.remove('hide-overflow');
   };
 
   const closeOnKeydownHandler = (evt) => {
     if (isEscEvent(evt)) {
       evt.preventDefault();
-      document.body.removeChild(filmPopupComponent.getElement());
-      document.body.classList.remove('hide-overflow');
+      closeOnClickHandler();
     }
   };
 
@@ -48,7 +47,7 @@ const renderFilmCard = (container, filmCard) => {
     if(findPopup()) {
       document.body.removeChild(findPopup());
     }
-    document.body.appendChild(filmPopupComponent.getElement());
+    render(document.body, filmPopupComponent, RenderPlace.BEFOREEND);
     document.body.classList.add('hide-overflow');
     document.addEventListener('keydown', closeOnKeydownHandler, {once: true});
   };
