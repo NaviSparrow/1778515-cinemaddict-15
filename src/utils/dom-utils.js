@@ -1,3 +1,5 @@
+import AbstractView from '../view/abstract.js';
+
 const RenderPlace = {
   BEFOREBEGIN: 'beforebegin',
   BEFOREEND: 'beforeend',
@@ -18,16 +20,33 @@ const TypeOfEvent = {
   KEYDOWN: 'keydown',
 };
 
-const render = (container, element, place) => {
+const render = (container, child, place) => {
+  if (container instanceof AbstractView) {
+    container = container.getElement();
+  }
+
+  if (child instanceof AbstractView) {
+    child = child.getElement();
+  }
+
   switch (place){
     case RenderPlace.AFTERBEGIN:
-      container.prepend(element);
+      container.prepend(child);
       break;
     case RenderPlace.BEFOREEND:
-      container.append(element);
+      container.append(child);
       break;
   }
 };
+
+const remove = (component) => {
+  if (!(component instanceof AbstractView)) {
+    throw new Error('Can remove only components');
+  }
+  component.getElement().remove();
+  component.removeElement();
+};
+
 
 const createElement = (template) => {
   const newElement = document.createElement('div');
@@ -42,6 +61,7 @@ export {
   Selector,
   TypeOfEvent,
   render,
+  remove,
   createElement,
   isEscEvent
 };
