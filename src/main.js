@@ -53,8 +53,8 @@ const renderFilmCard = (container, filmCard) => {
     document.addEventListener('keydown', closeOnKeydownHandler, {once: true});
   };
 
-  filmCardComponent.applyOpenPopupListeners(openOnClickHandler);
-  filmPopupComponent.applyClosePopupListener(closeOnClickHandler);
+  filmCardComponent.setClickHandler(openOnClickHandler);
+  filmPopupComponent.setClickHandler(closeOnClickHandler);
 
   render(container, filmCardComponent.getElement(), RenderPlace.BEFOREEND);
 };
@@ -82,8 +82,7 @@ const renderSection = (sectionContainer, films) => {
     const showMoreButton = new ShowMoreButtonView();
     render(filmsSectionComponent.getElement(), showMoreButton.getElement(), RenderPlace.BEFOREEND);
 
-    const showMoreButtonHandler = (evt) => {
-      evt.preventDefault();
+    const showMoreButtonHandler = () => {
       films
         .slice(renderedFilmsCount, renderedFilmsCount + CARDS_PER_STEP)
         .forEach((film) => renderFilmCard(filmsListContainer, film, RenderPlace.BEFOREEND));
@@ -94,7 +93,8 @@ const renderSection = (sectionContainer, films) => {
         showMoreButton.removeElement();
       }
     };
-    showMoreButton.getElement().addEventListener('click', showMoreButtonHandler);
+
+    showMoreButton.setClickHandler(showMoreButtonHandler);
   }
 
   const renderExtraSection = () => {

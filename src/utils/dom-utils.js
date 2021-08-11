@@ -10,6 +10,7 @@ const Selector = {
   POSTER: '.film-card__poster',
   COMMENTS: '.film-card__comments',
   CLOSE_BUTTON: '.film-details__close-btn',
+  SHOW_MORE_BUTTON: '.films-list__show-more',
 };
 
 const TypeOfEvent = {
