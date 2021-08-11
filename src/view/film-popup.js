@@ -1,5 +1,6 @@
 import { applyClassName } from '../utils/utils.js';
-import {createElement, Selector, TypeOfEvent} from '../utils/dom-utils.js';
+import {Selector, TypeOfEvent} from '../utils/dom-utils.js';
+import AbstractView from './abstract.js';
 import dayjs from 'dayjs';
 
 const createPopupTemplate = (film) => {
@@ -178,28 +179,24 @@ const createPopupTemplate = (film) => {
 </section>`;
 };
 
-export default class FilmPopup {
+export default class FilmPopup extends AbstractView {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createPopupTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.closeOnClick();
   }
 
-  applyClosePopupListener (callback) {
-    this.getElement().querySelector(Selector.CLOSE_BUTTON).addEventListener(TypeOfEvent.CLICK, callback);
-  }
-
-  removeElement() {
-    this._element = null;
+  setClickHandler(callback) {
+    this._callback.closeOnClick = callback;
+    this.getElement().querySelector(Selector.CLOSE_BUTTON).addEventListener(TypeOfEvent.CLICK, this._clickHandler);
   }
 }
