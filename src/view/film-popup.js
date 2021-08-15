@@ -1,5 +1,4 @@
 import { applyClassName } from '../utils/utils.js';
-import {Selector, TypeOfEvent} from '../utils/dom-utils.js';
 import AbstractView from './abstract.js';
 import dayjs from 'dayjs';
 
@@ -197,6 +196,6 @@ export default class FilmPopup extends AbstractView {
 
   setClickHandler(callback) {
     this._callback.closeOnClick = callback;
-    this.getElement().querySelector(Selector.CLOSE_BUTTON).addEventListener(TypeOfEvent.CLICK, this._clickHandler);
+    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._clickHandler);
   }
 }

@@ -1,7 +1,6 @@
 import { applyClassName } from '../utils/utils.js';
 import AbstractView from './abstract.js';
 import dayjs from 'dayjs';
-import { Selector, TypeOfEvent } from '../utils/dom-utils.js';
 
 const createFilmCardTemplate = (film) => {
   const {title, rating, year, duration, ganre, poster, description, comments, isAddtoWatchList, isWhatched, isFavorite} = film;
@@ -50,8 +49,8 @@ export default class FilmCard extends AbstractView {
 
   setClickHandler(callback) {
     this._callback.openOnClick = callback;
-    this.getElement().querySelector(Selector.TITLE).addEventListener(TypeOfEvent.CLICK, this._clickHandler);
-    this.getElement().querySelector(Selector.POSTER).addEventListener(TypeOfEvent.CLICK, this._clickHandler);
-    this.getElement().querySelector(Selector.COMMENTS).addEventListener(TypeOfEvent.CLICK, this._clickHandler);
+    this.getElement().querySelector('.film-card__title').addEventListener('click', this._clickHandler);
+    this.getElement().querySelector('.film-card__poster').addEventListener('click', this._clickHandler);
+    this.getElement().querySelector('.film-card__comments').addEventListener('click', this._clickHandler);
   }
 }

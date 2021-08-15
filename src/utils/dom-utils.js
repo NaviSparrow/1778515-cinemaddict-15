@@ -7,19 +7,6 @@ const RenderPlace = {
   AFTEREND: 'afterend',
 };
 
-const Selector = {
-  TITLE: '.film-card__title',
-  POSTER: '.film-card__poster',
-  COMMENTS: '.film-card__comments',
-  CLOSE_BUTTON: '.film-details__close-btn',
-  SHOW_MORE_BUTTON: '.films-list__show-more',
-};
-
-const TypeOfEvent = {
-  CLICK: 'click',
-  KEYDOWN: 'keydown',
-};
-
 const render = (container, child, place) => {
   if (container instanceof AbstractView) {
     container = container.getElement();
@@ -58,8 +45,6 @@ const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
 export {
   RenderPlace,
-  Selector,
-  TypeOfEvent,
   render,
   remove,
   createElement,
