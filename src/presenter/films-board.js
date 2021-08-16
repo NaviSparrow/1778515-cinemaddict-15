@@ -22,17 +22,17 @@ export default class FilmsBoard {
     this._noFilmsComponent = new NoFilmsInDatabaseView();
   }
 
-  init(boardFilms) {
+  init(films) {
     // Метод для инициализации (начала работы) модуля,
     // малая часть текущей функции renderBoard в main.js
-    this._boardFilms = boardFilms.slice();
+    this._boardFilms = films.slice();
 
     this._renderFilmsBoard();
   }
 
   _renderSort() {
     //Метод рендеринга сортировки
-    render(this._filmsSectionComponent, this._sortCopmponent, RenderPlace.BEFOREBEGIN);
+    render(this._filmsBoardContainer, this._sortCopmponent, RenderPlace.BEFOREEND);
   }
 
   _renderFilmsSection() {
@@ -43,7 +43,11 @@ export default class FilmsBoard {
     render(this._filmsSectionComponent, this._filmsListComponent, RenderPlace.BEFOREEND);
   }
 
-  _renderFilm(film, container) {
+  _getBasicFilmsListContainer() {
+    return this._filmsListComponent.getElement().querySelector('.films-list__container');
+  }
+
+  _renderFilm(film, container = this._getBasicFilmsListContainer()) {
     //Метод для отрисовки одной задачи
     //текущая renderFilmCard
     const filmCardComponent = new FilmCardView(film);
@@ -93,8 +97,7 @@ export default class FilmsBoard {
   }
 
   _renderBasicFilms() {
-    const BASIC_FILMS_CONTAINER = this._filmsListComponent.getElement().querySelector('.films-list__container');
-    this._renderFilms(0, Math.min(this._boardFilms.length, CARDS_PER_STEP), BASIC_FILMS_CONTAINER);
+    this._renderFilms(0, Math.min(this._boardFilms.length, CARDS_PER_STEP));
 
     if (this._boardFilms.length > CARDS_PER_STEP) {
       this._renderShowMoreButton();
@@ -137,7 +140,7 @@ export default class FilmsBoard {
   _renderFilmsBoard() {
     // Метод для инициализации (начала работы) модуля,
     // бОльшая часть текущей функции renderBoard в main.js
-    if (this._boardFilms === 0) {
+    if (this._boardFilms.length === 0) {
       this._renderNoFilms();
       return;
     }
