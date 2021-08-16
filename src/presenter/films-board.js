@@ -15,11 +15,15 @@ const EXTRA_CARDS_COUNT = 2;
 export default class FilmsBoard {
   constructor(boardContainer) {
     this._filmsBoardContainer = boardContainer;
+    this._renderedFilmsCount = CARDS_PER_STEP;
 
     this._filmsSectionComponent = new FilmsSectionView();
     this._filmsListComponent = new FilmsListView();
     this._sortCopmponent = new SortView();
     this._noFilmsComponent = new NoFilmsInDatabaseView();
+    this._showMoreButtonComponent = new ShowMoreButtonView();
+
+    this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
   }
 
   init(films) {
@@ -119,22 +123,19 @@ export default class FilmsBoard {
     renderExtraSectionFilms(mostCommentedFilms.getElement().querySelector('.films-list__container'));
   }
 
+  _handleShowMoreButtonClick() {
+    this._renderFilms(this._renderedFilmsCount, this._renderedFilmsCount + CARDS_PER_STEP);
+    this._renderedFilmsCount += CARDS_PER_STEP;
+
+    if (this._renderedFilmsCount >= this._boardFilms.length) {
+      remove(this._showMoreButtonComponent);
+    }
+  }
+
   _renderShowMoreButton() {
     //отрисовка кнопки подзагрузки
-    let renderedFilmsCount = CARDS_PER_STEP;
-    const showMoreButton = new ShowMoreButtonView();
-    render(this._filmsSectionComponent, showMoreButton, RenderPlace.BEFOREEND);
-
-    showMoreButton.setClickHandler(() => {
-      this._boardFilms
-        .slice(renderedFilmsCount, renderedFilmsCount + CARDS_PER_STEP)
-        .forEach((film) => this._renderFilm(film));
-      renderedFilmsCount += CARDS_PER_STEP;
-
-      if (renderedFilmsCount >= this._boardFilms.length) {
-        remove(showMoreButton);
-      }
-    });
+    render(this._filmsSectionComponent, this._showMoreButtonComponent, RenderPlace.BEFOREEND);
+    this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
   }
 
   _renderFilmsBoard() {
