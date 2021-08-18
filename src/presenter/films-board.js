@@ -7,7 +7,7 @@ import TopRatedFilmsView from '../view/top-rated-films.js';
 import MostCommentedFilmsView from '../view/most-commented-films.js';
 import SortView from '../view/sort.js';
 import NoFilmsInDatabaseView from '../view/no-films-in-database.js';
-import {RenderPlace, render, remove, isEscEvent} from '../utils/dom-utils.js';
+import {RenderPlace, render, remove, isEscEvent, replace} from '../utils/dom-utils.js';
 
 const CARDS_PER_STEP = 5;
 const EXTRA_CARDS_COUNT = 2;
@@ -22,6 +22,8 @@ export default class FilmsBoard {
     this._sortCopmponent = new SortView();
     this._noFilmsComponent = new NoFilmsInDatabaseView();
     this._showMoreButtonComponent = new ShowMoreButtonView();
+    this._filmCardComponent = null;
+    this._filmPopupComponent = null;
 
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
   }
@@ -35,7 +37,6 @@ export default class FilmsBoard {
   }
 
   _renderSort() {
-    //Метод рендеринга сортировки
     render(this._filmsBoardContainer, this._sortCopmponent, RenderPlace.BEFOREEND);
   }
 
@@ -52,8 +53,9 @@ export default class FilmsBoard {
   }
 
   _renderFilm(film, container = this._getBasicFilmsListContainer()) {
-    //Метод для отрисовки одной задачи
-    //текущая renderFilmCard
+    const prevFilmCardComponent = this._filmCardComponent;
+    const prevFilmPopupComponent = this._filmPopupComponent;
+
     const filmCardComponent = new FilmCardView(film);
     const filmPopupComponent = new FilmPopupView(film);
 
@@ -83,7 +85,23 @@ export default class FilmsBoard {
     filmCardComponent.setClickHandler(openOnClickHandler);
     filmPopupComponent.setClickHandler(closeOnClickHandler);
 
-    render(container, filmCardComponent, RenderPlace.BEFOREEND);
+    if (prevFilmCardComponent === null || prevFilmPopupComponent === null) {
+      render(container, filmCardComponent, RenderPlace.BEFOREEND);
+      return;
+    }
+    //TODO проверить контейнер
+    if (this._filmsSectionComponent.getElement().contains(prevFilmCardComponent.getElement())) {
+      replace(this._filmCardComponent, prevFilmCardComponent);
+    }
+
+    if (this._filmsSectionComponent.getElement().contains(prevFilmPopupComponent.getElement())) {
+      replace(this._filmPopupComponent, prevFilmPopupComponent);
+    }
+  }
+
+  destroy() {
+    remove(this._filmCardComponent);
+    remove(this._filmPopupComponent);
   }
 
   _renderFilms(from, to, container) {
