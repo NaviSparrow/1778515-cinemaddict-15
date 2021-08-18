@@ -2,6 +2,7 @@ import FilmsSectionView  from '../view/films-section.js';
 import FilmsListView from '../view/films-list.js';
 import FilmCardView from '../view/film-card.js';
 import FilmPopupView from '../view/film-popup.js';
+import FilmPresenter from './film';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import TopRatedFilmsView from '../view/top-rated-films.js';
 import MostCommentedFilmsView from '../view/most-commented-films.js';
@@ -16,14 +17,13 @@ export default class FilmsBoard {
   constructor(boardContainer) {
     this._filmsBoardContainer = boardContainer;
     this._renderedFilmsCount = CARDS_PER_STEP;
+    this._filmItem = new Map();
 
     this._filmsSectionComponent = new FilmsSectionView();
     this._filmsListComponent = new FilmsListView();
     this._sortCopmponent = new SortView();
     this._noFilmsComponent = new NoFilmsInDatabaseView();
     this._showMoreButtonComponent = new ShowMoreButtonView();
-    this._filmCardComponent = null;
-    this._filmPopupComponent = null;
 
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
   }
@@ -44,7 +44,7 @@ export default class FilmsBoard {
     render(this._filmsBoardContainer, this._filmsSectionComponent, RenderPlace.BEFOREEND);
   }
 
-  renderFilmsList() {
+  _renderFilmsList() {
     render(this._filmsSectionComponent, this._filmsListComponent, RenderPlace.BEFOREEND);
   }
 
@@ -53,55 +53,15 @@ export default class FilmsBoard {
   }
 
   _renderFilm(film, container = this._getBasicFilmsListContainer()) {
-    const prevFilmCardComponent = this._filmCardComponent;
-    const prevFilmPopupComponent = this._filmPopupComponent;
-
-    const filmCardComponent = new FilmCardView(film);
-    const filmPopupComponent = new FilmPopupView(film);
-
-    const findPopup = () => document.body.querySelector('.film-details');
-
-    const closeOnClickHandler = () => {
-      remove(filmPopupComponent);
-      document.body.classList.remove('hide-overflow');
-    };
-
-    const closeOnKeydownHandler = (evt) => {
-      if (isEscEvent(evt)) {
-        evt.preventDefault();
-        closeOnClickHandler();
-      }
-    };
-
-    const openOnClickHandler = () => {
-      if(findPopup()) {
-        document.body.removeChild(findPopup());
-      }
-      render(document.body, filmPopupComponent, RenderPlace.BEFOREEND);
-      document.body.classList.add('hide-overflow');
-      document.addEventListener('keydown', closeOnKeydownHandler, {once: true});
-    };
-
-    filmCardComponent.setClickHandler(openOnClickHandler);
-    filmPopupComponent.setClickHandler(closeOnClickHandler);
-
-    if (prevFilmCardComponent === null || prevFilmPopupComponent === null) {
-      render(container, filmCardComponent, RenderPlace.BEFOREEND);
-      return;
-    }
-    //TODO проверить контейнер
-    if (this._filmsSectionComponent.getElement().contains(prevFilmCardComponent.getElement())) {
-      replace(this._filmCardComponent, prevFilmCardComponent);
-    }
-
-    if (this._filmsSectionComponent.getElement().contains(prevFilmPopupComponent.getElement())) {
-      replace(this._filmPopupComponent, prevFilmPopupComponent);
-    }
+    const filmPresenter = new FilmPresenter(container);
+    filmPresenter.init(film);
   }
 
-  destroy() {
-    remove(this._filmCardComponent);
-    remove(this._filmPopupComponent);
+  _clearFilmsSection() {
+    for (const value of this._filmItem.values()) {
+      value();
+    }
+    remove(this._showMoreButtonComponent);
   }
 
   _renderFilms(from, to, container) {
@@ -166,7 +126,7 @@ export default class FilmsBoard {
 
     this._renderSort();
     this._renderFilmsSection();
-    this.renderFilmsList();
+    this._renderFilmsList();
     this._renderBasicFilms();
     this._renderExtraFilms();
   }

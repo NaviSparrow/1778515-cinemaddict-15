@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
 import {getRandomFloat, getRandomArray, getRandomInteger, getRandomArrayElement } from '../utils/utils.js';
 
 const TITLES = [
@@ -148,6 +149,7 @@ const generateAgeRating = () => getRandomArrayElement(AGE_RATINGS);
 
 export const generateFilmCard = () => (
   {
+    id: nanoid(),
     title: generateTitle(),
     rating: generateRating(),
     year:generateYear(),
