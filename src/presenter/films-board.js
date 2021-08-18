@@ -1,14 +1,13 @@
 import FilmsSectionView  from '../view/films-section.js';
 import FilmsListView from '../view/films-list.js';
-import FilmCardView from '../view/film-card.js';
-import FilmPopupView from '../view/film-popup.js';
 import FilmPresenter from './film';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import TopRatedFilmsView from '../view/top-rated-films.js';
 import MostCommentedFilmsView from '../view/most-commented-films.js';
 import SortView from '../view/sort.js';
 import NoFilmsInDatabaseView from '../view/no-films-in-database.js';
-import {RenderPlace, render, remove, isEscEvent, replace} from '../utils/dom-utils.js';
+import {RenderPlace, render, remove} from '../utils/dom-utils.js';
+import {updateItem} from '../utils/utils.js';
 
 const CARDS_PER_STEP = 5;
 const EXTRA_CARDS_COUNT = 2;
@@ -17,7 +16,7 @@ export default class FilmsBoard {
   constructor(boardContainer) {
     this._filmsBoardContainer = boardContainer;
     this._renderedFilmsCount = CARDS_PER_STEP;
-    this._filmItem = new Map();
+    this._filmPresenter = new Map();
 
     this._filmsSectionComponent = new FilmsSectionView();
     this._filmsListComponent = new FilmsListView();
@@ -26,6 +25,7 @@ export default class FilmsBoard {
     this._showMoreButtonComponent = new ShowMoreButtonView();
 
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
+    this._handleFilmChange = this._handleFilmChange.bind(this);
   }
 
   init(films) {
@@ -34,6 +34,11 @@ export default class FilmsBoard {
     this._boardFilms = films.slice();
 
     this._renderFilmsBoard();
+  }
+
+  _handleFilmChange(updatedFilm) {
+    this._boardFilms = updateItem(this._boardFilms, updatedFilm);
+    this._filmPresenter.get(updatedFilm.id).init(updatedFilm);
   }
 
   _renderSort() {
@@ -55,12 +60,13 @@ export default class FilmsBoard {
   _renderFilm(film, container = this._getBasicFilmsListContainer()) {
     const filmPresenter = new FilmPresenter(container);
     filmPresenter.init(film);
+    this._filmPresenter.set(film.id, filmPresenter);
   }
 
   _clearFilmsSection() {
-    for (const value of this._filmItem.values()) {
-      value();
-    }
+    this._filmPresenter.forEach((presenter) => presenter.destroy());
+    this._filmPresenter.clear();
+    this._renderedFilmsCount = CARDS_PER_STEP;
     remove(this._showMoreButtonComponent);
   }
 
