@@ -17,9 +17,12 @@ export default class FilmsBoard {
     this._filmsBoardContainer = boardContainer;
     this._renderedFilmsCount = CARDS_PER_STEP;
     this._filmPresenter = new Map();
+    this._setOfContainers = new Set();
 
     this._filmsSectionComponent = new FilmsSectionView();
     this._filmsListComponent = new FilmsListView();
+    this._topRatedListComponent = new TopRatedFilmsView();
+    this._mostCommentedListComponent = new MostCommentedFilmsView();
     this._sortCopmponent = new SortView();
     this._noFilmsComponent = new NoFilmsInDatabaseView();
     this._showMoreButtonComponent = new ShowMoreButtonView();
@@ -38,7 +41,7 @@ export default class FilmsBoard {
 
   _handleFilmChange(updatedFilm) {
     this._boardFilms = updateItem(this._boardFilms, updatedFilm);
-    this._filmPresenter.get(updatedFilm.id).init(updatedFilm);
+    this._filmPresenter.get(updatedFilm.id).init(updatedFilm, this._setOfContainers);
   }
 
   _renderSort() {
@@ -53,14 +56,32 @@ export default class FilmsBoard {
     render(this._filmsSectionComponent, this._filmsListComponent, RenderPlace.BEFOREEND);
   }
 
+  _renderTopRatedList() {
+    render(this._filmsSectionComponent, this._topRatedListComponent, RenderPlace.BEFOREEND);
+  }
+
+  _renderMostCommentedList() {
+    render(this._filmsSectionComponent, this._mostCommentedListComponent, RenderPlace.BEFOREEND);
+  }
+
   _getBasicFilmsListContainer() {
     return this._filmsListComponent.getElement().querySelector('.films-list__container');
   }
 
+  _getTopRatedListContainer() {
+    return this._topRatedListComponent.getElement().querySelector('.films-list__container');
+  }
+
+  _getMostCommentedListContainer() {
+    return this._mostCommentedListComponent.getElement().querySelector('.films-list__container');
+
+  }
+
   _renderFilm(film, container = this._getBasicFilmsListContainer()) {
-    const filmPresenter = new FilmPresenter(container);
+    const filmPresenter = new FilmPresenter(container, this._handleFilmChange);
     filmPresenter.init(film);
     this._filmPresenter.set(film.id, filmPresenter);
+    this._setOfContainers.add(container);
   }
 
   _clearFilmsSection() {
@@ -92,19 +113,12 @@ export default class FilmsBoard {
     }
   }
 
-  _renderExtraFilms() {
-    const renderExtraSectionFilms = (container) => {
-      this._renderFilms(0, EXTRA_CARDS_COUNT, container);
-    };
+  _renderTopRatedFilms() {
+    this._renderFilms(0, EXTRA_CARDS_COUNT, this._getTopRatedListContainer());
+  }
 
-    const topRatedFilms = new TopRatedFilmsView();
-    const mostCommentedFilms = new MostCommentedFilmsView();
-
-    render(this._filmsSectionComponent, topRatedFilms, RenderPlace.BEFOREEND);
-    render(this._filmsSectionComponent, mostCommentedFilms, RenderPlace.BEFOREEND);
-
-    renderExtraSectionFilms(topRatedFilms.getElement().querySelector('.films-list__container'));
-    renderExtraSectionFilms(mostCommentedFilms.getElement().querySelector('.films-list__container'));
+  _renderMostCommentedFilms() {
+    this._renderFilms(0, EXTRA_CARDS_COUNT, this._getMostCommentedListContainer());
   }
 
   _handleShowMoreButtonClick() {
@@ -134,6 +148,9 @@ export default class FilmsBoard {
     this._renderFilmsSection();
     this._renderFilmsList();
     this._renderBasicFilms();
-    this._renderExtraFilms();
+    this._renderTopRatedList();
+    this._renderMostCommentedList();
+    this._renderTopRatedFilms();
+    this._renderMostCommentedFilms();
   }
 }
