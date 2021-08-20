@@ -44,7 +44,6 @@ export default class Film {
 
     for (const container of containers.values()) {
       if (container.contains(prevFilmComponent.getElement())) {
-        console.log(containers);
         replace(this._filmComponent, prevFilmComponent);
       }
     }
@@ -105,7 +104,18 @@ export default class Film {
     }
   }
 
+  _isPopUpExist() {
+    return Boolean(document.body.querySelector('.film-details'));
+  }
+
+  _removePopUp() {
+    document.body.removeChild(document.body.querySelector('.film-details'));
+  }
+
   _openPopupHandler() {
+    if (this._isPopUpExist()) {
+      this._removePopUp();
+    }
     render(document.body, this._popupComponent, RenderPlace.BEFOREEND);
     document.body.classList.add('hide-overflow');
     document.addEventListener('keydown', this._escKeyDownHandler, {once: true});
