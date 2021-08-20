@@ -14,9 +14,11 @@ const EXTRA_CARDS_COUNT = 2;
 
 export default class FilmsBoard {
   constructor(boardContainer) {
-    this._filmsBoardContainer = boardContainer;
+    this._boardContainer = boardContainer;
     this._renderedFilmsCount = CARDS_PER_STEP;
-    this._filmPresenter = new Map();
+    this._boardFilmPresenter = new Map();
+    this._topRatedFilmPresenter = new Map();
+    this._mostCommentedFilmPresenter = new Map();
     this._setOfContainers = new Set();
 
     this._filmsSectionComponent = new FilmsSectionView();
@@ -32,8 +34,6 @@ export default class FilmsBoard {
   }
 
   init(films) {
-    // Метод для инициализации (начала работы) модуля,
-    // малая часть текущей функции renderBoard в main.js
     this._boardFilms = films.slice();
 
     this._renderFilmsBoard();
@@ -41,15 +41,26 @@ export default class FilmsBoard {
 
   _handleFilmChange(updatedFilm) {
     this._boardFilms = updateItem(this._boardFilms, updatedFilm);
-    this._filmPresenter.get(updatedFilm.id).init(updatedFilm, this._setOfContainers);
+
+    if (this._boardFilmPresenter.has(updatedFilm.id)) {
+      this._boardFilmPresenter.get(updatedFilm.id).init(updatedFilm, this._setOfContainers);
+    }
+
+    if (this._topRatedFilmPresenter.has(updatedFilm.id)) {
+      this._topRatedFilmPresenter.get(updatedFilm.id).init(updatedFilm,this._setOfContainers);
+    }
+
+    if (this._mostCommentedFilmPresenter.has(updatedFilm.id)) {
+      this._mostCommentedFilmPresenter.get(updatedFilm.id).init(updatedFilm,this._setOfContainers);
+    }
   }
 
   _renderSort() {
-    render(this._filmsBoardContainer, this._sortCopmponent, RenderPlace.BEFOREEND);
+    render(this._boardContainer, this._sortCopmponent, RenderPlace.BEFOREEND);
   }
 
   _renderFilmsSection() {
-    render(this._filmsBoardContainer, this._filmsSectionComponent, RenderPlace.BEFOREEND);
+    render(this._boardContainer, this._filmsSectionComponent, RenderPlace.BEFOREEND);
   }
 
   _renderFilmsList() {
@@ -64,35 +75,48 @@ export default class FilmsBoard {
     render(this._filmsSectionComponent, this._mostCommentedListComponent, RenderPlace.BEFOREEND);
   }
 
-  _getBasicFilmsListContainer() {
+  _getBoardFilmsListContainer() {
     return this._filmsListComponent.getElement().querySelector('.films-list__container');
   }
 
-  _getTopRatedListContainer() {
+  _getTopRatedFilmsListContainer() {
     return this._topRatedListComponent.getElement().querySelector('.films-list__container');
   }
 
-  _getMostCommentedListContainer() {
+  _getMostCommentedFilmsListContainer() {
     return this._mostCommentedListComponent.getElement().querySelector('.films-list__container');
-
   }
 
-  _renderFilm(film, container = this._getBasicFilmsListContainer()) {
+  _renderFilm(film, container = this._getBoardFilmsListContainer()) {
     const filmPresenter = new FilmPresenter(container, this._handleFilmChange);
     filmPresenter.init(film);
-    this._filmPresenter.set(film.id, filmPresenter);
+
+    switch (container) {
+      case this._getBoardFilmsListContainer():
+        this._boardFilmPresenter.set(film.id, filmPresenter);
+        break;
+      case  this._getTopRatedFilmsListContainer():
+        this._topRatedFilmPresenter.set(film.id, filmPresenter);
+        break;
+      case this._getMostCommentedFilmsListContainer():
+        this._mostCommentedFilmPresenter.set(film.id, filmPresenter);
+        break;
+    }
     this._setOfContainers.add(container);
   }
 
   _clearFilmsSection() {
-    this._filmPresenter.forEach((presenter) => presenter.destroy());
-    this._filmPresenter.clear();
+    this._boardFilmPresenter.forEach((presenter) => presenter.destroy());
+    this._topRatedFilmPresenter.forEach((presenter) => presenter.destroy());
+    this._mostCommentedFilmPresenter.forEach((presenter) => presenter.destroy());
+    this._boardFilmPresenter.clear();
+    this._topRatedFilmPresenter.clear();
+    this._mostCommentedFilmPresenter.clear();
     this._renderedFilmsCount = CARDS_PER_STEP;
     remove(this._showMoreButtonComponent);
   }
 
   _renderFilms(from, to, container) {
-    //отрисовка n-колличества фильмов
     this._boardFilms
       .slice(from, to)
       .forEach((film) => {
@@ -101,11 +125,10 @@ export default class FilmsBoard {
   }
 
   _renderNoFilms() {
-    //отрисовка заглушки
-    render(this._filmsBoardContainer, this._noFilmsComponent, RenderPlace.BEFOREEND);
+    render(this._boardContainer, this._noFilmsComponent, RenderPlace.BEFOREEND);
   }
 
-  _renderBasicFilms() {
+  _renderBoardFilms() {
     this._renderFilms(0, Math.min(this._boardFilms.length, CARDS_PER_STEP));
 
     if (this._boardFilms.length > CARDS_PER_STEP) {
@@ -114,11 +137,11 @@ export default class FilmsBoard {
   }
 
   _renderTopRatedFilms() {
-    this._renderFilms(0, EXTRA_CARDS_COUNT, this._getTopRatedListContainer());
+    this._renderFilms(0, EXTRA_CARDS_COUNT, this._getTopRatedFilmsListContainer());
   }
 
   _renderMostCommentedFilms() {
-    this._renderFilms(0, EXTRA_CARDS_COUNT, this._getMostCommentedListContainer());
+    this._renderFilms(0, EXTRA_CARDS_COUNT, this._getMostCommentedFilmsListContainer());
   }
 
   _handleShowMoreButtonClick() {
@@ -131,14 +154,11 @@ export default class FilmsBoard {
   }
 
   _renderShowMoreButton() {
-    //отрисовка кнопки подзагрузки
     render(this._filmsSectionComponent, this._showMoreButtonComponent, RenderPlace.BEFOREEND);
     this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
   }
 
   _renderFilmsBoard() {
-    // Метод для инициализации (начала работы) модуля,
-    // бОльшая часть текущей функции renderBoard в main.js
     if (this._boardFilms.length === 0) {
       this._renderNoFilms();
       return;
@@ -147,7 +167,7 @@ export default class FilmsBoard {
     this._renderSort();
     this._renderFilmsSection();
     this._renderFilmsList();
-    this._renderBasicFilms();
+    this._renderBoardFilms();
     this._renderTopRatedList();
     this._renderMostCommentedList();
     this._renderTopRatedFilms();

@@ -119,7 +119,7 @@ const generateGanre = () => getRandomArray(GANRES, 4);
 
 const generatePoster = () => `./images/posters/${getRandomArrayElement(POSTERS)}`;
 
-const generateDesription = () => getRandomArray(DESRIPTIONS, 5);
+const _generateDescription = () => getRandomArray(DESRIPTIONS, 5);
 
 const generateComments = () => getRandomInteger(0, 5);
 
@@ -156,7 +156,7 @@ export const generateFilmCard = () => (
     duration: generateDuration(),
     genres: generateGanre(),
     poster: generatePoster(),
-    description:generateDesription(),
+    description:_generateDescription(),
     comments: generateComments(),
     originalTitle: generateOriginalTitle(),
     director: generateDirector(),
