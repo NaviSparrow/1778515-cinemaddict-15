@@ -1,3 +1,9 @@
+const SortType = {
+  BY_DEFAULT: 'by-default',
+  BY_DATE: 'by-date',
+  BY_RATING: 'by-rating',
+};
+
 const getRandomFloat = (min, max, precision) => {
   const result = (Math.random() * (max - min + 0.1)) + min;
   return Number(result.toFixed(precision));
@@ -28,6 +34,7 @@ const updateItem = (items, update) => {
 };
 
 export {
+  SortType,
   getRandomFloat,
   getRandomInteger,
   getRandomArrayElement,
