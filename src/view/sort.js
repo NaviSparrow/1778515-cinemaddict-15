@@ -10,8 +10,28 @@ const createSortTemplate = () => (
 );
 
 export default class Sort extends AbstractView {
+  constructor() {
+    super();
+
+    this._sortTypeClickHandler = this._setSortTypeClickHandler.bind(this);
+  }
+
   getTemplate() {
     return createSortTemplate();
+  }
+
+  _sortTypeClickHandler(evt) {
+    if (evt.target.tagName !== 'A') {
+      return;
+    }
+
+    evt.preventDefault();
+    this._callback.sortTypeClick(evt.target.dataset.sortType);
+  }
+
+  _setSortTypeClickHandler(callback) {
+    this._callback.sortTypeClick = callback;
+    this.getElement().addEventListener('click', this._setSortTypeClickHandler);
   }
 }
 
