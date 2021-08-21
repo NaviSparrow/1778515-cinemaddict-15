@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
 import {getRandomFloat, getRandomArray, getRandomInteger, getRandomArrayElement } from '../utils/utils.js';
 
 const TITLES = [
@@ -118,7 +119,7 @@ const generateGanre = () => getRandomArray(GANRES, 4);
 
 const generatePoster = () => `./images/posters/${getRandomArrayElement(POSTERS)}`;
 
-const generateDesription = () => getRandomArray(DESRIPTIONS, 5);
+const _generateDescription = () => getRandomArray(DESRIPTIONS, 5);
 
 const generateComments = () => getRandomInteger(0, 5);
 
@@ -148,13 +149,14 @@ const generateAgeRating = () => getRandomArrayElement(AGE_RATINGS);
 
 export const generateFilmCard = () => (
   {
+    id: nanoid(),
     title: generateTitle(),
     rating: generateRating(),
     year:generateYear(),
     duration: generateDuration(),
     genres: generateGanre(),
     poster: generatePoster(),
-    description:generateDesription(),
+    description:_generateDescription(),
     comments: generateComments(),
     originalTitle: generateOriginalTitle(),
     director: generateDirector(),

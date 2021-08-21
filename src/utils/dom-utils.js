@@ -7,19 +7,6 @@ const RenderPlace = {
   AFTEREND: 'afterend',
 };
 
-const Selector = {
-  TITLE: '.film-card__title',
-  POSTER: '.film-card__poster',
-  COMMENTS: '.film-card__comments',
-  CLOSE_BUTTON: '.film-details__close-btn',
-  SHOW_MORE_BUTTON: '.films-list__show-more',
-};
-
-const TypeOfEvent = {
-  CLICK: 'click',
-  KEYDOWN: 'keydown',
-};
-
 const render = (container, child, place) => {
   if (container instanceof AbstractView) {
     container = container.getElement();
@@ -56,12 +43,29 @@ const createElement = (template) => {
 
 const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
+const replace = (newChild, oldChild) => {
+  if (oldChild instanceof AbstractView) {
+    oldChild = oldChild.getElement();
+  }
+
+  if (newChild instanceof AbstractView) {
+    newChild = newChild.getElement();
+  }
+
+  const parent = oldChild.parentElement;
+
+  if (parent === null || oldChild === null || newChild === null) {
+    throw new Error('Can\'t replace unexisting elements');
+  }
+
+  parent.replaceChild(newChild, oldChild);
+};
+
 export {
   RenderPlace,
-  Selector,
-  TypeOfEvent,
   render,
   remove,
   createElement,
-  isEscEvent
+  isEscEvent,
+  replace
 };

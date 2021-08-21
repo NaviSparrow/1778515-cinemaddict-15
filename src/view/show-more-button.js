@@ -1,5 +1,4 @@
 import AbstractView from './abstract.js';
-import {TypeOfEvent } from '../utils/dom-utils.js';
 
 const createShowMoreButtonTemplate = () => '<button class="films-list__show-more">Show more</button>';
 
@@ -20,6 +19,6 @@ export default class ShowMoreButton extends AbstractView {
 
   setClickHandler(callback) {
     this._callback.btnClick = callback;
-    this.getElement().addEventListener(TypeOfEvent.CLICK, this._clickHandler);
+    this.getElement().addEventListener('click', this._clickHandler);
   }
 }
