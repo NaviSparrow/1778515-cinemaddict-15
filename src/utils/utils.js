@@ -1,13 +1,19 @@
+
 const SortType = {
   BY_DEFAULT: 'by-default',
   BY_DATE: 'by-date',
   BY_RATING: 'by-rating',
 };
 
+const sortByDate = (filmA, filmB) => filmB.year - filmA.year;
+
+const sortByRating = (filmA ,filmB) => filmB.rating - filmA.rating;
+
 const getRandomFloat = (min, max, precision) => {
   const result = (Math.random() * (max - min + 0.1)) + min;
   return Number(result.toFixed(precision));
 };
+
 const getRandomInteger = (min, max) => getRandomFloat(min, max, 0);
 
 const getRandomArrayElement = (array) => array[getRandomInteger(0, array.length - 1)];
@@ -35,6 +41,8 @@ const updateItem = (items, update) => {
 
 export {
   SortType,
+  sortByDate,
+  sortByRating,
   getRandomFloat,
   getRandomInteger,
   getRandomArrayElement,

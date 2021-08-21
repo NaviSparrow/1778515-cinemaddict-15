@@ -13,7 +13,7 @@ export default class Sort extends AbstractView {
   constructor() {
     super();
 
-    this._sortTypeClickHandler = this._setSortTypeClickHandler.bind(this);
+    this._sortTypeClickHandler = this._sortTypeClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -29,9 +29,9 @@ export default class Sort extends AbstractView {
     this._callback.sortTypeClick(evt.target.dataset.sortType);
   }
 
-  _setSortTypeClickHandler(callback) {
+  setSortTypeClickHandler(callback) {
     this._callback.sortTypeClick = callback;
-    this.getElement().addEventListener('click', this._setSortTypeClickHandler);
+    this.getElement().addEventListener('click', this._sortTypeClickHandler);
   }
 }
 
