@@ -1,7 +1,7 @@
 import AbstractView from './abstract.js';
 import dayjs from 'dayjs';
 import {EmojiState} from '../utils/utils.js';
-import {isEscEvent, remove} from '../utils/dom-utils.js';
+import {isEscEvent} from '../utils/dom-utils.js';
 
 const createPopupTemplate = (data, comment) => {
   const {title, rating, duration, genres, poster, description, comments, originalTitle, director, writers, actors, releaseDate, country, ageRating, isAddtoWatchList, isWhatched, isFavorite, isComments} = data;
@@ -186,6 +186,7 @@ const createPopupTemplate = (data, comment) => {
 export default class FilmPopup extends AbstractView {
   constructor(film) {
     super();
+    this._scroll = window.scrollY;
     this._data = FilmPopup.parseFilmToData(film);
 
     this._commentData = {
@@ -198,6 +199,7 @@ export default class FilmPopup extends AbstractView {
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._addToWatchListClickHandler = this._addToWatchListClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._commentTextInputHandler = this._commentTextInputHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -239,6 +241,13 @@ export default class FilmPopup extends AbstractView {
       this.getElement().remove();
       document.body.classList.remove('hide-overflow');
     }
+  }
+
+  _commentTextInputHandler(evt) {
+    evt.preventDefault();
+    this.updateCommentData({
+      text: evt.target.value,
+    }, true)
   }
 
   // _emojiClickHandler(evt) {
@@ -283,7 +292,7 @@ export default class FilmPopup extends AbstractView {
     this.updateElement();
   }
 
-  updateCommentData(update) {
+  updateCommentData(update, justDataUpdating) {
     if (!update) {
       return;
     }
@@ -294,10 +303,15 @@ export default class FilmPopup extends AbstractView {
       update,
     );
 
+    if (justDataUpdating) {
+      return;
+    }
+
     this.updateElement();
   }
 
   updateElement() {
+    const yScroll = window.scrollY;
     const prevElement = this.getElement();
     const parent = prevElement.parentElement;
     this.removeElement();
@@ -306,16 +320,16 @@ export default class FilmPopup extends AbstractView {
 
     parent.replaceChild(newElement, prevElement);
 
+    console.log(yScroll);
+
     this.restoreHandlers();
   }
 
   restoreHandlers() {
-    console.log('restore');
     this._setInnerHandlers();
   }
 
   _setInnerHandlers() {
-    console.log('set');
     this.getElement()
       .querySelector('.film-details__control-button--watched')
       .addEventListener('click', this._watchedClickHandler);
@@ -328,6 +342,9 @@ export default class FilmPopup extends AbstractView {
     this.getElement()
       .querySelector('.film-details__close-btn')
       .addEventListener('click', this._closePopupHandler);
+    this.getElement()
+      .querySelector('.film-details__comment-input')
+      .addEventListener('input', this._commentTextInputHandler);
     document.addEventListener('keydown', this._escKeyDownHandler, {once: true});
   }
 }
