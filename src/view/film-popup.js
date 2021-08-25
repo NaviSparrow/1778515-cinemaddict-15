@@ -6,6 +6,7 @@ import {isEscEvent} from '../utils/dom-utils.js';
 const createPopupTemplate = (data, comment) => {
   const {title, rating, duration, genres, poster, description, comments, originalTitle, director, writers, actors, releaseDate, country, ageRating, isAddtoWatchList, isWhatched, isFavorite, isComments} = data;
   const {text, emoji} = comment;
+  const isEmojiNotNull = emoji !== EmojiState.NULL;
   const formatDate = dayjs(releaseDate).format('DD MMMM YYYY');
   const createGenres = (genresList) => genresList.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 
@@ -130,9 +131,9 @@ const createPopupTemplate = (data, comment) => {
         </ul>`
   );
 
-  const createNewCommentTemplate = (isEmoji, isText) => (
+  const createNewCommentTemplate = (emojiValue, isText) => (
     `<div class="film-details__new-comment">
-          <div class="film-details__add-emoji-label">${isEmoji}</div>
+          <div class="film-details__add-emoji-label">${isEmojiNotNull ? `<img src="./images/emoji/${emojiValue}.png" width="79" height="68">` : ''}</div>
 
           <label class="film-details__comment-label">
             <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${isText}</textarea>
@@ -186,7 +187,6 @@ const createPopupTemplate = (data, comment) => {
 export default class FilmPopup extends AbstractView {
   constructor(film) {
     super();
-    this._scroll = window.scrollY;
     this._data = FilmPopup.parseFilmToData(film);
 
     this._commentData = {
@@ -200,6 +200,7 @@ export default class FilmPopup extends AbstractView {
     this._addToWatchListClickHandler = this._addToWatchListClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._commentTextInputHandler = this._commentTextInputHandler.bind(this);
+    this._emojiClickHandler = this._emojiClickHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -247,18 +248,15 @@ export default class FilmPopup extends AbstractView {
     evt.preventDefault();
     this.updateCommentData({
       text: evt.target.value,
-    }, true)
+    }, true);
   }
 
-  // _emojiClickHandler(evt) {
-  //   evt.preventDefault();
-  //
-  //   const image = evt.target;
-  //   console.log(image);
-  //   const container = this.getElement().querySelector('.film-details__add-emoji-label');
-  //   console.log(container);
-  //   container.append(image);
-  // }
+  _emojiClickHandler(evt) {
+    evt.preventDefault();
+    this.updateCommentData({
+      emoji: evt.target.value,
+    });
+  }
 
   static parseFilmToData(film) {
     return Object.assign(
@@ -311,7 +309,6 @@ export default class FilmPopup extends AbstractView {
   }
 
   updateElement() {
-    const yScroll = window.scrollY;
     const prevElement = this.getElement();
     const parent = prevElement.parentElement;
     this.removeElement();
@@ -319,8 +316,6 @@ export default class FilmPopup extends AbstractView {
     const newElement = this.getElement();
 
     parent.replaceChild(newElement, prevElement);
-
-    console.log(yScroll);
 
     this.restoreHandlers();
   }
@@ -346,5 +341,11 @@ export default class FilmPopup extends AbstractView {
       .querySelector('.film-details__comment-input')
       .addEventListener('input', this._commentTextInputHandler);
     document.addEventListener('keydown', this._escKeyDownHandler, {once: true});
+
+    const emojiItems =  this.getElement().querySelectorAll('.film-details__emoji-item');
+    for (const item of emojiItems) {
+      item.addEventListener('click', this._emojiClickHandler);
+    }
+
   }
 }
