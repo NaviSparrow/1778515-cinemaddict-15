@@ -201,12 +201,20 @@ export default class FilmPopup extends SmartView {
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._commentTextInputHandler = this._commentTextInputHandler.bind(this);
     this._emojiClickHandler = this._emojiClickHandler.bind(this);
+    this._resetComment = this._resetComment.bind(this);
 
     this._setInnerHandlers();
   }
 
   getTemplate() {
     return createPopupTemplate(this._data, this._commentData);
+  }
+
+  _resetComment() {
+    this.updateCommentData({
+      emoji: null,
+      text: '',
+    });
   }
 
   _watchedClickHandler(evt) {
@@ -232,6 +240,7 @@ export default class FilmPopup extends SmartView {
 
   _closePopupHandler(evt) {
     evt.preventDefault();
+    this._resetComment();
     this.getElement().remove();
     document.body.classList.remove('hide-overflow');
   }
@@ -239,6 +248,7 @@ export default class FilmPopup extends SmartView {
   _escKeyDownHandler(evt) {
     if (isEscEvent(evt)) {
       evt.preventDefault();
+      this._resetComment();
       this.getElement().remove();
       document.body.classList.remove('hide-overflow');
     }
