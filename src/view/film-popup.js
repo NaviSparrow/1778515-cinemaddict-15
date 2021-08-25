@@ -1,4 +1,4 @@
-import AbstractView from './abstract.js';
+import SmartView from './smart.js';
 import dayjs from 'dayjs';
 import {EmojiState} from '../utils/utils.js';
 import {isEscEvent} from '../utils/dom-utils.js';
@@ -184,7 +184,7 @@ const createPopupTemplate = (data, comment) => {
 </section>`;
 };
 
-export default class FilmPopup extends AbstractView {
+export default class FilmPopup extends SmartView {
   constructor(film) {
     super();
     this._data = FilmPopup.parseFilmToData(film);
@@ -274,50 +274,6 @@ export default class FilmPopup extends AbstractView {
     delete data.isComments;
 
     return data;
-  }
-
-  updateData(update) {
-    if (!update) {
-      return;
-    }
-
-    this._data = Object.assign(
-      {},
-      this._data,
-      update,
-    );
-
-    this.updateElement();
-  }
-
-  updateCommentData(update, justDataUpdating) {
-    if (!update) {
-      return;
-    }
-
-    this._commentData = Object.assign(
-      {},
-      this._commentData,
-      update,
-    );
-
-    if (justDataUpdating) {
-      return;
-    }
-
-    this.updateElement();
-  }
-
-  updateElement() {
-    const prevElement = this.getElement();
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.getElement();
-
-    parent.replaceChild(newElement, prevElement);
-
-    this.restoreHandlers();
   }
 
   restoreHandlers() {
