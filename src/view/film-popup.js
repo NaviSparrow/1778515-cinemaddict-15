@@ -1,12 +1,9 @@
 import SmartView from './smart.js';
-import dayjs from 'dayjs';
 import {isEscEvent} from '../utils/dom-utils.js';
+import {formatDuration, formatDate, createGenres} from '../utils/film-utils.js';
 
 const createPopupTemplate = (data) => {
   const {title, rating, duration, genres, poster, description, comments, originalTitle, director, writers, actors, releaseDate, country, ageRating, isInWatchList, isWatched, isFavorite, localComment, isComments} = data;
-  // const {emotion, comment} = localComment;
-  const formatDate = dayjs(releaseDate).format('DD MMMM YYYY');
-  const createGenres = (genresList) => genresList.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 
   const createPopupDetailsTemplate = () => (
     `<div class="film-details__info-wrap">
@@ -43,11 +40,11 @@ const createPopupTemplate = (data) => {
         </tr>
         <tr class="film-details__row">
           <td class="film-details__term">Release Date</td>
-          <td class="film-details__cell">${formatDate}</td>
+          <td class="film-details__cell">${formatDate(releaseDate)}</td>
         </tr>
         <tr class="film-details__row">
           <td class="film-details__term">Runtime</td>
-          <td class="film-details__cell">${duration}</td>
+          <td class="film-details__cell">${formatDuration(duration)}</td>
         </tr>
         <tr class="film-details__row">
           <td class="film-details__term">Country</td>

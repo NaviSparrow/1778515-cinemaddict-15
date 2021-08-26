@@ -4,14 +4,6 @@ const SortType = {
   BY_RATING: 'by-rating',
 };
 
-const EmojiState = {
-  NULL: null,
-  SMILE: 'smile',
-  SLEEPING: 'sleeping',
-  PUKE: 'puke',
-  ANGRY: 'angry',
-};
-
 const sortByDate = (filmA, filmB) => filmB.year - filmA.year;
 
 const sortByRating = (filmA ,filmB) => filmB.rating - filmA.rating;
@@ -46,9 +38,9 @@ const updateItem = (items, update) => {
   ];
 };
 
+
 export {
   SortType,
-  EmojiState,
   sortByDate,
   sortByRating,
   getRandomFloat,
