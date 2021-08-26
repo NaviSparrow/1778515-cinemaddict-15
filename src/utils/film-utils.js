@@ -1,6 +1,8 @@
 import dayjs from 'dayjs';
 const duration = require('dayjs/plugin/duration');
+const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(duration);
+dayjs.extend(relativeTime);
 
 const EmojiState = {
   NULL: null,
@@ -31,4 +33,3 @@ export {
   createGenres,
   formatYear
 };
-
