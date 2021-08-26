@@ -92,7 +92,6 @@ const AGE_RATINGS = [
   '16+',
   '18+',
 ];
-
 const generateCommentItems = () => {
   const array = [];
   for (let i = 0; i < getRandomInteger(0, 4); i++) {
