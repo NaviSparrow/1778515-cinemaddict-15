@@ -4,7 +4,7 @@ import {EmojiState} from '../utils/utils.js';
 import {isEscEvent} from '../utils/dom-utils.js';
 
 const createPopupTemplate = (data, comment) => {
-  const {title, rating, duration, genres, poster, description, comments, originalTitle, director, writers, actors, releaseDate, country, ageRating, isAddtoWatchList, isWhatched, isFavorite, isComments} = data;
+  const {title, rating, duration, genres, poster, description, comments, originalTitle, director, writers, actors, releaseDate, country, ageRating, isAddToWatchList, isWatched, isFavorite, isComments} = data;
   const {text, emoji} = comment;
   const isEmojiNotNull = emoji !== EmojiState.NULL;
   const formatDate = dayjs(releaseDate).format('DD MMMM YYYY');
@@ -67,8 +67,8 @@ const createPopupTemplate = (data, comment) => {
   </div>
 
   <section class="film-details__controls">
-    <button type="button" class="film-details__control-button ${isAddtoWatchList ? 'film-details__control-button--active' : ''} film-details__control-button--watchlist" id="watchlist" name="watchlist">Add to watchlist</button>
-    <button type="button" class="film-details__control-button ${isWhatched ? 'film-details__control-button--active' : ''} film-details__control-button--watched" id="watched" name="watched">Already watched</button>
+    <button type="button" class="film-details__control-button ${isAddToWatchList ? 'film-details__control-button--active' : ''} film-details__control-button--watchlist" id="watchlist" name="watchlist">Add to watchlist</button>
+    <button type="button" class="film-details__control-button ${isWatched ? 'film-details__control-button--active' : ''} film-details__control-button--watched" id="watched" name="watched">Already watched</button>
     <button type="button" class="film-details__control-button ${isFavorite ? 'film-details__control-button--active' : ''} film-details__control-button--favorite" id="favorite" name="favorite">Add to favorites</button>
   </section>
 </div>`
@@ -220,22 +220,22 @@ export default class FilmPopup extends SmartView {
   _watchedClickHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      isWhatched: !this._data.isWhatched,
-    });
+      isWatched: !this._data.isWatched,
+    }, this.getElement().scrollTop);
   }
 
   _addToWatchListClickHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      isAddtoWatchList: !this._data.isAddtoWatchList,
-    });
+      isAddToWatchList: !this._data.isAddToWatchList,
+    }, this.getElement().scrollTop);
   }
 
   _favoriteClickHandler(evt) {
     evt.preventDefault();
     this.updateData({
       isFavorite: !this._data.isFavorite,
-    });
+    }, this.getElement().scrollTop);
   }
 
   _closePopupHandler(evt) {
@@ -265,7 +265,7 @@ export default class FilmPopup extends SmartView {
     evt.preventDefault();
     this.updateCommentData({
       emoji: evt.target.value,
-    });
+    }, false, this.getElement().scrollTop);
   }
 
   static parseFilmToData(film) {
@@ -312,6 +312,5 @@ export default class FilmPopup extends SmartView {
     for (const item of emojiItems) {
       item.addEventListener('click', this._emojiClickHandler);
     }
-
   }
 }

@@ -165,7 +165,7 @@ export const generateFilmCard = () => (
     releaseDate: generateDate(),
     country: generateCountry(),
     ageRating: generateAgeRating(),
-    isAddtoWatchList: Boolean(getRandomInteger(0, 1)),
-    isWhatched: Boolean(getRandomInteger(0, 1)),
+    isAddToWatchList: Boolean(getRandomInteger(0, 1)),
+    isWatched: Boolean(getRandomInteger(0, 1)),
     isFavorite: Boolean(getRandomInteger(0, 1)),
   });

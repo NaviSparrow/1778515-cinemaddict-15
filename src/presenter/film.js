@@ -47,7 +47,7 @@ export default class Film {
         {},
         this._film,
         {
-          isAddtoWatchList: !this._film.isAddtoWatchList,
+          isAddToWatchList: !this._film.isAddToWatchList,
         },
       ),
     );
@@ -59,7 +59,7 @@ export default class Film {
         {},
         this._film,
         {
-          isWhatched: !this._film.isWhatched,
+          isWatched: !this._film.isWatched,
         },
       ),
     );
@@ -91,6 +91,7 @@ export default class Film {
     }
     render(document.body, this._popupComponent, RenderPlace.BEFOREEND);
     document.body.classList.add('hide-overflow');
+
   }
 
   destroy() {

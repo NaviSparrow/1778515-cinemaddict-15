@@ -7,7 +7,7 @@ export default class Smart extends AbstractView {
     this._commentData = {};
   }
 
-  updateData(update) {
+  updateData(update, scrollPosition) {
     if (!update) {
       return;
     }
@@ -18,10 +18,10 @@ export default class Smart extends AbstractView {
       update,
     );
 
-    this.updateElement();
+    this.updateElement(scrollPosition);
   }
 
-  updateCommentData(update, justDataUpdating) {
+  updateCommentData(update, justDataUpdating, scrollPosition) {
     if (!update) {
       return;
     }
@@ -36,10 +36,11 @@ export default class Smart extends AbstractView {
       return;
     }
 
-    this.updateElement();
+    this.updateElement(scrollPosition);
   }
 
-  updateElement() {
+  updateElement(scrollPosition) {
+
     const prevElement = this.getElement();
     const parent = prevElement.parentElement;
     this.removeElement();
@@ -49,6 +50,7 @@ export default class Smart extends AbstractView {
     parent.replaceChild(newElement, prevElement);
 
     this.restoreHandlers();
+    this.getElement().scrollTo(0, scrollPosition);
   }
 
   restoreHandlers() {
