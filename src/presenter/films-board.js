@@ -13,8 +13,9 @@ const CARDS_PER_STEP = 5;
 const EXTRA_CARDS_COUNT = 2;
 
 export default class FilmsBoard {
-  constructor(boardContainer) {
+  constructor(boardContainer, filmsModel) {
     this._boardContainer = boardContainer;
+    this._filmsModel = filmsModel;
     this._renderedFilmsCount = CARDS_PER_STEP;
     this._boardFilmPresenter = new Map();
     this._topRatedFilmPresenter = new Map();
@@ -40,6 +41,10 @@ export default class FilmsBoard {
     this._soursedBoardFilms = films.slice();
 
     this._renderFilmsBoard();
+  }
+
+  getFilms() {
+    return this._filmsModel.getFilms();
   }
 
   _handleFilmChange(updatedFilm) {
