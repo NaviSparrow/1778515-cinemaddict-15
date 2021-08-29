@@ -23,6 +23,6 @@ const filmsBoard = new FilmsBoardPresenter(mainSection, filmsModel);
 render(header, new UserProfileView, RenderPlace.BEFOREEND);
 render(mainSection, new FiltersView(filters), RenderPlace.BEFOREEND);
 
-filmsBoard.init(filmCards);
+filmsBoard.init();
 
 render(footerStatistics, new StatisticsView(filmCards.length), RenderPlace.BEFOREEND);
