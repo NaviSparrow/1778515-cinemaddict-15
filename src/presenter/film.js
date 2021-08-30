@@ -1,6 +1,7 @@
 import FilmCardView from '../view/film-card.js';
 import FilmPopupView from '../view/film-popup.js';
 import {RenderPlace, render, remove, replace} from '../utils/dom-utils.js';
+import {UpdateType, UserAction} from '../utils/utils.js';
 
 export default class Film {
   constructor(filmListContainer, changeData) {
@@ -22,7 +23,7 @@ export default class Film {
     const prevFilmComponent = this._filmComponent;
 
     this._filmComponent = new FilmCardView(film);
-    this._popupComponent = new FilmPopupView(film);
+    this._popupComponent = new FilmPopupView(film, this._changeData);
 
     this._filmComponent.setClickHandler(this._openPopupHandler);
     this._filmComponent.setAddToWatchListClickHandler(this._handleWatchListClick);
@@ -45,6 +46,8 @@ export default class Film {
 
   _handleWatchListClick() {
     this._changeData(
+      UserAction.BUTTON_CLICK,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -57,6 +60,8 @@ export default class Film {
 
   _handleWatchedClick() {
     this._changeData(
+      UserAction.BUTTON_CLICK,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -69,6 +74,8 @@ export default class Film {
 
   _handleFavoritesClick() {
     this._changeData(
+      UserAction.BUTTON_CLICK,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,

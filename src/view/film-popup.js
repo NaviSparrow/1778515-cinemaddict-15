@@ -1,6 +1,8 @@
 import SmartView from './smart.js';
 import {isCtrlEnterEvent, isEscEvent} from '../utils/dom-utils.js';
 import {formatDuration, formatDate, createGenres} from '../utils/film-utils.js';
+import {UpdateType, UserAction} from "../utils/utils";
+
 
 const createPopupTemplate = (data) => {
   const {title, rating, duration, genres, poster, description, comments, originalTitle, director, writers, actors, releaseDate, country, ageRating, isInWatchList, isWatched, isFavorite, localComment, isComments} = data;
@@ -140,9 +142,11 @@ const createPopupTemplate = (data) => {
 };
 
 export default class FilmPopup extends SmartView {
-  constructor(film) {
+  constructor(film, changeData) {
     super();
+    this._film = film;
     this._data = FilmPopup.parseFilmToData(film);
+    this._changeData = changeData;
 
     this._closePopupHandler = this._closePopupHandler.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
@@ -183,6 +187,18 @@ export default class FilmPopup extends SmartView {
     this.updateData({
       isWatched: !this._data.isWatched,
     }, this._getScrollPosition());
+
+    this._changeData(
+      UserAction.BUTTON_CLICK,
+      UpdateType.MINOR,
+      Object.assign(
+        {},
+        this._film,
+        {
+          isWatched: !this._film.isWatched,
+        },
+      ),
+    );
   }
 
   _addToWatchListClickHandler(evt) {
@@ -190,6 +206,18 @@ export default class FilmPopup extends SmartView {
     this.updateData({
       isInWatchList: !this._data.isInWatchList,
     }, this._getScrollPosition());
+
+    this._changeData(
+      UserAction.BUTTON_CLICK,
+      UpdateType.MINOR,
+      Object.assign(
+        {},
+        this._film,
+        {
+          isAddToWatchList: !this._film.isAddToWatchList,
+        },
+      ),
+    );
   }
 
   _favoriteClickHandler(evt) {
@@ -197,6 +225,18 @@ export default class FilmPopup extends SmartView {
     this.updateData({
       isFavorite: !this._data.isFavorite,
     }, this._getScrollPosition());
+
+    this._changeData(
+      UserAction.BUTTON_CLICK,
+      UpdateType.MINOR,
+      Object.assign(
+        {},
+        this._film,
+        {
+          isFavorite: !this._film.isFavorite,
+        },
+      ),
+    );
   }
 
   _closePopupHandler(evt) {
@@ -255,10 +295,8 @@ export default class FilmPopup extends SmartView {
     );
   }
 
-  static parseDataToFilm(data) {
+  static parseDataToComment(data) {
     data = Object.assign({}, data);
-
-    delete data.isComments;
 
     return data;
   }
