@@ -14,6 +14,7 @@ export default class Film {
     this._handleWatchListClick = this._handleWatchListClick.bind(this);
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleFavoritesClick = this._handleFavoritesClick.bind(this);
+    this._handleFormSubmit = this._handleFormSubmit.bind(this);
   }
 
   init(film, containers) {
@@ -27,6 +28,7 @@ export default class Film {
     this._filmComponent.setAddToWatchListClickHandler(this._handleWatchListClick);
     this._filmComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._filmComponent.setFavoriteClickHandler(this._handleFavoritesClick);
+    this._popupComponent.setFormSubmitHandler(this._handleFormSubmit);
 
     if (prevFilmComponent === null) {
       render(this._filmListContainer, this._filmComponent, RenderPlace.BEFOREEND);
@@ -47,7 +49,7 @@ export default class Film {
         {},
         this._film,
         {
-          isAddToWatchList: !this._film.isAddToWatchList,
+          isInWatchList: !this._film.isInWatchList,
         },
       ),
     );
@@ -75,6 +77,10 @@ export default class Film {
         },
       ),
     );
+  }
+
+  _handleFormSubmit(film) {
+    this._changeData(film);
   }
 
   _isPopUpExist() {

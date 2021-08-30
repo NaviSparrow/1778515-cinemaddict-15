@@ -3,11 +3,11 @@ import AbstractView from './abstract.js';
 import dayjs from 'dayjs';
 
 const createFilmCardTemplate = (film) => {
-  const {title, rating, year, duration, ganre, poster, description, comments, isAddtoWatchList, isWhatched, isFavorite} = film;
+  const {title, rating, year, duration, ganre, poster, description, comments, isInWatchList, isWatched, isFavorite} = film;
   const formatYear = dayjs(year).format('YYYY');
   const buttonClassName =  'film-card__controls-item--active';
-  const watchListClassName = applyClassName(isAddtoWatchList, buttonClassName);
-  const watchedClassName = applyClassName(isWhatched, buttonClassName);
+  const watchListClassName = applyClassName(isInWatchList, buttonClassName);
+  const watchedClassName = applyClassName(isWatched, buttonClassName);
   const favoriteClassName = applyClassName(isFavorite, buttonClassName);
   const fullDescription = description.join(' ');
   const getShortDescription = () => `${fullDescription.slice(0, 139)}...`;
@@ -22,7 +22,7 @@ const createFilmCardTemplate = (film) => {
     </p>
     <img src=${poster} alt="" class="film-card__poster">
     <p class="film-card__description">${fullDescription.length > 140 ? getShortDescription() : fullDescription}</p>
-    <a class="film-card__comments">${comments} comments</a>
+    <a class="film-card__comments">${comments.length} comments</a>
     <div class="film-card__controls">
       <button class="film-card__controls-item ${watchListClassName} film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
       <button class="film-card__controls-item ${watchedClassName} film-card__controls-item--mark-as-watched" type="button">Mark as watched</button>

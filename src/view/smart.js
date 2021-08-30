@@ -4,10 +4,9 @@ export default class Smart extends AbstractView {
   constructor() {
     super();
     this._data = {};
-    this._commentData = {};
   }
 
-  updateData(update, scrollPosition) {
+  updateData(update, scrollPosition, justDataUpdating = false) {
     if (!update) {
       return;
     }
@@ -15,20 +14,6 @@ export default class Smart extends AbstractView {
     this._data = Object.assign(
       {},
       this._data,
-      update,
-    );
-
-    this.updateElement(scrollPosition);
-  }
-
-  updateCommentData(update, justDataUpdating, scrollPosition) {
-    if (!update) {
-      return;
-    }
-
-    this._commentData = Object.assign(
-      {},
-      this._commentData,
       update,
     );
 
