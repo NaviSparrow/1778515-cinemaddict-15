@@ -61,11 +61,14 @@ const replace = (newChild, oldChild) => {
   parent.replaceChild(newChild, oldChild);
 };
 
+const isCtrlEnterEvent = (evt) => evt.ctrlKey && evt.keyCode === 13;
+
 export {
   RenderPlace,
   render,
   remove,
   createElement,
   isEscEvent,
-  replace
+  replace,
+  isCtrlEnterEvent
 };
