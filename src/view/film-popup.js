@@ -1,5 +1,5 @@
 import SmartView from './smart.js';
-import {isEscEvent} from '../utils/dom-utils.js';
+import {isCtrlEnterEvent, isEscEvent} from '../utils/dom-utils.js';
 import {formatDuration, formatDate, createGenres} from '../utils/film-utils.js';
 
 const createPopupTemplate = (data) => {
@@ -131,7 +131,7 @@ const createPopupTemplate = (data) => {
       <section class="film-details__comments-wrap">
         <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
-        ${isComments !== 0 ? createCommentsListTemplate() : ''}
+        ${isComments ? createCommentsListTemplate() : ''}
 
         ${createNewCommentTemplate(localComment)}
       </section>
@@ -224,7 +224,7 @@ export default class FilmPopup extends SmartView {
         this._data.localComment,
         {comment: evt.target.value},
       ),
-    }, this._getScrollPosition(),true);
+    }, this._getScrollPosition(), true);
   }
 
   _emojiClickHandler(evt) {
@@ -239,8 +239,11 @@ export default class FilmPopup extends SmartView {
   }
 
   _formSubmitHandler(evt) {
-    evt.preventDefault();
-    this._callback.formSubmit(FilmPopup.parseDataToFilm(this._data));
+    if (isCtrlEnterEvent(evt)) {
+      evt.preventDefault();
+      console.log('submit');
+      this._callback.formSubmit(FilmPopup.parseDataToFilm(this._data));
+    }
   }
 
   static parseFilmToData(film) {
@@ -263,7 +266,7 @@ export default class FilmPopup extends SmartView {
 
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
-    this.getElement().querySelector('.film-details__inner').addEventListener('keydown', this._formSubmitHandler);
+    this.getElement().querySelector('.film-details__comment-input').addEventListener('keydown', this._formSubmitHandler);
   }
 
   restoreHandlers() {
