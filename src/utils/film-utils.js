@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import {getRandomInteger} from "./utils";
 const duration = require('dayjs/plugin/duration');
 const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(duration);
@@ -26,8 +25,6 @@ const formatDate = (date) => dayjs(date).format('DD MMMM YYYY');
 const createGenres = (genresList) => genresList.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 
 const formatYear = (year) => dayjs(year).format('YYYY');
-
-const generateCommentDate = (date) => dayjs(getRandomArrayElement(date)).fromNow();
 
 export {
   EmojiState,

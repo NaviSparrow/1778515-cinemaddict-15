@@ -8,7 +8,7 @@ import SortView from '../view/sort.js';
 import NoFilmsInDatabaseView from '../view/no-films-in-database.js';
 import {RenderPlace, render, remove} from '../utils/dom-utils.js';
 import {sortByDate, sortByRating, SortType, updateItem, UpdateType, UserAction} from '../utils/utils.js';
-import Sort from "../view/sort.js";
+import Sort from '../view/sort.js';
 
 const CARDS_PER_STEP = 5;
 const EXTRA_CARDS_COUNT = 2;
@@ -65,7 +65,6 @@ export default class FilmsBoard {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-
         if (this._boardFilmPresenter.has(data.id)) {
           this._boardFilmPresenter.get(data.id).init(data, this._setOfContainers);
         }
@@ -83,21 +82,6 @@ export default class FilmsBoard {
         this._renderFilmsBoard();
     }
   }
-
-  // _sortFilms(sortType) {
-  //   switch (sortType) {
-  //     case SortType.BY_DATE:
-  //       this._boardFilms.sort(sortByDate);
-  //       break;
-  //     case SortType.BY_RATING:
-  //       this._boardFilms.sort(sortByRating);
-  //       break;
-  //     default:
-  //       this._boardFilms = this._soursedBoardFilms.slice();
-  //   }
-  //
-  //   this._currentSortType = sortType;
-  // }
 
   _handleSortTypeClick(sortType) {
     if (this._currentSortType === sortType) {
@@ -249,7 +233,6 @@ export default class FilmsBoard {
 
   _renderFilmsBoard() {
     const filmCount = this._getFilms().length;
-    const films = this._getFilms();
     if (filmCount === 0) {
       this._renderNoFilms();
       return;
