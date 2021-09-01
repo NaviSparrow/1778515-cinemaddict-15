@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import {nanoid} from 'nanoid';
 import {getRandomFloat, getRandomArray, getRandomInteger, getRandomArrayElement } from '../utils/utils.js';
+import {generateComment} from './comments';
 
 const TITLES = [
   'Made for Each Other',
@@ -92,6 +93,15 @@ const AGE_RATINGS = [
   '18+',
 ];
 
+const generateCommentItems = () => {
+  const array = [];
+  for (let i = 0; i < getRandomInteger(0, 4); i++) {
+    const newComment = generateComment();
+    array.push(newComment);
+  }
+  return array;
+};
+
 const generateTitle = () => getRandomArrayElement(TITLES);
 
 const generateRating = () => getRandomFloat(1, 10, 1);
@@ -121,8 +131,6 @@ const generatePoster = () => `./images/posters/${getRandomArrayElement(POSTERS)}
 
 const _generateDescription = () => getRandomArray(DESRIPTIONS, 5);
 
-const generateComments = () => getRandomInteger(0, 5);
-
 const generateOriginalTitle = () => generateTitle();
 
 const generateDirector = () =>  getRandomArrayElement(DIRECTORS);
@@ -150,6 +158,7 @@ const generateAgeRating = () => getRandomArrayElement(AGE_RATINGS);
 export const generateFilmCard = () => (
   {
     id: nanoid(),
+    comments: generateCommentItems(),
     title: generateTitle(),
     rating: generateRating(),
     year:generateYear(),
@@ -157,7 +166,6 @@ export const generateFilmCard = () => (
     genres: generateGanre(),
     poster: generatePoster(),
     description:_generateDescription(),
-    comments: generateComments(),
     originalTitle: generateOriginalTitle(),
     director: generateDirector(),
     writers: generateWriters(),
@@ -165,7 +173,11 @@ export const generateFilmCard = () => (
     releaseDate: generateDate(),
     country: generateCountry(),
     ageRating: generateAgeRating(),
-    isAddtoWatchList: Boolean(getRandomInteger(0, 1)),
-    isWhatched: Boolean(getRandomInteger(0, 1)),
+    isInWatchList: Boolean(getRandomInteger(0, 1)),
+    isWatched: Boolean(getRandomInteger(0, 1)),
     isFavorite: Boolean(getRandomInteger(0, 1)),
+    localComment: {
+      emotion: null,
+      comment: '',
+    },
   });
