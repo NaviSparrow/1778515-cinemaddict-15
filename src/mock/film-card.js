@@ -114,16 +114,7 @@ const generateYear = () => {
   return dayjs(year).add(yearGap, 'year').toDate();
 };
 
-const generateDuration = () => {
-  const hours = getRandomInteger(0, 2);
-  const minutes = getRandomInteger(0, 59);
-  if (hours === 0) {
-    return `${minutes}m`;
-  } else if (minutes === 0) {
-    return `${hours}h`;
-  }
-  return `${hours}h ${minutes}m`;
-};
+const generateDuration = () => getRandomInteger(0, 150);
 
 const generateGanre = () => getRandomArray(GANRES, 4);
 
