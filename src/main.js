@@ -7,6 +7,7 @@ import FilterModel from './model/filter.js';
 import { generateFilmCard } from './mock/film-card.js';
 // import { generateFilters } from './mock/filters.js';
 import {RenderPlace, render} from './utils/dom-utils.js';
+import FilterPresenter from './presenter/filter.js';
 
 const CARDS_COUNT = 20;
 
@@ -15,24 +16,18 @@ const header = document.querySelector('.header');
 const footerStatistics = document.querySelector('.footer__statistics');
 
 const filmCards = new Array(CARDS_COUNT).fill().map(() => generateFilmCard());
-const filters = [
-  {
-    type: 'all',
-    name: 'All',
-    count: 0,
-  },
-];
 
 const filmsModel = new FilmsModel();
 filmsModel.setFilms(filmCards);
 
 const filterModel = new FilterModel();
 
-const filmsBoard = new FilmsBoardPresenter(mainSection, filmsModel);
+const filmsBoardPresenter = new FilmsBoardPresenter(mainSection, filmsModel);
+const filterPresenter = new FilterPresenter(mainSection, filterModel, filmsModel);
 
 render(header, new UserProfileView, RenderPlace.BEFOREEND);
-render(mainSection, new FiltersView(filters, 'all'), RenderPlace.BEFOREEND);
 
-filmsBoard.init();
+filterPresenter.init();
+filmsBoardPresenter.init();
 
 render(footerStatistics, new StatisticsView(filmCards.length), RenderPlace.BEFOREEND);

@@ -10,7 +10,6 @@ const filter = {
   [FilterType.WATCHLIST]: (films) => films.filter((film) => film.isInWatchList).length,
   [FilterType.HISTORY]: (films) => films.filter((film) => film.isWatched).length,
   [FilterType.FAVORITES]: (films) => films.filter((film) => film.isFavorite).length,
-
 };
 
 export {
