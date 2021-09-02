@@ -146,7 +146,7 @@ export default class FilmsBoard {
   }
 
   _renderFilm(film, container = this._getBoardFilmsListContainer()) {
-    const filmPresenter = new FilmPresenter(container, this._handleViewAction);
+    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._filterModel.getFilters());
     filmPresenter.init(film);
 
     switch (container) {
