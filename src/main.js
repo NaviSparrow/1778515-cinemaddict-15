@@ -22,7 +22,7 @@ filmsModel.setFilms(filmCards);
 
 const filterModel = new FilterModel();
 
-const filmsBoardPresenter = new FilmsBoardPresenter(mainSection, filmsModel);
+const filmsBoardPresenter = new FilmsBoardPresenter(mainSection, filmsModel, filterModel);
 const filterPresenter = new FilterPresenter(mainSection, filterModel, filmsModel);
 
 render(header, new UserProfileView, RenderPlace.BEFOREEND);

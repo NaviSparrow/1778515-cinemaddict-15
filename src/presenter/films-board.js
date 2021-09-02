@@ -9,14 +9,16 @@ import NoFilmsInDatabaseView from '../view/no-films-in-database.js';
 import {RenderPlace, render, remove} from '../utils/dom-utils.js';
 import {sortByDate, sortByRating, SortType, updateItem, UpdateType, UserAction} from '../utils/utils.js';
 import Sort from '../view/sort.js';
+import {filter} from "../utils/filter-utils";
 
 const CARDS_PER_STEP = 5;
 const EXTRA_CARDS_COUNT = 2;
 
 export default class FilmsBoard {
-  constructor(boardContainer, filmsModel) {
+  constructor(boardContainer, filmsModel, filterModel) {
     this._boardContainer = boardContainer;
     this._filmsModel = filmsModel;
+    this._filterModel = filterModel;
     this._renderedFilmsCount = CARDS_PER_STEP;
     this._boardFilmPresenter = new Map();
     this._topRatedFilmPresenter = new Map();
@@ -38,6 +40,7 @@ export default class FilmsBoard {
     this._handleSortTypeClick = this._handleSortTypeClick.bind(this);
 
     this._filmsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -45,13 +48,16 @@ export default class FilmsBoard {
   }
 
   _getFilms() {
+    const filterType = this._filterModel.getFilters();
+    const films = this._filmsModel.getFilms();
+    const filteredFilms = filter[filterType](films);
     switch (this._currentSortType) {
       case SortType.BY_DATE:
-        return this._filmsModel.getFilms().slice().sort(sortByDate);
+        return filteredFilms.sort(sortByDate);
       case SortType.BY_RATING:
-        return this._filmsModel.getFilms().slice().sort(sortByRating);
+        return filteredFilms.sort(sortByRating);
     }
-    return this._filmsModel.getFilms();
+    return filteredFilms;
   }
 
   _handleViewAction(actionType, updateType, update) {
@@ -79,6 +85,10 @@ export default class FilmsBoard {
         break;
       case UpdateType.MINOR:
         this._clearBoard();
+        this._renderFilmsBoard();
+        break;
+      case UpdateType.MAJOR:
+        this._clearBoard({resetRenderedTaskCount: true, resetSortType: true});
         this._renderFilmsBoard();
     }
   }

@@ -1,7 +1,7 @@
 import FiltersView from '../view/filters.js';
 import {filter, FilterType} from '../utils/filter-utils.js';
 import {RenderPlace, render, remove, replace} from '../utils/dom-utils.js';
-import {sortByDate, sortByRating, SortType, updateItem, UpdateType, UserAction} from '../utils/utils.js';
+import {UpdateType} from '../utils/utils.js';
 
 export default class Filter {
   constructor(filterContainer, filterModel, filmsModel) {
@@ -14,8 +14,8 @@ export default class Filter {
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
 
-    this._filterModel.addObserver();
-    this._filmsModel.addObserver();
+    this._filterModel.addObserver(this._handleModelEvent);
+    this._filmsModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -53,22 +53,22 @@ export default class Filter {
       {
         type: FilterType.ALL,
         name: 'All',
-        count: filter[FilterType.ALL](films),
+        count: filter[FilterType.ALL](films).length,
       },
       {
         type: FilterType.WATCHLIST,
         name: 'Watchlist',
-        count: filter[FilterType.WATCHLIST](films),
+        count: filter[FilterType.WATCHLIST](films).length,
       },
       {
         type: FilterType.HISTORY,
         name: 'History',
-        count: filter[FilterType.HISTORY](films),
+        count: filter[FilterType.HISTORY](films).length,
       },
       {
         type: FilterType.FAVORITES,
         name: 'Favorites',
-        count: filter[FilterType.FAVORITES](films),
+        count: filter[FilterType.FAVORITES](films).length,
       },
     ];
   }

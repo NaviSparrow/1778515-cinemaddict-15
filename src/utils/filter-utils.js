@@ -6,10 +6,10 @@ const FilterType = {
 };
 
 const filter = {
-  [FilterType.ALL]: (films) => films.length,
-  [FilterType.WATCHLIST]: (films) => films.filter((film) => film.isInWatchList).length,
-  [FilterType.HISTORY]: (films) => films.filter((film) => film.isWatched).length,
-  [FilterType.FAVORITES]: (films) => films.filter((film) => film.isFavorite).length,
+  [FilterType.ALL]: (films) => films,
+  [FilterType.WATCHLIST]: (films) => films.filter((film) => film.isInWatchList),
+  [FilterType.HISTORY]: (films) => films.filter((film) => film.isWatched),
+  [FilterType.FAVORITES]: (films) => films.filter((film) => film.isFavorite),
 };
 
 export {
