@@ -2,7 +2,7 @@ import FilmCardView from '../view/film-card.js';
 import FilmPopupView from '../view/film-popup.js';
 import {RenderPlace, render, remove, replace} from '../utils/dom-utils.js';
 import {UpdateType, UserAction} from '../utils/utils.js';
-import {FilterType} from "../utils/filter-utils";
+import {FilterType} from '../utils/filter-utils.js';
 
 export default class Film {
   constructor(filmListContainer, changeData, currentFilter) {
@@ -25,7 +25,7 @@ export default class Film {
     const prevFilmComponent = this._filmComponent;
 
     this._filmComponent = new FilmCardView(film);
-    this._popupComponent = new FilmPopupView(film, this._changeData);
+    this._popupComponent = new FilmPopupView(film, this._changeData, this._currentFilter);
 
     this._filmComponent.setClickHandler(this._openPopupHandler);
     this._filmComponent.setAddToWatchListClickHandler(this._handleWatchListClick);
@@ -47,7 +47,6 @@ export default class Film {
   }
 
   _handleWatchListClick() {
-    console.log(this._currentFilter);
     this._changeData(
       UserAction.BUTTON_CLICK,
       this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MAJOR, //если фильтр all ? то patch : иначе Major

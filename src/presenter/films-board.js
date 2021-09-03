@@ -5,11 +5,11 @@ import ShowMoreButtonView from '../view/show-more-button.js';
 import TopRatedFilmsView from '../view/top-rated-films.js';
 import MostCommentedFilmsView from '../view/most-commented-films.js';
 import SortView from '../view/sort.js';
-import NoFilmsInDatabaseView from '../view/no-films-in-database.js';
+import NoFilmsView from '../view/no-films';
 import {RenderPlace, render, remove} from '../utils/dom-utils.js';
-import {sortByDate, sortByRating, SortType, updateItem, UpdateType, UserAction} from '../utils/utils.js';
+import {sortByDate, sortByRating, SortType, UpdateType, UserAction} from '../utils/utils.js';
 import Sort from '../view/sort.js';
-import {filter} from "../utils/filter-utils";
+import {filter, FilterType} from '../utils/filter-utils.js';
 
 const CARDS_PER_STEP = 5;
 const EXTRA_CARDS_COUNT = 2;
@@ -19,6 +19,7 @@ export default class FilmsBoard {
     this._boardContainer = boardContainer;
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
+    this._filterType = FilterType.ALL;
     this._renderedFilmsCount = CARDS_PER_STEP;
     this._boardFilmPresenter = new Map();
     this._topRatedFilmPresenter = new Map();
@@ -31,7 +32,6 @@ export default class FilmsBoard {
     this._topRatedListComponent = new TopRatedFilmsView();
     this._mostCommentedListComponent = new MostCommentedFilmsView();
     this._sortCopmponent = null;
-    this._noFilmsComponent = new NoFilmsInDatabaseView();
     this._showMoreButtonComponent = null;
 
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
@@ -48,9 +48,9 @@ export default class FilmsBoard {
   }
 
   _getFilms() {
-    const filterType = this._filterModel.getFilters();
+    this._filterType = this._filterModel.getFilters();
     const films = this._filmsModel.getFilms();
-    const filteredFilms = filter[filterType](films);
+    const filteredFilms = filter[this._filterType](films);
     switch (this._currentSortType) {
       case SortType.BY_DATE:
         return filteredFilms.sort(sortByDate);
@@ -182,6 +182,10 @@ export default class FilmsBoard {
     remove(this._sortCopmponent);
     this._clearFilmsSection();
 
+    if (this._noFilmsComponent) {
+      remove(this._noFilmsComponent);
+    }
+
     if (resetRenderedTaskCount === false) {
       this._renderedFilmsCount = Math.min(filmCount, this._renderedFilmsCount);
     }
@@ -196,6 +200,7 @@ export default class FilmsBoard {
   }
 
   _renderNoFilms() {
+    this._noFilmsComponent = new NoFilmsView(this._filterType);
     render(this._boardContainer, this._noFilmsComponent, RenderPlace.BEFOREEND);
   }
 

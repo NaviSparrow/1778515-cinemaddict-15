@@ -17,6 +17,12 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
+const ButtonName = {
+  WATCHLIST: 'watchlist',
+  WATCHED: 'watched',
+  FAVORITES: 'favorite',
+}
+
 const sortByDate = (filmA, filmB) => filmB.year - filmA.year;
 
 const sortByRating = (filmA ,filmB) => filmB.rating - filmA.rating;
@@ -56,6 +62,7 @@ export {
   SortType,
   UserAction,
   UpdateType,
+  ButtonName,
   sortByDate,
   sortByRating,
   getRandomFloat,

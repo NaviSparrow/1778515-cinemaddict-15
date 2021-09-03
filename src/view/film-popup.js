@@ -1,7 +1,8 @@
 import SmartView from './smart.js';
 import {isCtrlEnterEvent, isEscEvent} from '../utils/dom-utils.js';
 import {formatDuration, formatDate, createGenres} from '../utils/film-utils.js';
-import {UpdateType, UserAction} from '../utils/utils.js';
+import {UpdateType, UserAction, ButtonName} from '../utils/utils.js';
+import {FilterType} from '../utils/filter-utils';
 
 
 const createPopupTemplate = (data) => {
@@ -142,11 +143,12 @@ const createPopupTemplate = (data) => {
 };
 
 export default class FilmPopup extends SmartView {
-  constructor(film, changeData) {
+  constructor(film, changeData, currentFilter) {
     super();
     this._film = film;
     this._data = FilmPopup.parseFilmToData(film);
     this._changeData = changeData;
+    this._currentFilter = currentFilter;
 
     this._closePopupHandler = this._closePopupHandler.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
@@ -186,7 +188,7 @@ export default class FilmPopup extends SmartView {
     evt.preventDefault();
     this._changeData(
       UserAction.BUTTON_CLICK,
-      UpdateType.PATCH,
+      this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MAJOR,
       Object.assign(
         {},
         FilmPopup.parseDataToFilm(this._data),
@@ -205,7 +207,7 @@ export default class FilmPopup extends SmartView {
     evt.preventDefault();
     this._changeData(
       UserAction.BUTTON_CLICK,
-      UpdateType.PATCH,
+      this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MAJOR,
       Object.assign(
         {},
         FilmPopup.parseDataToFilm(this._data),
@@ -221,10 +223,13 @@ export default class FilmPopup extends SmartView {
   }
 
   _favoriteClickHandler(evt) {
+
     evt.preventDefault();
     this._changeData(
       UserAction.BUTTON_CLICK,
-      UpdateType.PATCH,
+      this._currentFilter === FilterType.ALL || evt.target.name === ButtonName //TODO уточнить момент
+        ? UpdateType.PATCH
+        : UpdateType.MAJOR,
       Object.assign(
         {},
         FilmPopup.parseDataToFilm(this._data),
