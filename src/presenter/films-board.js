@@ -50,7 +50,6 @@ export default class FilmsBoard {
 
     this._filterType = this._filterModel.getFilters();
     const films = this._filmsModel.getFilms();
-    // films.forEach((film) => film.comments.forEach((comment) => console.log(comment)));
     const filteredFilms = filter[this._filterType](films);
     switch (this._currentSortType) {
       case SortType.BY_DATE:
@@ -67,6 +66,8 @@ export default class FilmsBoard {
         this._filmsModel.updateFilm(updateType, update);
         break;
       case UserAction.DELETE_COMMENT:
+        this._filmsModel.updateFilm(updateType, update);
+      case UserAction.ADD_COMMENT:
         this._filmsModel.updateFilm(updateType, update);
     }
   }

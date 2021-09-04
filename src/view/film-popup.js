@@ -1,8 +1,10 @@
 import SmartView from './smart.js';
-import {isCtrlEnterEvent, isEscEvent} from '../utils/dom-utils.js';
+import {isCtrlEnterEvent, isEscEvent, render, RenderPlace} from '../utils/dom-utils.js';
 import {formatDuration, formatDate, createGenres} from '../utils/film-utils.js';
 import {UpdateType, UserAction, ButtonName} from '../utils/utils.js';
 import {FilterType} from '../utils/filter-utils';
+import {nanoid} from 'nanoid';
+import NewCommentView from './new-comment';
 
 
 const createPopupTemplate = (data) => {
@@ -89,7 +91,7 @@ const createPopupTemplate = (data) => {
     </ul>`
   );
 
-  const createNewCommentTemplate = ({emotion, comment} = localComment) => (
+  const createNewCommentFormTemplate = ({emotion, comment} = localComment) => (
     `<div class="film-details__new-comment">
           <div class="film-details__add-emoji-label">${emotion ? `<img src="./images/emoji/${emotion}.png" width="79" height="68">` : ''}</div>
 
@@ -135,7 +137,7 @@ const createPopupTemplate = (data) => {
 
         ${isComments ? createCommentsListTemplate() : ''}
 
-        ${createNewCommentTemplate(localComment)}
+        ${createNewCommentFormTemplate(localComment)}
       </section>
     </div>
   </form>
@@ -146,7 +148,6 @@ export default class FilmPopup extends SmartView {
   constructor(film, changeData, currentFilter) {
     super();
     this._film = film;
-    this._comments = film.comments;
     this._data = FilmPopup.parseFilmToData(film);
     this._changeData = changeData;
     this._currentFilter = currentFilter;
@@ -250,7 +251,6 @@ export default class FilmPopup extends SmartView {
   }
 
   _favoriteClickHandler(evt) {
-
     evt.preventDefault();
     this._changeData(
       UserAction.BUTTON_CLICK,
@@ -325,25 +325,55 @@ export default class FilmPopup extends SmartView {
     return data;
   }
 
-  _formSubmitHandler(evt) {
-    if (isCtrlEnterEvent(evt)) {
-      evt.preventDefault();
-      console.log('submit');
-      this._callback.formSubmit(FilmPopup.parseDataToFilm(this._data));
-    }
+  _getCommentsContainer() {
+    return this.getElement().querySelector('.film-details__comments-list');
   }
 
-  setFormSubmitHandler(callback) {
-    this._callback.formSubmit = callback;
-    this.getElement().querySelector('.film-details__comment-input').addEventListener('keydown', this._formSubmitHandler);
+  _formSubmitHandler(evt) {
+    if (isCtrlEnterEvent(evt)) {
+      const newCommentItem = {
+        id: nanoid(),
+        author: 'fromServer',
+        comment: this._data.localComment.comment,
+        date: 'fromServer',
+        emotion: this._data.localComment.emotion,
+      };
+
+      this._newCommentComponent = new NewCommentView(newCommentItem);
+
+      render(this._getCommentsContainer(), this._newCommentComponent, RenderPlace.BEFOREEND);
+
+      this.updateData({
+        comments: Object.assign(
+          this._data.comments = [
+            ...this._data.comments,
+            newCommentItem,
+          ],
+        ),
+      });
+    }
+
+    this._changeData(
+      UserAction.ADD_COMMENT,
+      UpdateType.PATCH,
+      Object.assign(
+        {},
+        FilmPopup.parseDataToFilm(this._data),
+        {
+          comments: this._data.comments,
+        },
+      ),
+    );
   }
 
   restoreHandlers() {
     this._setInnerHandlers();
-    this.setFormSubmitHandler(this._callback.formSubmit);
   }
 
   _setInnerHandlers() {
+    this.getElement()
+      .querySelector('.film-details__comment-input')
+      .addEventListener('keydown', this._formSubmitHandler);
     this.getElement()
       .querySelector('.film-details__control-button--watched')
       .addEventListener('click', this._watchedClickHandler);
@@ -371,4 +401,5 @@ export default class FilmPopup extends SmartView {
       }
     }
   }
+
 }

@@ -1,5 +1,6 @@
 import FilmCardView from '../view/film-card.js';
 import FilmPopupView from '../view/film-popup.js';
+import NewCommentView from '../view/new-comment.js';
 import {RenderPlace, render, remove, replace} from '../utils/dom-utils.js';
 import {UpdateType, UserAction} from '../utils/utils.js';
 import {FilterType} from '../utils/filter-utils.js';
@@ -17,7 +18,6 @@ export default class Film {
     this._handleWatchListClick = this._handleWatchListClick.bind(this);
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleFavoritesClick = this._handleFavoritesClick.bind(this);
-    this._handleFormSubmit = this._handleFormSubmit.bind(this);
   }
 
   init(film, containers) {
@@ -31,7 +31,6 @@ export default class Film {
     this._filmComponent.setAddToWatchListClickHandler(this._handleWatchListClick);
     this._filmComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._filmComponent.setFavoriteClickHandler(this._handleFavoritesClick);
-    this._popupComponent.setFormSubmitHandler(this._handleFormSubmit);
 
     if (prevFilmComponent === null) {
       render(this._filmListContainer, this._filmComponent, RenderPlace.BEFOREEND);
@@ -86,10 +85,6 @@ export default class Film {
         },
       ),
     );
-  }
-
-  _handleFormSubmit(film) {
-    this._changeData(film);
   }
 
   _isPopUpExist() {
