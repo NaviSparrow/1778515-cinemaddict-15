@@ -4,7 +4,7 @@ import SmartView from './smart.js';
 import NewCommentView from './new-comment.js';
 import {FilterType} from '../utils/filter-utils';
 import {UpdateType, UserAction, ButtonName} from '../utils/utils.js';
-import {formatDuration, formatDate, createGenres} from '../utils/film-utils.js';
+import {formatDuration, formatDate, createGenres, formatCommentDate} from '../utils/film-utils.js';
 import {isCtrlEnterEvent, isEscEvent, render, RenderPlace} from '../utils/dom-utils.js';
 
 
@@ -84,7 +84,7 @@ const createPopupTemplate = (data) => {
               <p class="film-details__comment-text">${comment}</p>
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${author}</span>
-                <span class="film-details__comment-day">${date}</span>
+                <span class="film-details__comment-day">${formatCommentDate(date)}</span>
                 <button class="film-details__comment-delete" data-comment-id="${id}">Delete</button>
               </p>
             </div>
@@ -234,6 +234,7 @@ export default class FilmPopup extends SmartView {
 
   _addToWatchListClickHandler(evt) {
     evt.preventDefault();
+    console.log(this._data.comments);
     this._changeData(
       UserAction.BUTTON_CLICK,
       this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MAJOR,
