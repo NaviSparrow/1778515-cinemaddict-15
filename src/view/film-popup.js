@@ -10,6 +10,7 @@ import {isCtrlEnterEvent, isEscEvent, render, RenderPlace} from '../utils/dom-ut
 
 const createPopupTemplate = (data) => {
   const {title, rating, duration, genres, poster, description, comments, originalTitle, director, writers, actors, releaseDate, country, ageRating, isInWatchList, isWatched, isFavorite, localComment, isComments} = data;
+
   const createPopupDetailsTemplate = () => (
     `<div class="film-details__info-wrap">
     <div class="film-details__poster">
