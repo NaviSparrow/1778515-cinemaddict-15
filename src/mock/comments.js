@@ -1,4 +1,5 @@
 import {getRandomArrayElement } from '../utils/utils.js';
+import {nanoid} from 'nanoid';
 
 const AUTHORS = [
   'Tim Macoveev',
@@ -38,6 +39,7 @@ const generateEmotion = () => getRandomArrayElement(EMOTIONS);
 
 const generateComment = () => (
   {
+    id: nanoid(),
     author: generateAuthor(),
     comment: generateText(),
     date: generateDate(),

@@ -8,7 +8,6 @@ import SortView from '../view/sort.js';
 import NoFilmsView from '../view/no-films';
 import {RenderPlace, render, remove} from '../utils/dom-utils.js';
 import {sortByDate, sortByRating, SortType, UpdateType, UserAction} from '../utils/utils.js';
-import Sort from '../view/sort.js';
 import {filter, FilterType} from '../utils/filter-utils.js';
 
 const CARDS_PER_STEP = 5;
@@ -48,8 +47,10 @@ export default class FilmsBoard {
   }
 
   _getFilms() {
+
     this._filterType = this._filterModel.getFilters();
     const films = this._filmsModel.getFilms();
+    // films.forEach((film) => film.comments.forEach((comment) => console.log(comment)));
     const filteredFilms = filter[this._filterType](films);
     switch (this._currentSortType) {
       case SortType.BY_DATE:
@@ -65,6 +66,8 @@ export default class FilmsBoard {
       case UserAction.BUTTON_CLICK:
         this._filmsModel.updateFilm(updateType, update);
         break;
+      case UserAction.DELETE_COMMENT:
+        this._filmsModel.updateFilm(updateType, update);
     }
   }
 

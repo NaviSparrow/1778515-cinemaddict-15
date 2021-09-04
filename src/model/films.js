@@ -4,6 +4,7 @@ export default class Films extends AbstractObserver {
   constructor() {
     super();
     this._films = [];
+    this._comments = [];
   }
 
   setFilms(films) {
@@ -29,20 +30,4 @@ export default class Films extends AbstractObserver {
 
     this.notify(updateType, update);
   }
-
-  // addComment(updateType, update) {
-  //   this._films = [
-  //     update,
-  //     ...this._films,
-  //   ];
-  //   this.notify(updateType, update);
-  // }
-  //
-  // deleteComment(updateType, update) {
-  //   const index = this._films.findIndex((film) => film.id === update.id);
-  //
-  //   if (index === -1) {
-  //     throw new Error('Can\'t delete unexisting comment');
-  //   }
-  // }
 }

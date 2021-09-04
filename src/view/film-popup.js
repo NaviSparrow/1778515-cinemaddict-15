@@ -73,7 +73,7 @@ const createPopupTemplate = (data) => {
 
   const createCommentsListTemplate = () => (
     `<ul class="film-details__comments-list">
-        ${comments.map(({author, comment, date, emotion}) => `<li class="film-details__comment">
+        ${comments.map(({id, author, comment, date, emotion}) => `<li class="film-details__comment">
             <span class="film-details__comment-emoji">
               <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
             </span>
@@ -82,7 +82,7 @@ const createPopupTemplate = (data) => {
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${author}</span>
                 <span class="film-details__comment-day">${date}</span>
-                <button class="film-details__comment-delete">Delete</button>
+                <button class="film-details__comment-delete" data-comment-id="${id}">Delete</button>
               </p>
             </div>
           </li>`).join('')}
@@ -146,6 +146,7 @@ export default class FilmPopup extends SmartView {
   constructor(film, changeData, currentFilter) {
     super();
     this._film = film;
+    this._comments = film.comments;
     this._data = FilmPopup.parseFilmToData(film);
     this._changeData = changeData;
     this._currentFilter = currentFilter;
@@ -159,6 +160,7 @@ export default class FilmPopup extends SmartView {
     this._emojiClickHandler = this._emojiClickHandler.bind(this);
     this._resetComment = this._resetComment.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._deleteClickHandler = this._deleteClickHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -178,6 +180,31 @@ export default class FilmPopup extends SmartView {
         },
       ),
     });
+  }
+
+  _deleteClickHandler (evt) {
+    evt.preventDefault();
+    const index = this._data.comments.findIndex((comment) => comment.id === evt.target.dataset.commentId);
+    this._data.comments = [
+      ...this._data.comments.slice(0, index),
+      ...this._data.comments.slice(index + 1),
+    ];
+
+    this.updateData({
+      comments: this._data.comments,
+    }, this._getScrollPosition());
+
+    this._changeData(
+      UserAction.DELETE_COMMENT,
+      UpdateType.PATCH,
+      Object.assign(
+        {},
+        FilmPopup.parseDataToFilm(this._data),
+        {
+          comments: this._data.comments,
+        },
+      ),
+    );
   }
 
   _getScrollPosition() {
@@ -282,14 +309,6 @@ export default class FilmPopup extends SmartView {
     }, this._getScrollPosition());
   }
 
-  _formSubmitHandler(evt) {
-    if (isCtrlEnterEvent(evt)) {
-      evt.preventDefault();
-      console.log('submit');
-      this._callback.formSubmit(FilmPopup.parseDataToFilm(this._data));
-    }
-  }
-
   static parseFilmToData(film) {
     return Object.assign(
       {},
@@ -304,6 +323,14 @@ export default class FilmPopup extends SmartView {
     data = Object.assign({}, data);
 
     return data;
+  }
+
+  _formSubmitHandler(evt) {
+    if (isCtrlEnterEvent(evt)) {
+      evt.preventDefault();
+      console.log('submit');
+      this._callback.formSubmit(FilmPopup.parseDataToFilm(this._data));
+    }
   }
 
   setFormSubmitHandler(callback) {
@@ -337,6 +364,11 @@ export default class FilmPopup extends SmartView {
     const emojiItems =  this.getElement().querySelectorAll('.film-details__emoji-item');
     for (const item of emojiItems) {
       item.addEventListener('click', this._emojiClickHandler);
+
+      const deleteButtons = this.getElement().querySelectorAll('.film-details__comment-delete');
+      for (const button of deleteButtons) {
+        button.addEventListener('click', this._deleteClickHandler);
+      }
     }
   }
 }

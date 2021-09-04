@@ -21,7 +21,7 @@ const ButtonName = {
   WATCHLIST: 'watchlist',
   WATCHED: 'watched',
   FAVORITES: 'favorite',
-}
+};
 
 const sortByDate = (filmA, filmB) => filmB.year - filmA.year;
 

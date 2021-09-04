@@ -77,7 +77,7 @@ export default class Film {
   _handleFavoritesClick() {
     this._changeData(
       UserAction.BUTTON_CLICK,
-      this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MAJOR,
+      this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MAJOR, //TODO поменять на isFilterTypeAll
       Object.assign(
         {},
         this._film,

@@ -1,11 +1,9 @@
-import FiltersView from './view/filters.js';
 import UserProfileView from './view/user-profile.js';
 import StatisticsView from './view/statistics.js';
 import FilmsBoardPresenter from './presenter/films-board';
 import FilmsModel from './model/films.js';
 import FilterModel from './model/filter.js';
 import { generateFilmCard } from './mock/film-card.js';
-// import { generateFilters } from './mock/filters.js';
 import {RenderPlace, render} from './utils/dom-utils.js';
 import FilterPresenter from './presenter/filter.js';
 
