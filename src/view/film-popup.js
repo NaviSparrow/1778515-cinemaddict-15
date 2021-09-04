@@ -1,10 +1,11 @@
-import SmartView from './smart.js';
-import {isCtrlEnterEvent, isEscEvent, render, RenderPlace} from '../utils/dom-utils.js';
-import {formatDuration, formatDate, createGenres} from '../utils/film-utils.js';
-import {UpdateType, UserAction, ButtonName} from '../utils/utils.js';
-import {FilterType} from '../utils/filter-utils';
+import  he from 'he';
 import {nanoid} from 'nanoid';
-import NewCommentView from './new-comment';
+import SmartView from './smart.js';
+import NewCommentView from './new-comment.js';
+import {FilterType} from '../utils/filter-utils';
+import {UpdateType, UserAction, ButtonName} from '../utils/utils.js';
+import {formatDuration, formatDate, createGenres} from '../utils/film-utils.js';
+import {isCtrlEnterEvent, isEscEvent, render, RenderPlace} from '../utils/dom-utils.js';
 
 
 const createPopupTemplate = (data) => {
@@ -96,7 +97,7 @@ const createPopupTemplate = (data) => {
           <div class="film-details__add-emoji-label">${emotion ? `<img src="./images/emoji/${emotion}.png" width="79" height="68">` : ''}</div>
 
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${comment}</textarea>
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(comment)}</textarea>
           </label>
 
           <div class="film-details__emoji-list">

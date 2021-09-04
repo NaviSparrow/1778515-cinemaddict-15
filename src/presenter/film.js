@@ -1,6 +1,5 @@
 import FilmCardView from '../view/film-card.js';
 import FilmPopupView from '../view/film-popup.js';
-import NewCommentView from '../view/new-comment.js';
 import {RenderPlace, render, remove, replace} from '../utils/dom-utils.js';
 import {UpdateType, UserAction} from '../utils/utils.js';
 import {FilterType} from '../utils/filter-utils.js';

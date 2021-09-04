@@ -29,6 +29,4 @@ export default class NewComment extends AbstractView {
     return createNewCommentTemplate(this._data);
   }
 
-
-
 }
