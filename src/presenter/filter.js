@@ -1,13 +1,14 @@
 import FiltersView from '../view/filters.js';
 import {filter, FilterType} from '../utils/filter-utils.js';
 import {RenderPlace, render, remove, replace} from '../utils/dom-utils.js';
-import {UpdateType} from '../utils/utils.js';
+import {MenuItem, UpdateType} from '../utils/utils.js';
 
 export default class Filter {
-  constructor(filterContainer, filterModel, filmsModel) {
+  constructor(filterContainer, filterModel, filmsModel, menuCallback) {
     this._filterContainer = filterContainer;
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
+    this._menuCallback = menuCallback;
 
     this._filterComponent = null;
 
@@ -22,8 +23,9 @@ export default class Filter {
     const filters = this._getFilters();
     const prevFilterComponent = this._filterComponent;
 
-    this._filterComponent = new FiltersView(filters, this._filterModel.getFilters());
+    this._filterComponent = new FiltersView(filters, this._filterModel.getFilter());
     this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
+    this._filterComponent.setMenuClickHandler(this._menuCallback);
 
     if (prevFilterComponent === null) {
       render(this._filterContainer, this._filterComponent, RenderPlace.BEFOREEND);
@@ -39,7 +41,7 @@ export default class Filter {
   }
 
   _handleFilterTypeChange(filterType) {
-    if (this._filterModel.getFilters() === filterType) {
+    if (this._filterModel.getFilter() === filterType || filterType === MenuItem.STATISTICS) {
       return;
     }
 

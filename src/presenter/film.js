@@ -47,7 +47,7 @@ export default class Film {
   _handleWatchListClick() {
     this._changeData(
       UserAction.BUTTON_CLICK,
-      this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MAJOR, //если фильтр all ? то patch : иначе Major
+      this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MINOR, //если фильтр all ? то patch : иначе Major
       Object.assign(
         {},
         this._film,
@@ -61,7 +61,7 @@ export default class Film {
   _handleWatchedClick() {
     this._changeData(
       UserAction.BUTTON_CLICK,
-      this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MAJOR,
+      this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -75,7 +75,7 @@ export default class Film {
   _handleFavoritesClick() {
     this._changeData(
       UserAction.BUTTON_CLICK,
-      this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MAJOR, //TODO поменять на isFilterTypeAll
+      this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MINOR, //TODO поменять на isFilterTypeAll
       Object.assign(
         {},
         this._film,

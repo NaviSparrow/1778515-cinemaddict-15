@@ -48,7 +48,7 @@ export default class FilmsBoard {
 
   _getFilms() {
 
-    this._filterType = this._filterModel.getFilters();
+    this._filterType = this._filterModel.getFilter();
     const films = this._filmsModel.getFilms();
     const filteredFilms = filter[this._filterType](films);
     switch (this._currentSortType) {
@@ -104,7 +104,7 @@ export default class FilmsBoard {
     }
 
     this._currentSortType = sortType;
-    this._clearFilmsSection();
+    this._clearFilmsSection(true);
     this._renderBoardFilms();
     this._renderTopRatedList();
     this._renderMostCommentedList();
@@ -151,7 +151,7 @@ export default class FilmsBoard {
   }
 
   _renderFilm(film, container = this._getBoardFilmsListContainer()) {
-    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._filterModel.getFilters());
+    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._filterModel.getFilter());
     filmPresenter.init(film);
 
     switch (container) {
@@ -168,31 +168,29 @@ export default class FilmsBoard {
     this._setOfContainers.add(container);
   }
 
-  _clearFilmsSection() {
+  _clearFilmsSection(resetFilmsCount) {
+    const filmCount = this._getFilms().length;
     this._boardFilmPresenter.forEach((presenter) => presenter.destroy());
     this._topRatedFilmPresenter.forEach((presenter) => presenter.destroy());
     this._mostCommentedFilmPresenter.forEach((presenter) => presenter.destroy());
     this._boardFilmPresenter.clear();
     this._topRatedFilmPresenter.clear();
     this._mostCommentedFilmPresenter.clear();
-    this._renderedFilmsCount = CARDS_PER_STEP;
+    resetFilmsCount
+      ? this._renderedFilmsCount = CARDS_PER_STEP
+      : this._renderedFilmsCount = Math.min(filmCount, this._renderedFilmsCount);
+
     remove(this._showMoreButtonComponent);
     remove(this._topRatedListComponent);
     remove(this._mostCommentedListComponent);
   }
 
   _clearBoard({resetRenderedTaskCount = false, resetSortType = false} = {}) {
-    const filmCount = this._getFilms().length;
-
     remove(this._sortCopmponent);
-    this._clearFilmsSection();
+    this._clearFilmsSection(resetRenderedTaskCount);
 
     if (this._noFilmsComponent) {
       remove(this._noFilmsComponent);
-    }
-
-    if (resetRenderedTaskCount === false) {
-      this._renderedFilmsCount = Math.min(filmCount, this._renderedFilmsCount);
     }
 
     if (resetSortType) {

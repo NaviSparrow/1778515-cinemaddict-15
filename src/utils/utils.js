@@ -23,6 +23,11 @@ const ButtonName = {
   FAVORITES: 'favorite',
 };
 
+const MenuItem = {
+  FILMS: '#all',
+  STATISTICS: '#stats',
+};
+
 const sortByDate = (filmA, filmB) => filmB.year - filmA.year;
 
 const sortByRating = (filmA ,filmB) => filmB.rating - filmA.rating;
@@ -63,6 +68,7 @@ export {
   UserAction,
   UpdateType,
   ButtonName,
+  MenuItem,
   sortByDate,
   sortByRating,
   getRandomFloat,

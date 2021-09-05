@@ -235,7 +235,6 @@ export default class FilmPopup extends SmartView {
 
   _addToWatchListClickHandler(evt) {
     evt.preventDefault();
-    console.log(this._data.comments);
     this._changeData(
       UserAction.BUTTON_CLICK,
       this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MAJOR,
