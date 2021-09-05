@@ -6,15 +6,17 @@ import FilmsModel from './model/films.js';
 import FilterModel from './model/filter.js';
 import FilterPresenter from './presenter/filter.js';
 import { generateFilmCard } from './mock/film-card.js';
-import {RenderPlace, render} from './utils/dom-utils.js';
-import {MenuItem} from './utils/utils.js';
+import {RenderPlace, render, remove} from './utils/dom-utils.js';
+import {MenuItem, UpdateType} from './utils/utils.js';
+import {FilterType} from './utils/filter-utils.js';
 
 const CARDS_COUNT = 20;
 
 const mainSection = document.querySelector('.main');
 const header = document.querySelector('.header');
 const footerStatistics = document.querySelector('.footer__statistics');
-const statisticsComponent = new StatisticsView();
+
+let statisticsComponent = null;
 
 const filmCards = new Array(CARDS_COUNT).fill().map(() => generateFilmCard());
 
@@ -23,29 +25,31 @@ filmsModel.setFilms(filmCards);
 
 const filterModel = new FilterModel();
 
+const filmsBoardPresenter = new FilmsBoardPresenter(mainSection, filmsModel, filterModel);
+
 const handleMenuClick = (menuItem) => {
-  console.log(menuItem);
   switch (menuItem) {
     case MenuItem.FILMS:
-      console.log('film click');
-      // show board
+        filmsBoardPresenter.init();
+        filterModel.setFilters(UpdateType.MAJOR, FilterType.ALL);
       // hide stats
+      remove(statisticsComponent);
       break;
     case MenuItem.STATISTICS:
-      console.log('stats click');
       // hide board
+      filmsBoardPresenter.destroy();
+      console.log(filmsBoardPresenter);
       // show stats
+      statisticsComponent = new StatisticsView(filmsModel.getFilms());
+      render(mainSection, statisticsComponent, RenderPlace.BEFOREEND);
       break;
   }
 };
 
-const filmsBoardPresenter = new FilmsBoardPresenter(mainSection, filmsModel, filterModel);
 const filterPresenter = new FilterPresenter(mainSection, filterModel, filmsModel, handleMenuClick);
 
 filterPresenter.init();
 filmsBoardPresenter.init();
-
-render(mainSection, statisticsComponent, RenderPlace.BEFOREEND);
 
 render(header, new UserProfileView, RenderPlace.BEFOREEND);
 render(footerStatistics, new StatisticsFooterView(filmCards.length), RenderPlace.BEFOREEND);

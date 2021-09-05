@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 const SortType = {
   BY_DEFAULT: 'by-default',
   BY_DATE: 'by-date',
@@ -62,6 +64,31 @@ const updateItem = (items, update) => {
   ];
 };
 
+const getGenresSet = (films) => {
+  const uniqGenresSet = new Set();
+  films.map((film) => film.genres.map((genre) => uniqGenresSet.add(genre)));
+  return uniqGenresSet;
+};
+
+const countFilmsByGenre = (films, genre) => {
+  let result = 0;
+  films
+    .filter((film) => film.genres
+      .forEach((filmGenre) => {
+        filmGenre === genre ? result += 1 : result;
+      }),
+    );
+  return result;
+};
+
+const countTotalDuration = (films) => {
+  let resultDuration = dayjs.duration(0, 'm').asMinutes();
+  films.forEach((film) => {
+    const filmDuration  = dayjs.duration(film.duration, 'm').asMinutes();
+    resultDuration += filmDuration;
+  });
+  return (dayjs.duration(resultDuration, 'm'));
+};
 
 export {
   SortType,
@@ -76,5 +103,8 @@ export {
   getRandomArrayElement,
   getRandomArray,
   applyClassName,
-  updateItem
+  updateItem,
+  getGenresSet,
+  countFilmsByGenre,
+  countTotalDuration
 };

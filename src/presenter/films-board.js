@@ -37,17 +37,27 @@ export default class FilmsBoard {
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleSortTypeClick = this._handleSortTypeClick.bind(this);
-
-    this._filmsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
+    if (this._filmsSectionComponent !== null) {
+      return;
+    }
+    this._filmsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
     this._renderFilmsBoard();
   }
 
-  _getFilms() {
+  destroy() {
+    this._clearBoard({resetRenderedTaskCount: true, resetSortType: true});
 
+    remove(this._filmsListComponent);
+    remove(this._filmsSectionComponent);
+    this._filmsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
+  }
+
+  _getFilms() {
     this._filterType = this._filterModel.getFilter();
     const films = this._filmsModel.getFilms();
     const filteredFilms = filter[this._filterType](films);
