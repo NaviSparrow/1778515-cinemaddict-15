@@ -30,7 +30,7 @@ const filmsBoardPresenter = new FilmsBoardPresenter(mainSection, filmsModel, fil
 const handleMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.FILMS:
-      if (statisticsComponent.checkElement() !== null) {
+      if (statisticsComponent !== null) {
         filmsBoardPresenter.init();
         remove(statisticsComponent);
       }

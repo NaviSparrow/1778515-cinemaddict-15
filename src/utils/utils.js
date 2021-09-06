@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 
 const SortType = {
   BY_DEFAULT: 'by-default',
@@ -17,6 +17,7 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  MINOR_COMMENTS: 'MINOR_COMMENTS',
 };
 
 const ButtonName = {

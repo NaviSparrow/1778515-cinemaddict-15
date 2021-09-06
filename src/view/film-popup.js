@@ -200,7 +200,7 @@ export default class FilmPopup extends SmartView {
 
     this._changeData(
       UserAction.DELETE_COMMENT,
-      UpdateType.PATCH,
+      UpdateType.MINOR_COMMENTS,
       Object.assign(
         {},
         FilmPopup.parseDataToFilm(this._data),
@@ -356,19 +356,19 @@ export default class FilmPopup extends SmartView {
           ],
         ),
       });
-    }
 
-    this._changeData(
-      UserAction.ADD_COMMENT,
-      UpdateType.PATCH,
-      Object.assign(
-        {},
-        FilmPopup.parseDataToFilm(this._data),
-        {
-          comments: this._data.comments,
-        },
-      ),
-    );
+      this._changeData(
+        UserAction.ADD_COMMENT,
+        UpdateType.MINOR_COMMENTS,
+        Object.assign(
+          {},
+          FilmPopup.parseDataToFilm(this._data),
+          {
+            comments: this._data.comments,
+          },
+        ),
+      );
+    }
   }
 
   restoreHandlers() {
@@ -377,7 +377,7 @@ export default class FilmPopup extends SmartView {
 
   _setInnerHandlers() {
     this.getElement()
-      .querySelector('.film-details__comment-input')
+      .querySelector('.film-details__inner')
       .addEventListener('keydown', this._formSubmitHandler);
     this.getElement()
       .querySelector('.film-details__control-button--watched')

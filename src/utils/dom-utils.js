@@ -27,7 +27,6 @@ const render = (container, child, place) => {
 };
 
 const remove = (component) => {
-  console.log(component);
   if (!(component instanceof AbstractView)) {
     throw new Error('Can remove only components');
   }
