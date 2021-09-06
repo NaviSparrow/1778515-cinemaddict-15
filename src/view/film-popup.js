@@ -4,8 +4,9 @@ import SmartView from './smart.js';
 import NewCommentView from './new-comment.js';
 import {FilterType} from '../utils/filter-utils';
 import {UpdateType, UserAction, ButtonName} from '../utils/utils.js';
-import {formatDuration, formatDate, createGenres, formatCommentDate} from '../utils/film-utils.js';
+import {formatDuration, formatDate, createGenres, formatCommentDate, getWatchingDate} from '../utils/film-utils.js';
 import {isCtrlEnterEvent, isEscEvent, render, RenderPlace} from '../utils/dom-utils.js';
+import dayjs from 'dayjs';
 
 
 const createPopupTemplate = (data) => {
@@ -216,6 +217,7 @@ export default class FilmPopup extends SmartView {
 
   _watchedClickHandler(evt) {
     evt.preventDefault();
+    const watchingDate = getWatchingDate(this._data);
     this._changeData(
       UserAction.BUTTON_CLICK,
       this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MAJOR,
@@ -224,6 +226,7 @@ export default class FilmPopup extends SmartView {
         FilmPopup.parseDataToFilm(this._data),
         {
           isWatched: !this._data.isWatched,
+          watchingDate,
         },
       ),
     );

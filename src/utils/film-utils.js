@@ -28,12 +28,20 @@ const formatYear = (year) => dayjs(year).format('YYYY');
 
 const formatCommentDate = (date) => dayjs(date).fromNow();
 
+const getWatchingDate = (data) => {
+  if (!data.isWatched)  {
+    return data.watchingDate = dayjs();
+  }
+  return data.watchingDate = null;
+};
+
 export {
   EmojiState,
   formatDuration,
   formatDate,
   createGenres,
   formatYear,
-  formatCommentDate
+  formatCommentDate,
+  getWatchingDate
 };
 

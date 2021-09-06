@@ -182,7 +182,7 @@ export const generateFilmCard = () => (
     isInWatchList: Boolean(getRandomInteger(0, 1)),
     isWatched: isFilmWatched(),
     isFavorite: Boolean(getRandomInteger(0, 1)),
-    getWatchingDate: generateWatchedDate(),
+    watchingDate: generateWatchedDate(),
     localComment: {
       emotion: null,
       comment: '',

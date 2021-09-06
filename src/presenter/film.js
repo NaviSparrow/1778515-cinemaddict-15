@@ -3,6 +3,7 @@ import FilmPopupView from '../view/film-popup.js';
 import {RenderPlace, render, remove, replace} from '../utils/dom-utils.js';
 import {UpdateType, UserAction} from '../utils/utils.js';
 import {FilterType} from '../utils/filter-utils.js';
+import {getWatchingDate} from '../utils/film-utils.js';
 
 export default class Film {
   constructor(filmListContainer, changeData, currentFilter) {
@@ -59,6 +60,7 @@ export default class Film {
   }
 
   _handleWatchedClick() {
+    const watchingDate = getWatchingDate(this._film);
     this._changeData(
       UserAction.BUTTON_CLICK,
       this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MINOR,
@@ -67,6 +69,7 @@ export default class Film {
         this._film,
         {
           isWatched: !this._film.isWatched,
+          watchingDate,
         },
       ),
     );

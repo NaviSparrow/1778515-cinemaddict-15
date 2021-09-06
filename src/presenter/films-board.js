@@ -40,9 +40,9 @@ export default class FilmsBoard {
   }
 
   init() {
-    if (this._filmsSectionComponent !== null) {
-      return;
-    }
+    // if (this._filmsSectionComponent !== null) {
+    //   return;
+    // }
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
     this._renderFilmsBoard();

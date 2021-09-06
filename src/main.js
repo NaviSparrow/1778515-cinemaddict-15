@@ -30,16 +30,14 @@ const filmsBoardPresenter = new FilmsBoardPresenter(mainSection, filmsModel, fil
 const handleMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.FILMS:
+      if (statisticsComponent.checkElement() !== null) {
         filmsBoardPresenter.init();
-        filterModel.setFilters(UpdateType.MAJOR, FilterType.ALL);
-      // hide stats
-      remove(statisticsComponent);
+        remove(statisticsComponent);
+      }
+      filterModel.setFilters(UpdateType.MAJOR, FilterType.ALL);
       break;
     case MenuItem.STATISTICS:
-      // hide board
       filmsBoardPresenter.destroy();
-      console.log(filmsBoardPresenter);
-      // show stats
       statisticsComponent = new StatisticsView(filmsModel.getFilms());
       render(mainSection, statisticsComponent, RenderPlace.BEFOREEND);
       break;
