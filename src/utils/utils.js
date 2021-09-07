@@ -4,6 +4,25 @@ const SortType = {
   BY_RATING: 'by-rating',
 };
 
+const UserAction = {
+  BUTTON_CLICK: 'BUTTON_CLICK',
+  UPDATE_FORM: 'UPDATE_FORM',
+  ADD_COMMENT: 'ADD_COMMENT',
+  DELETE_COMMENT: 'DELETE_COMMENT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+const ButtonName = {
+  WATCHLIST: 'watchlist',
+  WATCHED: 'watched',
+  FAVORITES: 'favorite',
+};
+
 const sortByDate = (filmA, filmB) => filmB.year - filmA.year;
 
 const sortByRating = (filmA ,filmB) => filmB.rating - filmA.rating;
@@ -41,6 +60,9 @@ const updateItem = (items, update) => {
 
 export {
   SortType,
+  UserAction,
+  UpdateType,
+  ButtonName,
   sortByDate,
   sortByRating,
   getRandomFloat,

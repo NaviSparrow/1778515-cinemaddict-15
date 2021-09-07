@@ -26,10 +26,14 @@ const createGenres = (genresList) => genresList.map((genre) => `<span class="fil
 
 const formatYear = (year) => dayjs(year).format('YYYY');
 
+const formatCommentDate = (date) => dayjs(date).fromNow();
+
 export {
   EmojiState,
   formatDuration,
   formatDate,
   createGenres,
-  formatYear
+  formatYear,
+  formatCommentDate
 };
+

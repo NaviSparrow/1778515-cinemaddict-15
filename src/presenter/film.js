@@ -1,11 +1,14 @@
 import FilmCardView from '../view/film-card.js';
 import FilmPopupView from '../view/film-popup.js';
 import {RenderPlace, render, remove, replace} from '../utils/dom-utils.js';
+import {UpdateType, UserAction} from '../utils/utils.js';
+import {FilterType} from '../utils/filter-utils.js';
 
 export default class Film {
-  constructor(filmListContainer, changeData) {
+  constructor(filmListContainer, changeData, currentFilter) {
     this._filmListContainer = filmListContainer;
     this._changeData = changeData;
+    this._currentFilter = currentFilter;
 
     this._filmComponent = null;
     this._popupComponent = null;
@@ -14,7 +17,6 @@ export default class Film {
     this._handleWatchListClick = this._handleWatchListClick.bind(this);
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleFavoritesClick = this._handleFavoritesClick.bind(this);
-    this._handleFormSubmit = this._handleFormSubmit.bind(this);
   }
 
   init(film, containers) {
@@ -22,13 +24,12 @@ export default class Film {
     const prevFilmComponent = this._filmComponent;
 
     this._filmComponent = new FilmCardView(film);
-    this._popupComponent = new FilmPopupView(film);
+    this._popupComponent = new FilmPopupView(film, this._changeData, this._currentFilter);
 
     this._filmComponent.setClickHandler(this._openPopupHandler);
     this._filmComponent.setAddToWatchListClickHandler(this._handleWatchListClick);
     this._filmComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._filmComponent.setFavoriteClickHandler(this._handleFavoritesClick);
-    this._popupComponent.setFormSubmitHandler(this._handleFormSubmit);
 
     if (prevFilmComponent === null) {
       render(this._filmListContainer, this._filmComponent, RenderPlace.BEFOREEND);
@@ -45,6 +46,8 @@ export default class Film {
 
   _handleWatchListClick() {
     this._changeData(
+      UserAction.BUTTON_CLICK,
+      this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MAJOR, //если фильтр all ? то patch : иначе Major
       Object.assign(
         {},
         this._film,
@@ -57,6 +60,8 @@ export default class Film {
 
   _handleWatchedClick() {
     this._changeData(
+      UserAction.BUTTON_CLICK,
+      this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MAJOR,
       Object.assign(
         {},
         this._film,
@@ -69,6 +74,8 @@ export default class Film {
 
   _handleFavoritesClick() {
     this._changeData(
+      UserAction.BUTTON_CLICK,
+      this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MAJOR, //TODO поменять на isFilterTypeAll
       Object.assign(
         {},
         this._film,
@@ -77,10 +84,6 @@ export default class Film {
         },
       ),
     );
-  }
-
-  _handleFormSubmit(film) {
-    this._changeData(film);
   }
 
   _isPopUpExist() {

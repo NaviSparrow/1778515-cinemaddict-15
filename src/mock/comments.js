@@ -1,4 +1,5 @@
 import {getRandomArrayElement } from '../utils/utils.js';
+import {nanoid} from 'nanoid';
 
 const AUTHORS = [
   'Tim Macoveev',
@@ -15,10 +16,10 @@ const TEXTS = [
 ];
 
 const DATES = [
-  '2019-04-12T16:12:32.554Z',
-  '2019-05-11T00:00:00.000Z',
-  '2021-05-11T12:42:32.554Z',
-  '2021-30-08T12:42:32.554Z',
+  '2021-09-03T16:12:32.554Z',
+  '2021-07-11T00:00:00.554Z',
+  '2021-09-04T12:42:32.554Z',
+  '2021-08-30T12:42:32.554Z',
 ];
 
 const EMOTIONS = [
@@ -38,6 +39,7 @@ const generateEmotion = () => getRandomArrayElement(EMOTIONS);
 
 const generateComment = () => (
   {
+    id: nanoid(),
     author: generateAuthor(),
     comment: generateText(),
     date: generateDate(),
