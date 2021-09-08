@@ -5,20 +5,27 @@ import FilmsBoardPresenter from './presenter/films-board';
 import FilmsModel from './model/films.js';
 import FilterModel from './model/filter.js';
 import FilterPresenter from './presenter/filter.js';
+import Api from './api.js';
 import { generateFilmCard } from './mock/film-card.js';
 import {RenderPlace, render, remove} from './utils/dom-utils.js';
 import {MenuItem, UpdateType} from './utils/utils.js';
 import {FilterType} from './utils/filter-utils.js';
 
 const CARDS_COUNT = 20;
+const AUTHORIZATION = 'Basic gL7en6jyTrbk5qw3x';
+const END_POINT = 'https://15.ecmascript.pages.academy/cinemaddict';
 
 const mainSection = document.querySelector('.main');
 const header = document.querySelector('.header');
 const footerStatistics = document.querySelector('.footer__statistics');
-
 let statisticsComponent = null;
 
 const filmCards = new Array(CARDS_COUNT).fill().map(() => generateFilmCard());
+const api = new Api(END_POINT, AUTHORIZATION);
+
+api.getFilms().then((films) => {
+  console.log(films);
+});
 
 const filmsModel = new FilmsModel();
 filmsModel.setFilms(filmCards);
