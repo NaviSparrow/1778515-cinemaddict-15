@@ -27,19 +27,27 @@ const filterModel = new FilterModel();
 
 const filmsBoardPresenter = new FilmsBoardPresenter(mainSection, filmsModel, filterModel);
 
+let isClickedFilmsMenu = false;
+let isClickedStatisticsMenu = false;
 const handleMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.FILMS:
-      if (statisticsComponent !== null) {
+      if (!isClickedFilmsMenu) {
         filmsBoardPresenter.init();
         remove(statisticsComponent);
+        isClickedFilmsMenu = true;
+        isClickedStatisticsMenu = false;
       }
       filterModel.setFilters(UpdateType.MAJOR, FilterType.ALL);
       break;
     case MenuItem.STATISTICS:
-      filmsBoardPresenter.destroy();
-      statisticsComponent = new StatisticsView(filmsModel.getFilms());
-      render(mainSection, statisticsComponent, RenderPlace.BEFOREEND);
+      if (!isClickedStatisticsMenu) {
+        filmsBoardPresenter.destroy();
+        statisticsComponent = new StatisticsView(filmsModel.getFilms());
+        render(mainSection, statisticsComponent, RenderPlace.BEFOREEND);
+        isClickedFilmsMenu = false;
+        isClickedStatisticsMenu = true;
+      }
       break;
   }
 };

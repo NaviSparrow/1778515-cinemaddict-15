@@ -1,12 +1,11 @@
 import  he from 'he';
 import {nanoid} from 'nanoid';
 import SmartView from './smart.js';
-import NewCommentView from './new-comment.js';
+import CommentFormView from './comment-form.js';
 import {FilterType} from '../utils/filter-utils';
 import {UpdateType, UserAction, ButtonName} from '../utils/utils.js';
 import {formatDuration, formatDate, createGenres, formatCommentDate, getWatchingDate} from '../utils/film-utils.js';
 import {isCtrlEnterEvent, isEscEvent, render, RenderPlace} from '../utils/dom-utils.js';
-import dayjs from 'dayjs';
 
 
 const createPopupTemplate = (data) => {
@@ -336,7 +335,7 @@ export default class FilmPopup extends SmartView {
 
   _formSubmitHandler(evt) {
     if (isCtrlEnterEvent(evt)) {
-      const newCommentItem = {
+      const newCommentForm = {
         id: nanoid(),
         author: 'fromServer',
         comment: this._data.localComment.comment,
@@ -344,7 +343,7 @@ export default class FilmPopup extends SmartView {
         emotion: this._data.localComment.emotion,
       };
 
-      this._newCommentComponent = new NewCommentView(newCommentItem);
+      this._newCommentComponent = new CommentFormView(newCommentForm);
 
       render(this._getCommentsContainer(), this._newCommentComponent, RenderPlace.BEFOREEND);
 
@@ -352,7 +351,7 @@ export default class FilmPopup extends SmartView {
         comments: Object.assign(
           this._data.comments = [
             ...this._data.comments,
-            newCommentItem,
+            newCommentForm,
           ],
         ),
       });

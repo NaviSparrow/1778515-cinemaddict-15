@@ -331,4 +331,8 @@ export default class FilmsBoard {
     this._renderTopRatedFilms();
     this._renderMostCommentedFilms();
   }
+
+  isFilmSectionNull() {
+    return this._filmsSectionComponent;
+  }
 }

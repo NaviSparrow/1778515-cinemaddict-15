@@ -19,7 +19,7 @@ const createNewCommentTemplate = (data) => {
   );
 };
 
-export default class NewComment extends AbstractView {
+export default class CommentForm extends AbstractView {
   constructor(data) {
     super();
     this._data = data;

@@ -45,11 +45,6 @@ export default class Filters extends AbstractView {
     this._callback.onClickChange(evt.target.hash);
   }
 
-  setFilterTypeChangeHandler(callback) {
-    this._callback.onClickChange = callback;
-    this.getElement().addEventListener('click', this._filterTypeChangeHandler);
-  }
-
   _menuClickHandler(evt) {
     evt.preventDefault();
     this._callback.onMenuClick(evt.target.hash);
@@ -57,18 +52,26 @@ export default class Filters extends AbstractView {
     this._setStatsItem(evt.target.hash);
   }
 
-  setMenuClickHandler(callback) {
-    this._callback.onMenuClick = callback;
-    this.getElement().addEventListener('click', this._menuClickHandler);
-  }
-
   _setStatsItem(menuItem) {
+    const additionalActiveClass = 'main-navigation__additional--active';
     const statsItem = this.getElement().querySelector('.main-navigation__additional');
     if (menuItem === MenuItem.STATISTICS) {
-      statsItem.classList.add('main-navigation__additional--active');
-      this.getElement().querySelector('.main-navigation__item--active').classList.remove('main-navigation__item--active');
+      if (!statsItem.classList.contains(additionalActiveClass)) {
+        statsItem.classList.add(additionalActiveClass);
+        this.getElement().querySelector('.main-navigation__item--active').classList.remove('main-navigation__item--active');
+      }
     } else {
       statsItem.classList.remove('main-navigation__additional--active');
     }
+  }
+
+  setFilterTypeChangeHandler(callback) {
+    this._callback.onClickChange = callback;
+    this.getElement().addEventListener('click', this._filterTypeChangeHandler);
+  }
+
+  setMenuClickHandler(callback) {
+    this._callback.onMenuClick = callback;
+    this.getElement().addEventListener('click', this._menuClickHandler);
   }
 }
