@@ -72,10 +72,6 @@ const createStatisticsTemplate = (filmsData) => {
   const totalDurationHours = Math.floor(countTotalDuration(filmsData).as('hours'));
   const totalDurationMinutes = countTotalDuration(filmsData).minutes();
 
-  const uniqGenres = Array.from(getGenresSet(filmsData));
-  const filmsByGenreCount = uniqGenres.map((genre) => countFilmsByGenre(filmsData, genre));
-
-
   return (`<section class="statistic">
     <p class="statistic__rank">
       Your rank

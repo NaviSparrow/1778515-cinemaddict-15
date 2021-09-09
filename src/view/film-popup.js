@@ -258,7 +258,7 @@ export default class FilmPopup extends SmartView {
     evt.preventDefault();
     this._changeData(
       UserAction.BUTTON_CLICK,
-      this._currentFilter === FilterType.ALL || evt.target.name === ButtonName //TODO уточнить момент
+      this._currentFilter === FilterType.ALL || evt.target.name === ButtonName.FAVORITES //TODO уточнить момент
         ? UpdateType.PATCH
         : UpdateType.MAJOR,
       Object.assign(

@@ -1,5 +1,7 @@
 import dayjs from 'dayjs';
+// eslint-disable-next-line no-undef
 const duration = require('dayjs/plugin/duration');
+// eslint-disable-next-line no-undef
 const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(duration);
 dayjs.extend(relativeTime);

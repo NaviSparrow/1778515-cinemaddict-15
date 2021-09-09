@@ -48,7 +48,7 @@ export default class Film {
   _handleWatchListClick() {
     this._changeData(
       UserAction.BUTTON_CLICK,
-      this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MINOR, //если фильтр all ? то patch : иначе Major
+      this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
