@@ -105,7 +105,6 @@ export default class FilmsBoard {
         break;
       case UpdateType.MINOR_COMMENTS:
         this._clearMostCommentedFilmsList();
-        this._renderMostCommentedList();
         this._renderMostCommentedFilms();
         this._boardFilmPresenter.get(data.id).init(data, this._setOfContainers); //TODO ошибка здесь
 
@@ -188,7 +187,6 @@ export default class FilmsBoard {
 
   _clearMostCommentedFilmsList() {
     this._mostCommentedFilmPresenter.forEach((presenter) => presenter.destroy());
-    remove(this._mostCommentedListComponent);
   }
 
   _clearFilmsSection(resetFilmsCount) {
@@ -247,11 +245,9 @@ export default class FilmsBoard {
       .sort((filmA, filmB) => filmB.rating - filmA.rating);
 
     const isEveryRatingNull = topRatedFilms
-      .slice()
       .every((film) => film.rating === 0);
 
     const isEveryRatingEqual = topRatedFilms
-      .slice()
       .every((film) => film.rating === topRatedFilms[0].rating);
 
     if (isEveryRatingNull) {
@@ -273,11 +269,9 @@ export default class FilmsBoard {
       .sort((filmA, filmB) => filmB.comments.length - filmA.comments.length);
 
     const isEveryCommentsBlockNull = mostCommentedFilms
-      .slice()
       .every((film) => film.comments.length === 0);
 
     const isCommentsAmountEqual = mostCommentedFilms
-      .slice()
       .every((film) => film.comments.length === mostCommentedFilms[0].comments.length);
 
     if (isEveryCommentsBlockNull) {
