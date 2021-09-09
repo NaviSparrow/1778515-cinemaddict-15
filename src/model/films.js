@@ -6,8 +6,10 @@ export default class Films extends AbstractObserver {
     this._films = [];
   }
 
-  setFilms(films) {
+  setFilms(updateType, films) {
     this._films = films.slice();
+
+    this.notify(updateType);
   }
 
   getFilms() {
@@ -68,33 +70,35 @@ export default class Films extends AbstractObserver {
       {},
       film,
       {
-        ['comments']: comments,
-        ['film_info']: {
-          ['actors']: actors,
-          ['age_rating']: ageRating,
-          ['alternative_title']: originalTitle,
-          ['description']: description,
-          ['director']: director,
-          ['genre']: genres,
-          ['poster']: poster,
-          ['release']: {
-            ['date']: releaseDate,
-            ['release_country']: country,
+        'comments': film.comments,
+        'film_info': {
+          'actors': film.actors,
+          'age_rating': film.ageRating,
+          'alternative_title': film.originalTitle,
+          'description': film.description,
+          'director': film.director,
+          'genre': film.genres,
+          'poster': film.poster,
+          'release': {
+            'date': film.releaseDate,
+            'release_country': film.country,
           },
-          ['runtime']: duration,
-          ['title']: title,
-          ['total_rating']: rating,
-          ['writers']: writers,
+          'runtime': film.duration,
+          'title': film.title,
+          'total_rating': film.rating,
+          'writers': film.writers,
         },
-        ['id']: id,
-        ['user_details']: {
-          ['already_watched']: isWatched,
-          ['favorite']: isFavorite,
-          ['watchlist']: isInWatchList,
-          ['watching_date']: watchingDate,
+        'id': film.id,
+        'user_details': {
+          'already_watched': film.isWatched,
+          'favorite': film.isFavorite,
+          'watchlist': film.isInWatchList,
+          'watching_date': film.watchingDate,
         },
       });
-  }
+    delete adaptedFilm.isWatched;
+    delete adaptedFilm.isFavorite;
+    delete adaptedFilm.isInWatchList;
 
     return adaptedFilm;
 

@@ -16,8 +16,9 @@ const UserAction = {
 const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
-  MAJOR: 'MAJOR',
   MINOR_COMMENTS: 'MINOR_COMMENTS',
+  MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 const ButtonName = {

@@ -13,18 +13,19 @@ export default class Api {
 
   getFilms() {
     return this._load({url: 'movies'})
-      .then(Api.toJSON);
-      // .then((films) => films.map(FilmsModel.adaptToClient));
+      .then(Api.toJSON)
+      .then((films) => films.map(FilmsModel.adaptToClient));
   }
 
   updateFilm(film) {
     return this._load({
       url: `/movies/:${film.id}`,
       method: Method.PUT,
-      body: JSON.stringify(film),
+      body: JSON.stringify(FilmsModel.adaptedToServer(film)),
       headers: new Headers({'Counter-Type': 'application/json'}),
     })
-      .then(Api.toJSON);
+      .then(Api.toJSON)
+      .then(FilmsModel.adaptToClient);
   }
 
   _load({
