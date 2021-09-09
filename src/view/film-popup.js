@@ -4,7 +4,7 @@ import SmartView from './smart.js';
 import CommentFormView from './comment-form.js';
 import {FilterType} from '../utils/filter-utils';
 import {UpdateType, UserAction, ButtonName} from '../utils/utils.js';
-import {formatDuration, formatDate, createGenres, formatCommentDate, getWatchingDate} from '../utils/film-utils.js';
+import {formatDuration, formatDate, createGenres, formatCommentDate, updateWatchingDate} from '../utils/film-utils.js';
 import {isCtrlEnterEvent, isEscEvent, render, RenderPlace} from '../utils/dom-utils.js';
 
 
@@ -216,7 +216,7 @@ export default class FilmPopup extends SmartView {
 
   _watchedClickHandler(evt) {
     evt.preventDefault();
-    const watchingDate = getWatchingDate(this._data);
+    const watchingDate = updateWatchingDate(this._data);
     this._changeData(
       UserAction.BUTTON_CLICK,
       this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MAJOR,
