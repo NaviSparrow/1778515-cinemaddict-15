@@ -335,7 +335,7 @@ export default class FilmPopup extends SmartView {
 
   _formSubmitHandler(evt) {
     if (isCtrlEnterEvent(evt)) {
-      const newCommentForm = {
+      const newComment = {
         id: nanoid(),
         author: 'fromServer',
         comment: this._data.localComment.comment,
@@ -343,7 +343,7 @@ export default class FilmPopup extends SmartView {
         emotion: this._data.localComment.emotion,
       };
 
-      this._newCommentComponent = new CommentFormView(newCommentForm);
+      this._newCommentComponent = new CommentFormView(newComment);
 
       render(this._getCommentsContainer(), this._newCommentComponent, RenderPlace.BEFOREEND);
 
@@ -351,7 +351,7 @@ export default class FilmPopup extends SmartView {
         comments: Object.assign(
           this._data.comments = [
             ...this._data.comments,
-            newCommentForm,
+            newComment,
           ],
         ),
       });

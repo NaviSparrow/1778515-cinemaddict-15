@@ -49,16 +49,17 @@ export default class Filters extends AbstractView {
     evt.preventDefault();
     this._callback.onMenuClick(evt.target.hash);
 
-    this._setStatsItem(evt.target.hash);
+    this._updateActiveMenuItem(evt.target.hash);
   }
 
-  _setStatsItem(menuItem) {
-    const additionalActiveClass = 'main-navigation__additional--active';
+  _updateActiveMenuItem(menuItem) {
+    const additionalActiveClassName = 'main-navigation__additional--active';
     const statsItem = this.getElement().querySelector('.main-navigation__additional');
+    const currentActiveMenuItem = this.getElement().querySelector('.main-navigation__item--active');
     if (menuItem === MenuItem.STATISTICS) {
-      if (!statsItem.classList.contains(additionalActiveClass)) {
-        statsItem.classList.add(additionalActiveClass);
-        this.getElement().querySelector('.main-navigation__item--active').classList.remove('main-navigation__item--active');
+      if (!statsItem.classList.contains(additionalActiveClassName)) {
+        statsItem.classList.add(additionalActiveClassName);
+        currentActiveMenuItem.classList.remove('main-navigation__item--active');
       }
     } else {
       statsItem.classList.remove('main-navigation__additional--active');
