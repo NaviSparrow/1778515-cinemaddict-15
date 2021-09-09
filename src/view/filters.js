@@ -59,6 +59,7 @@ export default class Filters extends AbstractView {
     if (menuItem === MenuItem.STATISTICS) {
       if (!statsItem.classList.contains(additionalActiveClassName)) {
         statsItem.classList.add(additionalActiveClassName);
+
         currentActiveMenuItem.classList.remove('main-navigation__item--active');
       }
     } else {

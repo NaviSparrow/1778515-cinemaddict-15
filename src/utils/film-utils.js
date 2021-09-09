@@ -32,6 +32,7 @@ const formatCommentDate = (date) => dayjs(date).fromNow();
 
 const updateWatchingDate = (film) => !film.isWatched ? film.watchingDate = dayjs() : film.watchingDate = null;
 
+
 export {
   EmojiState,
   formatDuration,

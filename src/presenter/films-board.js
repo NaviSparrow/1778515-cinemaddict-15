@@ -7,8 +7,8 @@ import MostCommentedFilmsView from '../view/most-commented-films.js';
 import SortView from '../view/sort.js';
 import NoFilmsView from '../view/no-films';
 import {RenderPlace, render, remove} from '../utils/dom-utils.js';
-import {getRandomArrayElement, sortByDate, sortByRating, SortType, UpdateType, UserAction} from '../utils/utils.js';
 import {filter, FilterType} from '../utils/filter-utils.js';
+import {getRandomArrayElement, sortByDate, sortByRating, SortType, UpdateType, UserAction} from '../utils/utils.js';
 
 const CARDS_PER_STEP = 5;
 const EXTRA_CARDS_COUNT = 2;

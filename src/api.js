@@ -1,3 +1,5 @@
+import FilmsModel from './model/films.js';
+
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
@@ -12,6 +14,7 @@ export default class Api {
   getFilms() {
     return this._load({url: 'movies'})
       .then(Api.toJSON);
+      // .then((films) => films.map(FilmsModel.adaptToClient));
   }
 
   updateFilm(film) {
