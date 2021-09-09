@@ -1,16 +1,12 @@
 import SmartView from './smart.js';
-import dayjs from 'dayjs';
-const duration = require('dayjs/plugin/duration');
-const relativeTime = require('dayjs/plugin/relativeTime');import Chart from 'chart.js';
+import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {filter, FilterType} from '../utils/filter-utils.js';
 import {getGenresSet, countFilmsByGenre, countTotalDuration} from '../utils/utils.js';
 
-const renderStatisticChart = (statisticCtx, films) => {
+const createStatisticChart = (statisticCtx, films) => {
   const uniqGenres = Array.from(getGenresSet(films));
   const filmsByGenreCount = uniqGenres.map((genre) => countFilmsByGenre(films, genre));
-  console.log(films);
-  console.log(filmsByGenreCount);
 
   return new Chart(statisticCtx, {
     plugins: [ChartDataLabels],
@@ -135,7 +131,6 @@ export default class Statistics extends SmartView {
 
     this._statisticChart = null;
 
-    // this._dateChangeHandler = this._dateChangeHandler.bind(this);
     this._setChart();
   }
 
@@ -162,6 +157,6 @@ export default class Statistics extends SmartView {
     }
     const statisticCtx = this.getElement().querySelector('.statistic__chart');
 
-    this._statisticChart = renderStatisticChart(statisticCtx, this._filmsData);
+    this._statisticChart = createStatisticChart(statisticCtx, this._filmsData);
   }
 }

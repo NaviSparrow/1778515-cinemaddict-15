@@ -49,8 +49,6 @@ const getRandomArray = (array, max, min = 1) => {
   return newArray.slice(0, getRandomInteger(min, max));
 };
 
-const applyClassName = (condition, trueClassName, falseClassName = '') => condition ? trueClassName : falseClassName;
-
 const updateItem = (items, update) => {
   const index = items.findIndex((item) => item.id === update.id);
 
@@ -65,11 +63,7 @@ const updateItem = (items, update) => {
   ];
 };
 
-const getGenresSet = (films) => {
-  const uniqGenresSet = new Set();
-  films.map((film) => film.genres.map((genre) => uniqGenresSet.add(genre)));
-  return uniqGenresSet;
-};
+const getGenresSet = (films) => new Set(films.flatMap((film) => film.genres));
 
 const countFilmsByGenre = (films, genre) => {
   let result = 0;
@@ -82,14 +76,7 @@ const countFilmsByGenre = (films, genre) => {
   return result;
 };
 
-const countTotalDuration = (films) => {
-  let resultDuration = dayjs.duration(0, 'm').asMinutes();
-  films.forEach((film) => {
-    const filmDuration  = dayjs.duration(film.duration, 'm').asMinutes();
-    resultDuration += filmDuration;
-  });
-  return (dayjs.duration(resultDuration, 'm'));
-};
+const countTotalDuration = (films) => dayjs.duration(films.reduce((totalDuration, film) => totalDuration + film.duration, 0), 'm');
 
 export {
   SortType,
@@ -103,7 +90,6 @@ export {
   getRandomInteger,
   getRandomArrayElement,
   getRandomArray,
-  applyClassName,
   updateItem,
   getGenresSet,
   countFilmsByGenre,

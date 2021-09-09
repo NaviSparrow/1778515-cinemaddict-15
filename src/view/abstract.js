@@ -23,8 +23,4 @@ export default class Abstract  {
   removeElement() {
     this._element = null;
   }
-
-  checkElement() {
-    return this._element;
-  }
 }
