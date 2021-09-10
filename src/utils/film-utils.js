@@ -1,5 +1,7 @@
 import dayjs from 'dayjs';
+// eslint-disable-next-line no-undef
 const duration = require('dayjs/plugin/duration');
+// eslint-disable-next-line no-undef
 const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -28,12 +30,15 @@ const formatYear = (year) => dayjs(year).format('YYYY');
 
 const formatCommentDate = (date) => dayjs(date).fromNow();
 
+const updateWatchingDate = (film) => !film.isWatched ? film.watchingDate = dayjs() : film.watchingDate = null;
+
 export {
   EmojiState,
   formatDuration,
   formatDate,
   createGenres,
   formatYear,
-  formatCommentDate
+  formatCommentDate,
+  updateWatchingDate
 };
 

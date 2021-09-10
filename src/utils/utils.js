@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 const SortType = {
   BY_DEFAULT: 'by-default',
   BY_DATE: 'by-date',
@@ -15,12 +17,18 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  MINOR_COMMENTS: 'MINOR_COMMENTS',
 };
 
 const ButtonName = {
   WATCHLIST: 'watchlist',
   WATCHED: 'watched',
   FAVORITES: 'favorite',
+};
+
+const MenuItem = {
+  FILMS: '#all',
+  STATISTICS: '#stats',
 };
 
 const sortByDate = (filmA, filmB) => filmB.year - filmA.year;
@@ -41,8 +49,6 @@ const getRandomArray = (array, max, min = 1) => {
   return newArray.slice(0, getRandomInteger(min, max));
 };
 
-const applyClassName = (condition, trueClassName, falseClassName = '') => condition ? trueClassName : falseClassName;
-
 const updateItem = (items, update) => {
   const index = items.findIndex((item) => item.id === update.id);
 
@@ -57,18 +63,35 @@ const updateItem = (items, update) => {
   ];
 };
 
+const getGenresSet = (films) => new Set(films.flatMap((film) => film.genres));
+
+const countFilmsByGenre = (films, genre) => {
+  let result = 0;
+  films
+    .filter((film) => film.genres
+      .forEach((filmGenre) => {
+        filmGenre === genre ? result += 1 : result;
+      }),
+    );
+  return result;
+};
+
+const countTotalDuration = (films) => dayjs.duration(films.reduce((totalDuration, film) => totalDuration + film.duration, 0), 'm');
 
 export {
   SortType,
   UserAction,
   UpdateType,
   ButtonName,
+  MenuItem,
   sortByDate,
   sortByRating,
   getRandomFloat,
   getRandomInteger,
   getRandomArrayElement,
   getRandomArray,
-  applyClassName,
-  updateItem
+  updateItem,
+  getGenresSet,
+  countFilmsByGenre,
+  countTotalDuration
 };

@@ -4,7 +4,6 @@ export default class Films extends AbstractObserver {
   constructor() {
     super();
     this._films = [];
-    this._comments = [];
   }
 
   setFilms(films) {

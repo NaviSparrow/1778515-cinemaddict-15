@@ -93,6 +93,17 @@ const AGE_RATINGS = [
   '18+',
 ];
 
+const DATES = [
+  '2021-09-03T16:12:32.554Z',
+  '2021-08-11T00:00:00.554Z',
+  '2021-09-04T12:42:32.554Z',
+  '2021-08-30T12:42:32.554Z',
+  '2020-08-03T16:12:32.554Z',
+  '2021-07-11T00:00:00.554Z',
+  '2020-09-04T12:42:32.554Z',
+  '2021-08-30T12:42:32.554Z',
+];
+
 const generateCommentItems = () => {
   const array = [];
   for (let i = 0; i < getRandomInteger(0, 4); i++) {
@@ -146,6 +157,10 @@ const generateCountry = () => getRandomArrayElement(COUNTRES);
 
 const generateAgeRating = () => getRandomArrayElement(AGE_RATINGS);
 
+const generateWatchedDate = (isWatched) =>  isWatched ? getRandomArrayElement(DATES) : '';
+
+const isFilmWatched = () => Boolean(getRandomInteger(0, 1));
+
 export const generateFilmCard = () => (
   {
     id: nanoid(),
@@ -165,8 +180,9 @@ export const generateFilmCard = () => (
     country: generateCountry(),
     ageRating: generateAgeRating(),
     isInWatchList: Boolean(getRandomInteger(0, 1)),
-    isWatched: Boolean(getRandomInteger(0, 1)),
+    isWatched: isFilmWatched(),
     isFavorite: Boolean(getRandomInteger(0, 1)),
+    watchingDate: generateWatchedDate(),
     localComment: {
       emotion: null,
       comment: '',

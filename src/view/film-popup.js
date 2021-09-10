@@ -1,10 +1,10 @@
 import  he from 'he';
 import {nanoid} from 'nanoid';
 import SmartView from './smart.js';
-import NewCommentView from './new-comment.js';
+import CommentFormView from './comment-form.js';
 import {FilterType} from '../utils/filter-utils';
 import {UpdateType, UserAction, ButtonName} from '../utils/utils.js';
-import {formatDuration, formatDate, createGenres, formatCommentDate} from '../utils/film-utils.js';
+import {formatDuration, formatDate, createGenres, formatCommentDate, updateWatchingDate} from '../utils/film-utils.js';
 import {isCtrlEnterEvent, isEscEvent, render, RenderPlace} from '../utils/dom-utils.js';
 
 
@@ -199,7 +199,7 @@ export default class FilmPopup extends SmartView {
 
     this._changeData(
       UserAction.DELETE_COMMENT,
-      UpdateType.PATCH,
+      UpdateType.MINOR_COMMENTS,
       Object.assign(
         {},
         FilmPopup.parseDataToFilm(this._data),
@@ -216,6 +216,7 @@ export default class FilmPopup extends SmartView {
 
   _watchedClickHandler(evt) {
     evt.preventDefault();
+    const watchingDate = updateWatchingDate(this._data);
     this._changeData(
       UserAction.BUTTON_CLICK,
       this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MAJOR,
@@ -224,6 +225,7 @@ export default class FilmPopup extends SmartView {
         FilmPopup.parseDataToFilm(this._data),
         {
           isWatched: !this._data.isWatched,
+          watchingDate,
         },
       ),
     );
@@ -235,7 +237,6 @@ export default class FilmPopup extends SmartView {
 
   _addToWatchListClickHandler(evt) {
     evt.preventDefault();
-    console.log(this._data.comments);
     this._changeData(
       UserAction.BUTTON_CLICK,
       this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MAJOR,
@@ -257,7 +258,7 @@ export default class FilmPopup extends SmartView {
     evt.preventDefault();
     this._changeData(
       UserAction.BUTTON_CLICK,
-      this._currentFilter === FilterType.ALL || evt.target.name === ButtonName //TODO уточнить момент
+      this._currentFilter === FilterType.ALL || evt.target.name === ButtonName.FAVORITES //TODO уточнить момент
         ? UpdateType.PATCH
         : UpdateType.MAJOR,
       Object.assign(
@@ -334,7 +335,7 @@ export default class FilmPopup extends SmartView {
 
   _formSubmitHandler(evt) {
     if (isCtrlEnterEvent(evt)) {
-      const newCommentItem = {
+      const newComment = {
         id: nanoid(),
         author: 'fromServer',
         comment: this._data.localComment.comment,
@@ -342,7 +343,7 @@ export default class FilmPopup extends SmartView {
         emotion: this._data.localComment.emotion,
       };
 
-      this._newCommentComponent = new NewCommentView(newCommentItem);
+      this._newCommentComponent = new CommentFormView(newComment);
 
       render(this._getCommentsContainer(), this._newCommentComponent, RenderPlace.BEFOREEND);
 
@@ -350,23 +351,23 @@ export default class FilmPopup extends SmartView {
         comments: Object.assign(
           this._data.comments = [
             ...this._data.comments,
-            newCommentItem,
+            newComment,
           ],
         ),
       });
-    }
 
-    this._changeData(
-      UserAction.ADD_COMMENT,
-      UpdateType.PATCH,
-      Object.assign(
-        {},
-        FilmPopup.parseDataToFilm(this._data),
-        {
-          comments: this._data.comments,
-        },
-      ),
-    );
+      this._changeData(
+        UserAction.ADD_COMMENT,
+        UpdateType.MINOR_COMMENTS,
+        Object.assign(
+          {},
+          FilmPopup.parseDataToFilm(this._data),
+          {
+            comments: this._data.comments,
+          },
+        ),
+      );
+    }
   }
 
   restoreHandlers() {
@@ -375,7 +376,7 @@ export default class FilmPopup extends SmartView {
 
   _setInnerHandlers() {
     this.getElement()
-      .querySelector('.film-details__comment-input')
+      .querySelector('.film-details__inner')
       .addEventListener('keydown', this._formSubmitHandler);
     this.getElement()
       .querySelector('.film-details__control-button--watched')

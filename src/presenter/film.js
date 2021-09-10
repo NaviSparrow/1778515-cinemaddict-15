@@ -3,6 +3,7 @@ import FilmPopupView from '../view/film-popup.js';
 import {RenderPlace, render, remove, replace} from '../utils/dom-utils.js';
 import {UpdateType, UserAction} from '../utils/utils.js';
 import {FilterType} from '../utils/filter-utils.js';
+import {updateWatchingDate} from '../utils/film-utils.js';
 
 export default class Film {
   constructor(filmListContainer, changeData, currentFilter) {
@@ -47,7 +48,7 @@ export default class Film {
   _handleWatchListClick() {
     this._changeData(
       UserAction.BUTTON_CLICK,
-      this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MAJOR, //если фильтр all ? то patch : иначе Major
+      this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -59,14 +60,16 @@ export default class Film {
   }
 
   _handleWatchedClick() {
+    const watchingDate = updateWatchingDate(this._film);
     this._changeData(
       UserAction.BUTTON_CLICK,
-      this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MAJOR,
+      this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
         {
           isWatched: !this._film.isWatched,
+          watchingDate,
         },
       ),
     );
@@ -75,7 +78,7 @@ export default class Film {
   _handleFavoritesClick() {
     this._changeData(
       UserAction.BUTTON_CLICK,
-      this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MAJOR, //TODO поменять на isFilterTypeAll
+      this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MINOR, //TODO поменять на isFilterTypeAll
       Object.assign(
         {},
         this._film,
