@@ -61,8 +61,8 @@ export default class Films extends AbstractObserver {
 
     delete adaptedFilm['film_info'];
     delete adaptedFilm['user_details'];
-
     return adaptedFilm;
+
   }
 
   static adaptedToServer(film) {
@@ -96,10 +96,23 @@ export default class Films extends AbstractObserver {
           'watching_date': film.watchingDate,
         },
       });
+
     delete adaptedFilm.isWatched;
     delete adaptedFilm.isFavorite;
     delete adaptedFilm.isInWatchList;
-
+    delete adaptedFilm.actors;
+    delete adaptedFilm.ageRating;
+    delete adaptedFilm.country;
+    delete adaptedFilm.description;
+    delete adaptedFilm.director;
+    delete adaptedFilm.duration;
+    delete adaptedFilm.originalTitle;
+    delete adaptedFilm.poster;
+    delete adaptedFilm.rating;
+    delete adaptedFilm.releaseDate;
+    delete adaptedFilm.title;
+    delete adaptedFilm.watchingDate;
+    delete adaptedFilm.writers;
     return adaptedFilm;
 
   }

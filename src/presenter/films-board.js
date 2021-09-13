@@ -75,7 +75,9 @@ export default class FilmsBoard {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.BUTTON_CLICK:
-        this._filmsModel.updateFilm(updateType, update);
+        this._api.updateFilm(update).then((response) => {
+          this._filmsModel.updateFilm(updateType, response);
+        });
         break;
       case UserAction.DELETE_COMMENT:
         this._filmsModel.updateFilm(updateType, update);

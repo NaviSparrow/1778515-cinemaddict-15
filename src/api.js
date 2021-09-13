@@ -24,10 +24,9 @@ export default class Api {
 
   updateFilm(film) {
     return this._load({
-      url: `/movies/${film.id}`,
+      url: `movies/${film.id}`,
       method: Method.PUT,
       body: JSON.stringify(FilmsModel.adaptedToServer(film)),
-      headers: new Headers({'Counter-Type': 'application/json'}),
     })
       .then(Api.toJSON)
       .then(FilmsModel.adaptToClient);
