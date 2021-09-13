@@ -16,9 +16,11 @@ const END_POINT = 'https://15.ecmascript.pages.academy/cinemaddict';
 
 const mainSection = document.querySelector('.main');
 const header = document.querySelector('.header');
+const userProfileComponent = new UserProfileView();
+render(header, userProfileComponent, RenderPlace.BEFOREEND);
+
 
 const footerStatistics = document.querySelector('.footer__statistics');
-
 
 const api = new Api(END_POINT, AUTHORIZATION);
 
@@ -61,11 +63,10 @@ filmsBoardPresenter.init();
 api.getFilms()
   .then((films) => {
     filmsModel.setFilms(UpdateType.INIT, films);
-    render(header, new UserProfileView, RenderPlace.BEFOREEND);
-  });
-  // .catch(() => {
-  //   filmsModel.setFilms(UpdateType.INIT, []);
-  //   render(header, new UserProfileView, RenderPlace.BEFOREEND);
-  // });
+    render(footerStatistics, new StatisticsFooterView(films.length), RenderPlace.BEFOREEND);
 
-// render(footerStatistics, new StatisticsFooterView(filmCards.length), RenderPlace.BEFOREEND);
+  });
+// .catch(() => {
+//   filmsModel.setFilms(UpdateType.INIT, []);
+// });
+

@@ -38,7 +38,11 @@ const MenuItem = {
   STATISTICS: '#stats',
 };
 
-const sortByDate = (filmA, filmB) => filmB.year - filmA.year;
+const sortByDate = (filmA, filmB) => {
+  const dateOfFilmB = dayjs(filmB.releaseDate);
+  const dateOfFilmA = dayjs(filmA.releaseDate);
+  return dateOfFilmB.diff(dateOfFilmA, 'year');
+};
 
 const sortByRating = (filmA ,filmB) => filmB.rating - filmA.rating;
 

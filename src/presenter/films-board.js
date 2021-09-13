@@ -133,8 +133,6 @@ export default class FilmsBoard {
     this._currentSortType = sortType;
     this._clearFilmsSection(true);
     this._renderBoardFilms();
-    this._renderTopRatedList();
-    this._renderMostCommentedList();
     this._renderTopRatedFilms();
     this._renderMostCommentedFilms();
   }
@@ -146,7 +144,6 @@ export default class FilmsBoard {
     this._sortCopmponent = new SortView(this._currentSortType);
     this._sortCopmponent.setSortTypeClickHandler(this._handleSortTypeClick);
     render(this._boardContainer, this._sortCopmponent, RenderPlace.BEFOREEND);
-
   }
 
   _renderLoading() {
@@ -217,8 +214,6 @@ export default class FilmsBoard {
       : this._renderedFilmsCount = Math.min(filmCount, this._renderedFilmsCount);
 
     remove(this._showMoreButtonComponent);
-    remove(this._topRatedListComponent);
-    remove(this._mostCommentedListComponent);
     remove(this._loadingComponent);
   }
 

@@ -26,7 +26,7 @@ const formatDate = (date) => dayjs(date).format('DD MMMM YYYY');
 
 const createGenres = (genresList) => genresList.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 
-const formatYear = (year) => dayjs(year).format('YYYY');
+const formatYear = (date) => dayjs(date).format('YYYY');
 
 const formatCommentDate = (date) => dayjs(date).fromNow();
 

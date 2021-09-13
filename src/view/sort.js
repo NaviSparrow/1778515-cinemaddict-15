@@ -3,15 +3,16 @@ import {SortType} from '../utils/utils.js';
 
 const createSortTemplate = () => (
   `<ul class="sort">
-<li><a href="#" class="sort__button sort__button--active" data-sort-type="${SortType.BY_DEFAULT}">Sort by default</a></li>
+<li><a href="#" class="sort__button" data-sort-type="${SortType.BY_DEFAULT}">Sort by default</a></li>
 <li><a href="#" class="sort__button" data-sort-type="${SortType.BY_DATE}">Sort by date</a></li>
 <li><a href="#" class="sort__button" data-sort-type="${SortType.BY_RATING}">Sort by rating</a></li>
 </ul>`
 );
 
 export default class Sort extends AbstractView {
-  constructor() {
+  constructor(currentSortType) {
     super();
+    this._currentSortType = currentSortType;
 
     this._sortTypeClickHandler = this._sortTypeClickHandler.bind(this);
   }

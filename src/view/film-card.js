@@ -2,7 +2,7 @@ import { formatDuration, formatYear } from '../utils/film-utils.js';
 import AbstractView from './abstract.js';
 
 const createFilmCardTemplate = (film) => {
-  const {title, rating, year, duration, genres, poster, description, comments, isInWatchList, isWatched, isFavorite} = film;
+  const {title, rating, releaseDate, duration, genres, poster, description, comments, isInWatchList, isWatched, isFavorite} = film;
   const fullDescription = description;
   const getShortDescription = () => `${fullDescription.slice(0, 139)}...`;
 
@@ -10,7 +10,7 @@ const createFilmCardTemplate = (film) => {
     <h3 class="film-card__title">${title}</h3>
     <p class="film-card__rating">${rating}</p>
     <p class="film-card__info">
-      <span class="film-card__year">${formatYear(year)}</span>
+      <span class="film-card__year">${formatYear(releaseDate)}</span>
       <span class="film-card__duration">${formatDuration(duration)}</span>
       <span class="film-card__genre">${genres[0]}</span>
     </p>

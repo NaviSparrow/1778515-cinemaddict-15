@@ -2,9 +2,9 @@ import  he from 'he';
 import SmartView from './smart.js';
 import CommentFormView from './comment-form.js';
 import {FilterType} from '../utils/filter-utils';
-import {UpdateType, UserAction, ButtonName} from '../utils/utils.js';
+import {UpdateType, UserAction, ButtonName, CommentAction} from '../utils/utils.js';
 import {formatDuration, formatDate, createGenres, formatCommentDate, updateWatchingDate} from '../utils/film-utils.js';
-import {isCtrlEnterEvent, isEscEvent, render, RenderPlace} from '../utils/dom-utils.js';
+import {isCtrlEnterEvent, render, RenderPlace} from '../utils/dom-utils.js';
 
 
 const createPopupDetailsTemplate = (data) => {
@@ -75,9 +75,8 @@ const createPopupDetailsTemplate = (data) => {
   );
 };
 
-const createCommentsListTemplate = (comments) => {
-  console.log(comments);
-  return (`<ul class="film-details__comments-list">
+const createCommentsListTemplate = (comments) => (
+  `<ul class="film-details__comments-list">
         ${comments.map(({author, comment, date, emotion}) => `<li class="film-details__comment">
             <span class="film-details__comment-emoji">
               <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
@@ -92,8 +91,8 @@ const createCommentsListTemplate = (comments) => {
             </div>
           </li>`).join('')}
     </ul>`
-  );
-};
+);
+
 const createNewCommentFormTemplate = ({emotion, comment}) => (
   `<div class="film-details__new-comment">
           <div class="film-details__add-emoji-label">${emotion ? `<img src="./images/emoji/${emotion}.png" width="79" height="68">` : ''}</div>
@@ -373,7 +372,6 @@ export default class FilmPopup extends SmartView {
   }
 
   setCloseClickHandler(callback) {
-    console.log(callback);
     this._callback.closeOnClick = callback;
     this.getElement()
       .querySelector('.film-details__close-btn')
