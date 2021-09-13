@@ -13,11 +13,18 @@ const UserAction = {
   DELETE_COMMENT: 'DELETE_COMMENT',
 };
 
+const CommentAction = {
+  DELETE: 'DELETE',
+  ADD: 'ADD',
+  LOAD: 'LOAD',
+};
+
 const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
-  MAJOR: 'MAJOR',
   MINOR_COMMENTS: 'MINOR_COMMENTS',
+  MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 const ButtonName = {
@@ -31,7 +38,11 @@ const MenuItem = {
   STATISTICS: '#stats',
 };
 
-const sortByDate = (filmA, filmB) => filmB.year - filmA.year;
+const sortByDate = (filmA, filmB) => {
+  const dateOfFilmB = dayjs(filmB.releaseDate);
+  const dateOfFilmA = dayjs(filmA.releaseDate);
+  return dateOfFilmB.diff(dateOfFilmA, 'year');
+};
 
 const sortByRating = (filmA ,filmB) => filmB.rating - filmA.rating;
 
@@ -81,6 +92,7 @@ const countTotalDuration = (films) => dayjs.duration(films.reduce((totalDuration
 export {
   SortType,
   UserAction,
+  CommentAction,
   UpdateType,
   ButtonName,
   MenuItem,
