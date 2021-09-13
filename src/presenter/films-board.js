@@ -6,6 +6,7 @@ import TopRatedFilmsView from '../view/top-rated-films.js';
 import MostCommentedFilmsView from '../view/most-commented-films.js';
 import SortView from '../view/sort.js';
 import NoFilmsView from '../view/no-films';
+import LoadingView from '../view/loading.js';
 import {RenderPlace, render, remove} from '../utils/dom-utils.js';
 import {filter, FilterType} from '../utils/filter-utils.js';
 import {getRandomArrayElement, sortByDate, sortByRating, SortType, UpdateType, UserAction} from '../utils/utils.js';
@@ -14,10 +15,11 @@ const CARDS_PER_STEP = 5;
 const EXTRA_CARDS_COUNT = 2;
 
 export default class FilmsBoard {
-  constructor(boardContainer, filmsModel, filterModel) {
+  constructor(boardContainer, filmsModel, filterModel, commentsModel, api) {
     this._boardContainer = boardContainer;
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
+    this._commentsModel = commentsModel;
     this._filterType = FilterType.ALL;
     this._renderedFilmsCount = CARDS_PER_STEP;
     this._boardFilmPresenter = new Map();
@@ -25,11 +27,14 @@ export default class FilmsBoard {
     this._mostCommentedFilmPresenter = new Map();
     this._setOfContainers = new Set();
     this._currentSortType = SortType.BY_DEFAULT;
+    this._isLoading = true;
+    this._api = api;
 
     this._filmsSectionComponent = new FilmsSectionView();
     this._filmsListComponent = new FilmsListView();
     this._topRatedListComponent = new TopRatedFilmsView();
     this._mostCommentedListComponent = new MostCommentedFilmsView();
+    this._loadingComponent = new LoadingView();
     this._sortCopmponent = null;
     this._showMoreButtonComponent = null;
 
@@ -42,7 +47,7 @@ export default class FilmsBoard {
   init() {
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
-    this._renderFilmsBoard();
+    this._renderBoard();
   }
 
   destroy() {
@@ -97,11 +102,11 @@ export default class FilmsBoard {
         break;
       case UpdateType.MINOR:
         this._clearBoard();
-        this._renderFilmsBoard();
+        this._renderBoard();
         break;
       case UpdateType.MAJOR:
         this._clearBoard({resetRenderedTaskCount: true, resetSortType: true});
-        this._renderFilmsBoard();
+        this._renderBoard();
         break;
       case UpdateType.MINOR_COMMENTS:
         this._clearMostCommentedFilmsList();
@@ -111,6 +116,11 @@ export default class FilmsBoard {
         if (this._topRatedFilmPresenter.has(data.id)) {
           this._topRatedFilmPresenter.get(data.id).init(data, this._setOfContainers);
         }
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
+        this._renderBoard();
         break;
     }
   }
@@ -137,6 +147,10 @@ export default class FilmsBoard {
     this._sortCopmponent.setSortTypeClickHandler(this._handleSortTypeClick);
     render(this._boardContainer, this._sortCopmponent, RenderPlace.BEFOREEND);
 
+  }
+
+  _renderLoading() {
+    render(this._boardContainer, this._loadingComponent, RenderPlace.BEFOREEND);
   }
 
   _renderFilmsSection() {
@@ -168,7 +182,7 @@ export default class FilmsBoard {
   }
 
   _renderFilm(film, container = this._getBoardFilmsListContainer()) {
-    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._filterModel.getFilter());
+    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._commentsModel, this._filterModel.getFilter(), this._api);
     filmPresenter.init(film);
 
     switch (container) {
@@ -205,6 +219,7 @@ export default class FilmsBoard {
     remove(this._showMoreButtonComponent);
     remove(this._topRatedListComponent);
     remove(this._mostCommentedListComponent);
+    remove(this._loadingComponent);
   }
 
   _clearBoard({resetRenderedTaskCount = false, resetSortType = false} = {}) {
@@ -309,8 +324,13 @@ export default class FilmsBoard {
     render(this._filmsListComponent, this._showMoreButtonComponent, RenderPlace.BEFOREEND);
   }
 
-  _renderFilmsBoard() {
+  _renderBoard() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
     const filmCount = this._getFilms().length;
+
     if (filmCount === 0) {
       this._renderNoFilms();
       return;

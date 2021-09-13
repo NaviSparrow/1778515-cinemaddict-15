@@ -13,6 +13,12 @@ const UserAction = {
   DELETE_COMMENT: 'DELETE_COMMENT',
 };
 
+const CommentAction = {
+  DELETE: 'DELETE',
+  ADD: 'ADD',
+  LOAD: 'LOAD',
+};
+
 const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
@@ -82,6 +88,7 @@ const countTotalDuration = (films) => dayjs.duration(films.reduce((totalDuration
 export {
   SortType,
   UserAction,
+  CommentAction,
   UpdateType,
   ButtonName,
   MenuItem,

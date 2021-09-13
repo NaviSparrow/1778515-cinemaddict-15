@@ -3,7 +3,7 @@ import AbstractView from './abstract.js';
 
 const createFilmCardTemplate = (film) => {
   const {title, rating, year, duration, genres, poster, description, comments, isInWatchList, isWatched, isFavorite} = film;
-  const fullDescription = description.join(' ');
+  const fullDescription = description;
   const getShortDescription = () => `${fullDescription.slice(0, 139)}...`;
 
   return `<article class="film-card">
