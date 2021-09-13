@@ -1,5 +1,4 @@
 import AbstractObserver from '../utils/abstract-observer.js';
-import {CommentAction} from "../utils/utils";
 
 export default class Comments extends AbstractObserver {
   constructor() {
@@ -8,7 +7,6 @@ export default class Comments extends AbstractObserver {
   }
 
   setComments(updateType, comments) {
-    // this._comments = [];
     this._comments = comments.slice();
 
     this.notify(updateType);

@@ -13,7 +13,7 @@ export default class Films extends AbstractObserver {
   }
 
   getFilms() {
-    return this._films;
+    return this._films.slice();
   }
 
   updateFilm(updateType, update) {

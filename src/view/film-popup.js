@@ -142,7 +142,7 @@ const createPopupTemplate = (filmData, commentsData, localComment) => {
       <section class="film-details__comments-wrap">
         <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
         <ul class="film-details__comments-list">
-        ${commentsData !== null ? createCommentsListTemplate(commentsData) : ''}
+        ${isComments ? createCommentsListTemplate(commentsData) : ''}
         </ul>
         ${createNewCommentFormTemplate(localComment)}
       </section>
@@ -155,14 +155,14 @@ export default class FilmPopup extends SmartView {
   constructor(film, changeData, changeCommentsData, currentFilter, commentsModel) {
     super();
     this._film = film;
-    this._data = FilmPopup.parseFilmToData(film, this._comments, this._localComment);
+    this._data = FilmPopup.parseFilmToData(film, this._comments, this._formNewComment);
     this._changeData = changeData;
     this._changeCommentsData = changeCommentsData;
     this._currentFilter = currentFilter;
     this._commentsModel = commentsModel;
-    this._comments = null;
+    this._comments = [];
 
-    this._localComment = {
+    this._formNewComment = {
       emotion: null,
       comment: '',
     };
@@ -174,6 +174,7 @@ export default class FilmPopup extends SmartView {
     this._emojiClickHandler = this._emojiClickHandler.bind(this);
     this._resetComment = this._resetComment.bind(this);
     this._closeOnClickHandler = this._closeOnClickHandler.bind(this);
+    this._closeOnKeyDownHandler = this._closeOnKeyDownHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._deleteClickHandler = this._deleteClickHandler.bind(this);
 
@@ -188,13 +189,13 @@ export default class FilmPopup extends SmartView {
   }
 
   getTemplate() {
-    return createPopupTemplate(this._data, this._comments, this._localComment);
+    return createPopupTemplate(this._data, this._comments, this._formNewComment);
   }
 
   _resetComment() {
     this.updateData({
       localComment: Object.assign(
-        {}, this._localComment,
+        {}, this._formNewComment,
         {
           emotion: null,
           comment: '',
@@ -290,7 +291,7 @@ export default class FilmPopup extends SmartView {
     this.updateData({
       localComment: Object.assign(
         {},
-        this._localComment,
+        this._formNewComment,
         {comment: evt.target.value},
       ),
     }, this._getScrollPosition(), true);
@@ -301,7 +302,7 @@ export default class FilmPopup extends SmartView {
     this.updateData({
       localComment: Object.assign(
         {},
-        this._localComment,
+        this._formNewComment,
         {emotion: evt.target.value},
       ),
     }, this._getScrollPosition());
@@ -312,8 +313,8 @@ export default class FilmPopup extends SmartView {
       {},
       film,
       {
-        isComments: serverComments !== null,
         serverComments: serverComments,
+        isComments: serverComments !== [],
         localComment: localComment,
       },
     );
@@ -368,19 +369,31 @@ export default class FilmPopup extends SmartView {
 
   _closeOnClickHandler(evt) {
     evt.preventDefault();
-    this._callback.closeOnClick();
+    this._callback.closePopup(evt);
+  }
+
+  _closeOnKeyDownHandler(evt) {
+    evt.preventDefault();
+    this._callback.closeEscPopup(evt);
   }
 
   setCloseClickHandler(callback) {
-    this._callback.closeOnClick = callback;
+    this._callback.closePopup = callback;
     this.getElement()
       .querySelector('.film-details__close-btn')
       .addEventListener('click', this._closeOnClickHandler);
   }
 
+  setCloseEscHandler(callback) {
+    this._callback.closeEscPopup = callback;
+    document.addEventListener('keydown', this._closeOnKeyDownHandler);
+
+  }
+
   restoreHandlers() {
     this._setInnerHandlers();
-    this.setCloseClickHandler();
+    this.setCloseClickHandler(this._callback.closePopup);
+    this.setCloseEscHandler(this._callback.closeEscPopup);
   }
 
   _setInnerHandlers() {
