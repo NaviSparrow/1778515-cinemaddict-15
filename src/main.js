@@ -30,7 +30,7 @@ const filmsBoardPresenter = new FilmsBoardPresenter(mainSection, filmsModel, fil
 
 let statisticsComponent = null;
 
-let isAllMoviesMenuActive = false;
+let isAllMoviesMenuActive = true;
 
 const handleMenuClick = (menuItem) => {
   switch (menuItem) {

@@ -42,14 +42,18 @@ export default class Filters extends AbstractView {
 
   _filterTypeChangeHandler(evt) {
     evt.preventDefault();
-    this._callback.onClickChange(evt.target.hash);
+    if (evt.target.hash) {
+      this._callback.onClickChange(evt.target.hash);
+    }
   }
 
   _menuClickHandler(evt) {
     evt.preventDefault();
-    this._callback.onMenuClick(evt.target.hash);
 
-    this._updateActiveMenuItem(evt.target.hash);
+    if(evt.target.hash) {
+      this._callback.onMenuClick(evt.target.hash);
+      this._updateActiveMenuItem(evt.target.hash);
+    }
   }
 
   _updateActiveMenuItem(menuItem) {
