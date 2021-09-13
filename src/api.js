@@ -27,6 +27,7 @@ export default class Api {
       url: `movies/${film.id}`,
       method: Method.PUT,
       body: JSON.stringify(FilmsModel.adaptedToServer(film)),
+      headers: new Headers({'Content-Type': 'application/json'}),
     })
       .then(Api.toJSON)
       .then(FilmsModel.adaptToClient);
