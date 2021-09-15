@@ -77,7 +77,7 @@ const createPopupDetailsTemplate = (data) => {
 
 const createCommentsListTemplate = (comments) => (
   `<ul class="film-details__comments-list">
-        ${comments.map(({author, comment, date, emotion}) => `<li class="film-details__comment">
+        ${comments.map(({id, author, comment, date, emotion}) => `<li class="film-details__comment">
             <span class="film-details__comment-emoji">
               <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
             </span>
@@ -86,19 +86,19 @@ const createCommentsListTemplate = (comments) => (
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${author}</span>
                 <span class="film-details__comment-day">${formatCommentDate(date)}</span>
-                <button class="film-details__comment-delete">Delete</button>
+                <button class="film-details__comment-delete" data-comment-id="${id}">Delete</button>
               </p>
             </div>
           </li>`).join('')}
     </ul>`
 );
 
-const createNewCommentFormTemplate = ({emotion, comment}) => (
+const createNewCommentFormTemplate = (formNewComment) => (
   `<div class="film-details__new-comment">
-          <div class="film-details__add-emoji-label">${emotion ? `<img src="./images/emoji/${emotion}.png" width="79" height="68">` : ''}</div>
+          <div class="film-details__add-emoji-label">${formNewComment.emotion !== null ? `<img src="./images/emoji/${formNewComment.emotion}.png" width="79" height="68">` : ''}</div>
 
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(comment)}</textarea>
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(formNewComment.comment)}</textarea>
           </label>
 
           <div class="film-details__emoji-list">
@@ -123,11 +123,11 @@ const createNewCommentFormTemplate = ({emotion, comment}) => (
             </label>
           </div>
         </div>`
-);
+  );
 
 
-const createPopupTemplate = (filmData, commentsData, localComment) => {
-  const {isComments, comments} = filmData;
+const createPopupTemplate = (filmData, commentsData) => {
+  const {isComments, comments, formNewComment} = filmData;
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -144,7 +144,7 @@ const createPopupTemplate = (filmData, commentsData, localComment) => {
         <ul class="film-details__comments-list">
         ${isComments ? createCommentsListTemplate(commentsData) : ''}
         </ul>
-        ${createNewCommentFormTemplate(localComment)}
+        ${createNewCommentFormTemplate(formNewComment)}
       </section>
     </div>
   </form>
@@ -155,17 +155,13 @@ export default class FilmPopup extends SmartView {
   constructor(film, changeData, changeCommentsData, currentFilter, commentsModel) {
     super();
     this._film = film;
-    this._data = FilmPopup.parseFilmToData(film, this._comments, this._formNewComment);
+    this._data = FilmPopup.parseFilmToData(film, this._comments);
     this._changeData = changeData;
     this._changeCommentsData = changeCommentsData;
     this._currentFilter = currentFilter;
     this._commentsModel = commentsModel;
+    this._currentFilm = null;
     this._comments = [];
-
-    this._formNewComment = {
-      emotion: null,
-      comment: '',
-    };
 
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._addToWatchListClickHandler = this._addToWatchListClickHandler.bind(this);
@@ -179,23 +175,24 @@ export default class FilmPopup extends SmartView {
     this._deleteClickHandler = this._deleteClickHandler.bind(this);
 
     this._setInnerHandlers();
+    this._popupOpenHandler(this._data);
   }
 
   getComments() {
     this._comments = this._commentsModel.getComments();
     this.updateData({
       serverComments: this._comments,
-    });
+    }, this._getScrollPosition());
   }
 
   getTemplate() {
-    return createPopupTemplate(this._data, this._comments, this._formNewComment);
+    return createPopupTemplate(this._data, this._comments);
   }
 
   _resetComment() {
     this.updateData({
-      localComment: Object.assign(
-        {}, this._formNewComment,
+      formNewComment: Object.assign(
+        {}, this._data._formNewComment,
         {
           emotion: null,
           comment: '',
@@ -205,20 +202,20 @@ export default class FilmPopup extends SmartView {
 
   _deleteClickHandler (evt) {
     evt.preventDefault();
-    const index = this._comments.findIndex((comment) => comment.id === evt.target.id);
-    this._comments = [
-      ...this._comments.slice(0, index),
-      ...this._comments.slice(index + 1),
-    ];
-
-    this.updateData({
-      serverComments: this._comments,
-    }, this._getScrollPosition());
-
+    const id = evt.target.dataset.commentId;
     this._changeCommentsData(
-      CommentAction.DELETE,
-      index,
+      CommentAction.DELETE_COMMENT,
+      id,
+      FilmPopup.parseDataToFilm(this._data),
     );
+  }
+
+  _popupOpenHandler(filmData) {
+    this._currentFilm = filmData;
+  }
+
+  _popupCloseHandler() {
+    this._currentFilm = null;
   }
 
   _getScrollPosition() {
@@ -229,6 +226,7 @@ export default class FilmPopup extends SmartView {
     evt.preventDefault();
     const watchingDate = updateWatchingDate(this._data);
     this._changeData(
+      this._currentFilm,
       UserAction.BUTTON_CLICK,
       this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MAJOR,
       Object.assign(
@@ -269,7 +267,7 @@ export default class FilmPopup extends SmartView {
     evt.preventDefault();
     this._changeData(
       UserAction.BUTTON_CLICK,
-      this._currentFilter === FilterType.ALL || evt.target.name === ButtonName.FAVORITES //TODO уточнить момент
+      this._currentFilter === FilterType.ALL
         ? UpdateType.PATCH
         : UpdateType.MAJOR,
       Object.assign(
@@ -289,9 +287,9 @@ export default class FilmPopup extends SmartView {
   _commentTextInputHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      localComment: Object.assign(
+      formNewComment: Object.assign(
         {},
-        this._formNewComment,
+        this._data.formNewComment,
         {comment: evt.target.value},
       ),
     }, this._getScrollPosition(), true);
@@ -299,23 +297,27 @@ export default class FilmPopup extends SmartView {
 
   _emojiClickHandler(evt) {
     evt.preventDefault();
+
     this.updateData({
-      localComment: Object.assign(
+      formNewComment: Object.assign(
         {},
-        this._formNewComment,
+        this._data.formNewComment,
         {emotion: evt.target.value},
       ),
     }, this._getScrollPosition());
   }
 
-  static parseFilmToData(film, serverComments, localComment) {
+  static parseFilmToData(film, serverComments) {
     return Object.assign(
       {},
       film,
       {
         serverComments: serverComments,
         isComments: serverComments !== [],
-        localComment: localComment,
+        formNewComment: {
+          comment: '',
+          emotion: null,
+        },
       },
     );
   }
@@ -335,35 +337,14 @@ export default class FilmPopup extends SmartView {
 
   _formSubmitHandler(evt) {
     if (isCtrlEnterEvent(evt)) {
-      const newComment = {
-        comment: this._data.localComment.comment,
-        emotion: this._data.localComment.emotion,
-      };
-
-      this._newCommentComponent = new CommentFormView(newComment);
-
-      render(this._getCommentsContainer(), this._newCommentComponent, RenderPlace.BEFOREEND);
-
-      this.updateData({
-        comments: Object.assign(
-          this._data.comments = [
-            ...this._data.comments,
-            newComment,
-          ],
-        ),
-      });
-
-      this._changeData(
-        UserAction.ADD_COMMENT,
-        UpdateType.MINOR_COMMENTS,
-        Object.assign(
-          {},
-          FilmPopup.parseDataToFilm(this._data),
-          {
-            comments: this._data.comments,
-          },
-        ),
+      this._changeCommentsData(
+        CommentAction.ADD_COMMENT,
+        this._data.formNewComment,
+        FilmPopup.parseDataToFilm(this._data),
       );
+
+      this._newCommentComponent = new CommentFormView(this._data.formNewComment);
+      render(this._getCommentsContainer(), this._newCommentComponent, RenderPlace.BEFOREEND);
     }
   }
 
@@ -373,7 +354,6 @@ export default class FilmPopup extends SmartView {
   }
 
   _closeOnKeyDownHandler(evt) {
-    evt.preventDefault();
     this._callback.closeEscPopup(evt);
   }
 
@@ -398,7 +378,7 @@ export default class FilmPopup extends SmartView {
 
   _setInnerHandlers() {
     this.getElement()
-      .querySelector('.film-details__inner')
+      .querySelector('.film-details__comment-input')
       .addEventListener('keydown', this._formSubmitHandler);
     this.getElement()
       .querySelector('.film-details__control-button--watched')

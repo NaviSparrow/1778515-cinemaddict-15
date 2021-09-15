@@ -14,9 +14,9 @@ const UserAction = {
 };
 
 const CommentAction = {
-  DELETE: 'DELETE',
-  ADD: 'ADD',
-  LOAD: 'LOAD',
+  DELETE_COMMENT: 'DELETE_COMMENT',
+  ADD_COMMENT: 'ADD_COMMENT',
+  CHANGE: 'CHANGE',
 };
 
 const UpdateType = {

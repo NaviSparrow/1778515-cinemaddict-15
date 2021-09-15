@@ -1,6 +1,6 @@
 import FilmCardView from '../view/film-card.js';
 import FilmPopupView from '../view/film-popup.js';
-import {RenderPlace, render, remove, replace, isEscEvent} from '../utils/dom-utils.js';
+import {isEscEvent, remove, render, RenderPlace, replace} from '../utils/dom-utils.js';
 import {CommentAction, UpdateType, UserAction} from '../utils/utils.js';
 import {FilterType} from '../utils/filter-utils.js';
 import {updateWatchingDate} from '../utils/film-utils.js';
@@ -12,6 +12,7 @@ export default class Film {
     this._changeFilmData = changeData;
     this._currentFilter = currentFilter;
     this._api = api;
+    this._activeFilm = null;
 
     this._filmComponent = null;
     this._popupComponent = null;
@@ -29,10 +30,8 @@ export default class Film {
   init(film, containers) {
     this._film = film;
     const prevFilmComponent = this._filmComponent;
-
     this._filmComponent = new FilmCardView(film);
     this._popupComponent = new FilmPopupView(this._film, this._changeFilmData, this._handleCommentsAction, this._currentFilter, this._commentsModel);
-
 
     this._filmComponent.setClickHandler(this._openPopupHandler);
     this._filmComponent.setAddToWatchListClickHandler(this._handleWatchListClick);
@@ -55,20 +54,41 @@ export default class Film {
     remove(prevFilmComponent);
   }
 
-  _handleCommentsAction(actionType, update) {
+  _handleCommentsAction(actionType, update, film) {
     switch (actionType) {
-      case CommentAction.DELETE:
-        this._film.comments = [
-          ...this._film.comments.slice(0, update),
-          ...this._film.comments.slice(update + 1),
-        ];
+      case CommentAction.DELETE_COMMENT:
+        this._api.deleteComment(update, film).then(() => {
+          this._commentsModel.deleteComment(CommentAction.CHANGE, update);
+
+          const index = this._film.comments.findIndex((comment) => comment.id === update);
+          this._film.comments = [
+            ...this._film.comments.slice(0, index),
+            ...this._film.comments.slice(index + 1),
+          ];
+
+          this._changeFilmData(
+            UserAction.DELETE_COMMENT,
+            UpdateType.MINOR_COMMENTS,
+            Object.assign({}, this._film),
+          );
+
+        });
+        break;
+      case CommentAction.ADD_COMMENT:
+        console.log(film);
+        this._api.addComment(update, film).then((response) => {
+          console.log(response);
+          this._film.comments = response.comments.map((comment) => comment.id);
+          this._commentsModel.addComment(CommentAction.CHANGE, response.comments);
+        });
+
         this._changeFilmData(
-          UserAction.DELETE_COMMENT,
+          UserAction.ADD_COMMENT,
           UpdateType.MINOR_COMMENTS,
           Object.assign({}, this._film),
         );
         break;
-      case CommentAction.LOAD:
+      case CommentAction.CHANGE:
         this._popupComponent.getComments();
         break;
     }
@@ -133,9 +153,9 @@ export default class Film {
     this._api.getComments(this._film)
       .then((comments) => {
         this._commentsModel.addObserver(this._handleCommentsAction);
-        this._commentsModel.setComments(CommentAction.LOAD, comments);
+        this._commentsModel.setComments(CommentAction.CHANGE, comments);
       });
-
+    this._activeFilm = this._film.id;
     render(document.body, this._popupComponent, RenderPlace.BEFOREEND);
     document.body.classList.add('hide-overflow');
   }
@@ -143,6 +163,7 @@ export default class Film {
   _handleClosePopupClick() {
     remove(this._popupComponent);
     document.removeEventListener('keydown', this._closePopupOnKeyDownHandler);
+    this._activeFilm = null;
   }
 
   _closePopupOnKeyDownHandler(evt) {
@@ -160,5 +181,9 @@ export default class Film {
   destroy() {
     remove(this._filmComponent);
     remove(this._popupComponent);
+  }
+
+  openActivePopup() {
+    this._openPopupHandler();
   }
 }

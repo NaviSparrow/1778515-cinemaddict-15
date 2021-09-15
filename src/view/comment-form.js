@@ -1,7 +1,7 @@
 import AbstractView from './abstract.js';
 
-const createNewCommentTemplate = (data) => {
-  const {id, author, comment, date, emotion} = data;
+const createNewCommentTemplate = (commentData) => {
+  const {author, comment, date, emotion} = commentData;
   return (
     `<li class="film-details__comment">
             <span class="film-details__comment-emoji">
@@ -12,7 +12,7 @@ const createNewCommentTemplate = (data) => {
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${author}</span>
                 <span class="film-details__comment-day">${date}</span>
-                <button class="film-details__comment-delete" data-comment-id="${id}">Delete</button>
+                <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
           </li>`
@@ -20,13 +20,13 @@ const createNewCommentTemplate = (data) => {
 };
 
 export default class CommentForm extends AbstractView {
-  constructor(data) {
+  constructor(commentData) {
     super();
-    this._data = data;
+    this._commentData = commentData;
   }
 
   getTemplate() {
-    return createNewCommentTemplate(this._data);
+    return createNewCommentTemplate(this._commentData);
   }
 
 }

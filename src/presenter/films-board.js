@@ -45,8 +45,8 @@ export default class FilmsBoard {
   }
 
   init() {
-    this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+    this._filmsModel.addObserver(this._handleModelEvent);
     this._renderBoard();
   }
 
@@ -113,8 +113,8 @@ export default class FilmsBoard {
       case UpdateType.MINOR_COMMENTS:
         this._clearMostCommentedFilmsList();
         this._renderMostCommentedFilms();
-        this._boardFilmPresenter.get(data.id).init(data, this._setOfContainers); //TODO ошибка здесь
 
+        this._boardFilmPresenter.get(data.id).init(data, this._setOfContainers); //TODO ошибка здесь
         if (this._topRatedFilmPresenter.has(data.id)) {
           this._topRatedFilmPresenter.get(data.id).init(data, this._setOfContainers);
         }

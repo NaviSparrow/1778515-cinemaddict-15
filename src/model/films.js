@@ -16,7 +16,7 @@ export default class Films extends AbstractObserver {
     return this._films.slice();
   }
 
-  updateFilm(updateType, update) {
+  updateFilm(activeFilm, updateType, update) {
     const index = this._films.findIndex((film) => film.id === update.id);
 
     if (index === -1) {
@@ -29,7 +29,7 @@ export default class Films extends AbstractObserver {
       ...this._films.slice(index + 1),
     ];
 
-    this.notify(updateType, update);
+    this.notify(activeFilm, updateType, update);
   }
 
   static adaptToClient(film) {
@@ -114,6 +114,5 @@ export default class Films extends AbstractObserver {
     delete adaptedFilm.watchingDate;
     delete adaptedFilm.writers;
     return adaptedFilm;
-
   }
 }
