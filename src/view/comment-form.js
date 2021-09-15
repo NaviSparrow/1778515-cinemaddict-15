@@ -1,6 +1,6 @@
 import AbstractView from './abstract.js';
 
-const createNewCommentTemplate = (commentData) => {
+const createNewCommentTemplate = (commentData, isDisabled) => {
   const {author, comment, date, emotion} = commentData;
   return (
     `<li class="film-details__comment">
@@ -12,7 +12,7 @@ const createNewCommentTemplate = (commentData) => {
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${author}</span>
                 <span class="film-details__comment-day">${date}</span>
-                <button class="film-details__comment-delete">Delete</button>
+                <button class="film-details__comment-delete" ${isDisabled ? 'disabled' : ''}>Delete</button>
               </p>
             </div>
           </li>`

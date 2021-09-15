@@ -29,6 +29,7 @@ export default class FilmsBoard {
     this._currentSortType = SortType.BY_DEFAULT;
     this._isLoading = true;
     this._api = api;
+    this._currentFilmID = null;
 
     this._filmsSectionComponent = new FilmsSectionView();
     this._filmsListComponent = new FilmsListView();
@@ -42,6 +43,8 @@ export default class FilmsBoard {
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleSortTypeClick = this._handleSortTypeClick.bind(this);
+    this._popupOpenHandler = this._popupOpenHandler.bind(this);
+    this._popupCloseHandler = this._popupCloseHandler.bind(this);
   }
 
   init() {
@@ -62,6 +65,13 @@ export default class FilmsBoard {
   _getFilms() {
     this._filterType = this._filterModel.getFilter();
     const films = this._filmsModel.getFilms();
+    for (let i = 0; i < films.length; i++) {
+      if (films[i].id === this._currentFilmID) {
+        console.log('true');
+        const filmPresenter = new FilmPresenter(null, this._handleViewAction, this._commentsModel, this._filterModel.getFilter(), this._api, this._popupOpenHandler, this._popupCloseHandler);
+        filmPresenter.init(films[i], this._setOfContainers, this._currentFilmID, true);
+      }
+    }
     const filteredFilms = filter[this._filterType](films);
     switch (this._currentSortType) {
       case SortType.BY_DATE:
@@ -179,9 +189,17 @@ export default class FilmsBoard {
     return this._mostCommentedListComponent.getElement().querySelector('.films-list__container');
   }
 
+  _popupOpenHandler(film) {
+    this._currentFilmID = film.id;
+  }
+
+  _popupCloseHandler() {
+    this._currentFilmID = null;
+  }
+
   _renderFilm(film, container = this._getBoardFilmsListContainer()) {
-    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._commentsModel, this._filterModel.getFilter(), this._api);
-    filmPresenter.init(film);
+    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._commentsModel, this._filterModel.getFilter(), this._api, this._popupOpenHandler, this._popupCloseHandler);
+    filmPresenter.init(film, this._setOfContainers, this._currentFilmID);
 
     switch (container) {
       case this._getBoardFilmsListContainer():
@@ -232,7 +250,9 @@ export default class FilmsBoard {
   }
 
   _renderFilms(films, container) {
-    films.forEach((film) => this._renderFilm(film, container));
+    films.forEach((film) => {
+      this._renderFilm(film, container);
+    });
   }
 
   _renderNoFilms() {

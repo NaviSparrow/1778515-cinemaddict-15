@@ -6,8 +6,10 @@ import {FilterType} from '../utils/filter-utils.js';
 import {updateWatchingDate} from '../utils/film-utils.js';
 
 export default class Film {
-  constructor(filmListContainer, changeData, commentsModel, currentFilter, api) {
+  constructor(filmListContainer, changeData, commentsModel, currentFilter, api, popupOpenHandler, popupCloseHandler) {
     this._filmListContainer = filmListContainer;
+    this._popupOpenHandler = popupOpenHandler;
+    this._popupCloseHandler = popupCloseHandler;
     this._commentsModel = commentsModel;
     this._changeFilmData = changeData;
     this._currentFilter = currentFilter;
@@ -26,7 +28,7 @@ export default class Film {
     this._closePopupOnClickHandler = this._closePopupOnClickHandler.bind(this);
   }
 
-  init(film, containers) {
+  init(film, containers, currentFilmID, isReopen = false) {
     this._film = film;
     const prevFilmComponent = this._filmComponent;
     this._filmComponent = new FilmCardView(film);
@@ -40,18 +42,25 @@ export default class Film {
     this._popupComponent.setCloseClickHandler(this._closePopupOnClickHandler);
     this._popupComponent.setCloseEscHandler(this._closePopupOnKeyDownHandler);
 
-    if (prevFilmComponent === null) {
-      render(this._filmListContainer, this._filmComponent, RenderPlace.BEFOREEND);
-      return;
+    if (this._film.id === currentFilmID) {
+      this._openPopupHandler();
     }
 
-    for (const container of containers.values()) {
-      if (container.contains(prevFilmComponent.getElement())) {
-        replace(this._filmComponent, prevFilmComponent);
+    if (!isReopen) {
+      if (prevFilmComponent === null) {
+        render(this._filmListContainer, this._filmComponent, RenderPlace.BEFOREEND);
+        return;
       }
+
+      for (const container of containers.values()) {
+        if (container.contains(prevFilmComponent.getElement())) {
+          replace(this._filmComponent, prevFilmComponent);
+        }
+      }
+      remove(prevFilmComponent);
     }
-    remove(prevFilmComponent);
   }
+
 
   _handleCommentsAction(actionType, update, film) {
     switch (actionType) {
@@ -155,13 +164,14 @@ export default class Film {
       });
     render(document.body, this._popupComponent, RenderPlace.BEFOREEND);
     document.body.classList.add('hide-overflow');
+    this._popupOpenHandler(this._film);
   }
 
   _handleClosePopupClick() {
+    this._popupCloseHandler();
     remove(this._popupComponent);
     document.removeEventListener('keydown', this._closePopupOnKeyDownHandler);
     document.body.classList.remove('hide-overflow');
-    this._activeFilm = null;
   }
 
   _closePopupOnKeyDownHandler(evt) {
@@ -178,9 +188,5 @@ export default class Film {
   destroy() {
     remove(this._filmComponent);
     remove(this._popupComponent);
-  }
-
-  openActivePopup() {
-    this._openPopupHandler();
   }
 }
