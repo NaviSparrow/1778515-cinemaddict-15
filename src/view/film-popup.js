@@ -160,7 +160,6 @@ export default class FilmPopup extends SmartView {
     this._changeCommentsData = changeCommentsData;
     this._currentFilter = currentFilter;
     this._commentsModel = commentsModel;
-    this._currentFilm = null;
     this._comments = [];
 
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
@@ -175,7 +174,6 @@ export default class FilmPopup extends SmartView {
     this._deleteClickHandler = this._deleteClickHandler.bind(this);
 
     this._setInnerHandlers();
-    this._popupOpenHandler(this._data);
   }
 
   getComments() {
@@ -203,10 +201,10 @@ export default class FilmPopup extends SmartView {
   _deleteClickHandler (evt) {
     evt.preventDefault();
     const id = evt.target.dataset.commentId;
+    console.log(id);
     this._changeCommentsData(
       CommentAction.DELETE_COMMENT,
       id,
-      FilmPopup.parseDataToFilm(this._data),
     );
   }
 
@@ -226,7 +224,6 @@ export default class FilmPopup extends SmartView {
     evt.preventDefault();
     const watchingDate = updateWatchingDate(this._data);
     this._changeData(
-      this._currentFilm,
       UserAction.BUTTON_CLICK,
       this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MAJOR,
       Object.assign(

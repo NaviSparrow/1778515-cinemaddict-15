@@ -12,7 +12,6 @@ export default class Film {
     this._changeFilmData = changeData;
     this._currentFilter = currentFilter;
     this._api = api;
-    this._activeFilm = null;
 
     this._filmComponent = null;
     this._popupComponent = null;
@@ -75,7 +74,6 @@ export default class Film {
         });
         break;
       case CommentAction.ADD_COMMENT:
-        console.log(film);
         this._api.addComment(update, film).then((response) => {
           console.log(response);
           this._film.comments = response.comments.map((comment) => comment.id);
@@ -155,7 +153,6 @@ export default class Film {
         this._commentsModel.addObserver(this._handleCommentsAction);
         this._commentsModel.setComments(CommentAction.CHANGE, comments);
       });
-    this._activeFilm = this._film.id;
     render(document.body, this._popupComponent, RenderPlace.BEFOREEND);
     document.body.classList.add('hide-overflow');
   }
@@ -163,13 +160,13 @@ export default class Film {
   _handleClosePopupClick() {
     remove(this._popupComponent);
     document.removeEventListener('keydown', this._closePopupOnKeyDownHandler);
+    document.body.classList.remove('hide-overflow');
     this._activeFilm = null;
   }
 
   _closePopupOnKeyDownHandler(evt) {
     if (isEscEvent(evt)) {
       this._handleClosePopupClick();
-      document.body.classList.remove('hide-overflow');
     }
   }
 

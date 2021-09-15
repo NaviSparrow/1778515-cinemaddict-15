@@ -113,7 +113,6 @@ export default class FilmsBoard {
       case UpdateType.MINOR_COMMENTS:
         this._clearMostCommentedFilmsList();
         this._renderMostCommentedFilms();
-
         this._boardFilmPresenter.get(data.id).init(data, this._setOfContainers); //TODO ошибка здесь
         if (this._topRatedFilmPresenter.has(data.id)) {
           this._topRatedFilmPresenter.get(data.id).init(data, this._setOfContainers);
