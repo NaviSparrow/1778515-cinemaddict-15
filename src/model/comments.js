@@ -6,10 +6,9 @@ export default class Comments extends AbstractObserver {
     this._comments = [];
   }
 
-  setComments(updateType, comments) {
+  setComments(comments) {
     this._comments = comments.slice();
-
-    this.notify(updateType);
+    this.notify();
   }
 
   getComments() {
@@ -21,15 +20,15 @@ export default class Comments extends AbstractObserver {
       ...this._comments,
       update,
     ];
-    this.notify(updateType, update);
+    this.notify(update);
   }
 
-  deleteComment(updateType, update) {
+  deleteComment(update) {
     const index = this._comments.findIndex((comment) => comment.id === update);
     this._comments = [
       ...this._comments.slice(0, index),
       ...this._comments.slice(index + 1),
     ];
-    this.notify(updateType, update);
+    this.notify();
   }
 }

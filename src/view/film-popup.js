@@ -2,7 +2,7 @@ import  he from 'he';
 import SmartView from './smart.js';
 import CommentFormView from './comment-form.js';
 import {FilterType} from '../utils/filter-utils';
-import {UpdateType, UserAction, ButtonName, CommentAction} from '../utils/utils.js';
+import {UpdateType, UserAction, CommentAction} from '../utils/utils.js';
 import {formatDuration, formatDate, createGenres, formatCommentDate, updateWatchingDate} from '../utils/film-utils.js';
 import {isCtrlEnterEvent, render, RenderPlace} from '../utils/dom-utils.js';
 
@@ -127,10 +127,10 @@ const createNewCommentFormTemplate = (formNewComment, isDisabled) => (
 
 
 const createPopupTemplate = (filmData, commentsData) => {
-  const {isComments, comments, formNewComment, isDisabled, isDeleting} = filmData;
+  const {isComments, comments, formNewComment, isPosting, isDisabled, isDeleting} = filmData;
 
   return `<section class="film-details">
-  <form class="film-details__inner" action="" method="get" ${isDisabled ? 'disabled' : ''}>
+  <form class="film-details__inner" action="" method="get" ${isPosting ? 'disabled' : ''}>
     <div class="film-details__top-container">
       <div class="film-details__close">
         <button class="film-details__close-btn" type="button">close</button>
@@ -180,7 +180,7 @@ export default class FilmPopup extends SmartView {
     this._comments = this._commentsModel.getComments();
     this.updateData({
       serverComments: this._comments,
-    }, this._getScrollPosition());
+    });
   }
 
   getTemplate() {
@@ -189,12 +189,10 @@ export default class FilmPopup extends SmartView {
 
   _resetComment() {
     this.updateData({
-      formNewComment: Object.assign(
-        {}, this._data._formNewComment,
-        {
-          emotion: null,
-          comment: '',
-        }),
+      formNewComment: {
+        emotion: null,
+        comment: '',
+      },
     });
   }
 
@@ -225,7 +223,6 @@ export default class FilmPopup extends SmartView {
           watchingDate,
         },
       ),
-      this._currentFilm,
     );
 
     this.updateData({
@@ -245,7 +242,6 @@ export default class FilmPopup extends SmartView {
           isInWatchList: !this._data.isInWatchList,
         },
       ),
-      this._currentFilm,
     );
 
     this.updateData({
@@ -267,7 +263,6 @@ export default class FilmPopup extends SmartView {
           isFavorite: !this._data.isFavorite,
         },
       ),
-      this._currentFilm,
     );
 
     this.updateData({
@@ -311,6 +306,7 @@ export default class FilmPopup extends SmartView {
         },
         isDisabled: false,
         isDeleting: false,
+        isPosting: false,
       },
     );
   }
@@ -390,11 +386,11 @@ export default class FilmPopup extends SmartView {
     const emojiItems =  this.getElement().querySelectorAll('.film-details__emoji-item');
     for (const item of emojiItems) {
       item.addEventListener('click', this._emojiClickHandler);
+    }
 
-      const deleteButtons = this.getElement().querySelectorAll('.film-details__comment-delete');
-      for (const button of deleteButtons) {
-        button.addEventListener('click', this._deleteClickHandler);
-      }
+    const deleteButtons = this.getElement().querySelectorAll('.film-details__comment-delete');
+    for (const button of deleteButtons) {
+      button.addEventListener('click', this._deleteClickHandler);
     }
   }
 }

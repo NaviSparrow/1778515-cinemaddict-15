@@ -32,6 +32,7 @@ export default class Film {
     this._handleClosePopupClick = this._handleClosePopupClick.bind(this);
     this._closePopupOnKeyDownHandler = this._closePopupOnKeyDownHandler.bind(this);
     this._closePopupOnClickHandler = this._closePopupOnClickHandler.bind(this);
+    this._handleCommentsLoad = this._handleCommentsLoad.bind(this);
   }
 
   init(film, containers, currentFilmID) {
@@ -66,42 +67,54 @@ export default class Film {
     remove(prevFilmComponent);
   }
 
+  _handleCommentsLoad() {
+    this._popupComponent.getComments();
+  }
 
   _handleCommentsAction(actionType, update, film) {
     switch (actionType) {
       case CommentAction.DELETE_COMMENT:
-        this._api.deleteComment(update, film).then(() => {
-          this._commentsModel.deleteComment(CommentAction.CHANGE, update);
+        this._api.deleteComment(update)
+          .then(() => {
 
-          const index = this._film.comments.findIndex((comment) => comment.id === update);
-          this._film.comments = [
-            ...this._film.comments.slice(0, index),
-            ...this._film.comments.slice(index + 1),
-          ];
+            const index = this._film.comments.findIndex((comment) => comment === update);
+            this._film.comments = [
+              ...this._film.comments.slice(0, index),
+              ...this._film.comments.slice(index + 1),
+            ];
 
-          this._changeFilmData(
-            UserAction.DELETE_COMMENT,
-            UpdateType.MINOR_COMMENTS,
-            Object.assign({}, this._film),
-          );
+            this._changeFilmData(
+              UserAction.DELETE_COMMENT,
+              UpdateType.MINOR_COMMENTS,
+              Object.assign(
+                {},
+                this._film,
+              ),
+            );
 
-        });
+            this._commentsModel.deleteComment(update);
+          })
+          .catch(() => {
+            this.setViewState(State.ABORTING);
+          });
         break;
       case CommentAction.ADD_COMMENT:
-        this._api.addComment(update, film).then((response) => {
-          console.log(response);
-          this._film.comments = response.comments.map((comment) => comment.id);
-          this._commentsModel.addComment(CommentAction.CHANGE, response.comments);
-        });
-
-        this._changeFilmData(
-          UserAction.ADD_COMMENT,
-          UpdateType.MINOR_COMMENTS,
-          Object.assign({}, this._film),
-        );
-        break;
-      case CommentAction.CHANGE:
-        this._popupComponent.getComments();
+        this._api.addComment(update, film)
+          .then((response) => {
+            console.log(response);
+          });
+        //   this._film.comments = response.comments.map((comment) => comment.id);
+        //   this._commentsModel.addComment(CommentAction.CHANGE, response.comments);
+        // })
+        // .catch(() => {
+        //   this.setViewState(State.ABORTING);
+        // });
+        //
+        // this._changeFilmData(
+        //   UserAction.ADD_COMMENT,
+        //   UpdateType.MINOR_COMMENTS,
+        //   Object.assign({}, this._film),
+        // );
         break;
     }
   }
@@ -164,8 +177,8 @@ export default class Film {
     }
     this._api.getComments(this._film)
       .then((comments) => {
-        this._commentsModel.addObserver(this._handleCommentsAction);
-        this._commentsModel.setComments(CommentAction.CHANGE, comments);
+        this._commentsModel.addObserver(this._handleCommentsLoad);
+        this._commentsModel.setComments(comments);
       });
     render(document.body, this._popupComponent, RenderPlace.BEFOREEND);
     document.body.classList.add('hide-overflow');
@@ -196,6 +209,14 @@ export default class Film {
   }
 
   setViewState(state) {
+    const resetFormState = () => {
+      this._popupComponent.updateData({
+        isDisabled: false,
+        isDeleting: false,
+        isPosting: false,
+      });
+
+    };
     switch (state) {
       case State.POSTING:
         this._popupComponent.updateData({
@@ -209,6 +230,8 @@ export default class Film {
           isDeleting: true,
         });
         break;
+      case State.ABORTING:
+        this._popupComponent.shake(resetFormState);
 
     }
 

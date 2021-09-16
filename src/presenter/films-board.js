@@ -89,33 +89,37 @@ export default class FilmsBoard {
     return filteredFilms;
   }
 
-  _setFilmPresenterState(update, state) {
-    if (this._boardFilmPresenter.has(update.id)) {
-      this._boardFilmPresenter.get(update.id).setViewState(state);
+  _setFilmPresenterState(filmID, state) {
+    if (this._boardFilmPresenter.has(filmID)) {
+      this._boardFilmPresenter.get(filmID).setViewState(state);
     }
 
-    if (this._topRatedFilmPresenter.has(update.id)) {
-      this._topRatedFilmPresenter.get(update.id).setViewState(state);
+    if (this._topRatedFilmPresenter.has(filmID)) {
+      this._topRatedFilmPresenter.get(filmID).setViewState(state);
     }
 
-    if (this._mostCommentedFilmPresenter.has(update.id)) {
-      this._mostCommentedFilmPresenter.get(update.id).setViewState(state);
+    if (this._mostCommentedFilmPresenter.has(filmID)) {
+      this._mostCommentedFilmPresenter.get(filmID).setViewState(state);
     }
   }
 
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.BUTTON_CLICK:
-        this._api.updateFilm(update).then((response) => {
-          this._filmsModel.updateFilm(updateType, response);
-        });
+        this._api.updateFilm(update)
+          .then((response) => {
+            this._filmsModel.updateFilm(updateType, response);
+          })
+          .catch(() => {
+            this._setFilmPresenterState(update, FilmPresenterViewState.ABORTING);
+          });
         break;
       case UserAction.DELETE_COMMENT:
-        this._setFilmPresenterState(update, FilmPresenterViewState.DELETING);
+        this._setFilmPresenterState(this._currentFilmID, FilmPresenterViewState.DELETING);
         this._filmsModel.updateFilm(updateType, update);
         break;
       case UserAction.ADD_COMMENT:
-        this._setFilmPresenterState(update, FilmPresenterViewState.POSTING);
+        this._setFilmPresenterState(this._currentFilmID, FilmPresenterViewState.POSTING);
         this._filmsModel.updateFilm(updateType, update);
     }
   }
@@ -144,9 +148,9 @@ export default class FilmsBoard {
         this._renderBoard();
         break;
       case UpdateType.MINOR_COMMENTS:
+        this._boardFilmPresenter.get(data.id).init(data, this._setOfContainers); //TODO ошибка здесь
         this._clearMostCommentedFilmsList();
         this._renderMostCommentedFilms();
-        this._boardFilmPresenter.get(data.id).init(data, this._setOfContainers); //TODO ошибка здесь
         if (this._topRatedFilmPresenter.has(data.id)) {
           this._topRatedFilmPresenter.get(data.id).init(data, this._setOfContainers);
         }
@@ -240,6 +244,8 @@ export default class FilmsBoard {
 
   _clearMostCommentedFilmsList() {
     this._mostCommentedFilmPresenter.forEach((presenter) => presenter.destroy());
+    this._mostCommentedFilmPresenter.clear();
+
   }
 
   _clearFilmsSection(resetFilmsCount) {
@@ -310,8 +316,8 @@ export default class FilmsBoard {
     }
 
     if (isEveryRatingEqual) {
-      this._renderFilm(getRandomArrayElement(topRatedFilms), this._getTopRatedFilmsListContainer());
-      this._renderFilm(getRandomArrayElement(topRatedFilms), this._getTopRatedFilmsListContainer());
+      const randomFilm = getRandomArrayElement(topRatedFilms);
+      this._renderFilms(topRatedFilms.slice(randomFilm, randomFilm + 1), this._getTopRatedFilmsListContainer());
     }
 
     this._renderFilms(topRatedFilms.slice(0, EXTRA_CARDS_COUNT), this._getTopRatedFilmsListContainer());
