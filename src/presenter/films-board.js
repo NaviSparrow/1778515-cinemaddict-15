@@ -12,7 +12,9 @@ import {filter, FilterType} from '../utils/filter-utils.js';
 import {getRandomArrayElement, sortByDate, sortByRating, SortType, UpdateType, UserAction} from '../utils/utils.js';
 
 const CARDS_PER_STEP = 5;
-const EXTRA_CARDS_COUNT = 2;
+const ONE_FILM = 1;
+const TWO_FILMS = 2;
+let extraFilmCardsCount = 2;
 
 export default class FilmsBoard {
   constructor(boardContainer, filmsModel, filterModel, commentsModel, api) {
@@ -300,7 +302,7 @@ export default class FilmsBoard {
   }
 
   _renderTopRatedFilms() {
-    const topRatedFilms = this._getFilms()
+    const topRatedFilms = this._filmsModel.getFilms()
       .slice()
       .sort((filmA, filmB) => filmB.rating - filmA.rating);
 
@@ -315,16 +317,17 @@ export default class FilmsBoard {
       return;
     }
 
-    if (isEveryRatingEqual) {
+    if (isEveryRatingEqual && topRatedFilms.length > 1) {
       const randomFilm = getRandomArrayElement(topRatedFilms);
       this._renderFilms(topRatedFilms.slice(randomFilm, randomFilm + 1), this._getTopRatedFilmsListContainer());
     }
 
-    this._renderFilms(topRatedFilms.slice(0, EXTRA_CARDS_COUNT), this._getTopRatedFilmsListContainer());
+    topRatedFilms < TWO_FILMS ? extraFilmCardsCount = ONE_FILM : extraFilmCardsCount;
+    this._renderFilms(topRatedFilms.slice(0, extraFilmCardsCount), this._getTopRatedFilmsListContainer());
   }
 
   _renderMostCommentedFilms() {
-    const mostCommentedFilms = this._getFilms()
+    const mostCommentedFilms = this._filmsModel.getFilms()
       .slice()
       .sort((filmA, filmB) => filmB.comments.length - filmA.comments.length);
 
@@ -339,12 +342,14 @@ export default class FilmsBoard {
       return;
     }
 
-    if (isCommentsAmountEqual) {
-      this._renderFilm(getRandomArrayElement(mostCommentedFilms), this._getMostCommentedFilmsListContainer());
-      this._renderFilm(getRandomArrayElement(mostCommentedFilms), this._getMostCommentedFilmsListContainer());
+    if (isCommentsAmountEqual && mostCommentedFilms.length > 1) {
+      const randomFilm = getRandomArrayElement(mostCommentedFilms);
+      this._renderFilms(mostCommentedFilms.slice(randomFilm, randomFilm + 1), this._getMostCommentedFilmsListContainer());
     }
 
-    this._renderFilms(mostCommentedFilms.slice(0, EXTRA_CARDS_COUNT), this._getMostCommentedFilmsListContainer());
+    mostCommentedFilms < TWO_FILMS ? extraFilmCardsCount = ONE_FILM : extraFilmCardsCount;
+
+    this._renderFilms(mostCommentedFilms.slice(0, extraFilmCardsCount), this._getMostCommentedFilmsListContainer());
   }
 
   _handleShowMoreButtonClick() {
