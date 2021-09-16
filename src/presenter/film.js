@@ -76,7 +76,6 @@ export default class Film {
       case CommentAction.DELETE_COMMENT:
         this._api.deleteComment(update)
           .then(() => {
-
             const index = this._film.comments.findIndex((comment) => comment === update);
             this._film.comments = [
               ...this._film.comments.slice(0, index),
@@ -91,7 +90,6 @@ export default class Film {
                 this._film,
               ),
             );
-
             this._commentsModel.deleteComment(update);
           })
           .catch(() => {
@@ -101,20 +99,20 @@ export default class Film {
       case CommentAction.ADD_COMMENT:
         this._api.addComment(update, film)
           .then((response) => {
-            console.log(response);
+            this._changeFilmData(
+              UserAction.ADD_COMMENT,
+              UpdateType.MINOR_COMMENTS,
+              Object.assign(
+                {},
+                response.film,
+              ),
+            );
+
+            this._commentsModel.addComment(response.comments);
+          })
+          .catch(() => {
+            this.setViewState(State.ABORTING);
           });
-        //   this._film.comments = response.comments.map((comment) => comment.id);
-        //   this._commentsModel.addComment(CommentAction.CHANGE, response.comments);
-        // })
-        // .catch(() => {
-        //   this.setViewState(State.ABORTING);
-        // });
-        //
-        // this._changeFilmData(
-        //   UserAction.ADD_COMMENT,
-        //   UpdateType.MINOR_COMMENTS,
-        //   Object.assign({}, this._film),
-        // );
         break;
     }
   }
@@ -192,10 +190,9 @@ export default class Film {
     document.body.classList.remove('hide-overflow');
   }
 
-  _closePopupOnKeyDownHandler(evt) {
-    if (isEscEvent(evt)) {
-      this._handleClosePopupClick();
-    }
+  _closePopupOnKeyDownHandler() {
+    this._handleClosePopupClick();
+
   }
 
   _closePopupOnClickHandler(evt) {

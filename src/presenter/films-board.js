@@ -302,7 +302,7 @@ export default class FilmsBoard {
   }
 
   _renderTopRatedFilms() {
-    const topRatedFilms = this._filmsModel.getFilms()
+    const topRatedFilms = this._getFilms()
       .slice()
       .sort((filmA, filmB) => filmB.rating - filmA.rating);
 
@@ -327,7 +327,7 @@ export default class FilmsBoard {
   }
 
   _renderMostCommentedFilms() {
-    const mostCommentedFilms = this._filmsModel.getFilms()
+    const mostCommentedFilms = this._getFilms()
       .slice()
       .sort((filmA, filmB) => filmB.comments.length - filmA.comments.length);
 
