@@ -1,6 +1,6 @@
 import FilmsSectionView  from '../view/films-section.js';
 import FilmsListView from '../view/films-list.js';
-import FilmPresenter from './film';
+import FilmPresenter, {State as FilmPresenterViewState} from './film';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import TopRatedFilmsView from '../view/top-rated-films.js';
 import MostCommentedFilmsView from '../view/most-commented-films.js';
@@ -45,6 +45,7 @@ export default class FilmsBoard {
     this._handleSortTypeClick = this._handleSortTypeClick.bind(this);
     this._popupOpenHandler = this._popupOpenHandler.bind(this);
     this._popupCloseHandler = this._popupCloseHandler.bind(this);
+    this._setFilmPresenterState = this._setFilmPresenterState.bind(this);
   }
 
   init() {
@@ -62,16 +63,22 @@ export default class FilmsBoard {
     this._filterModel.removeObserver(this._handleModelEvent);
   }
 
+  _reopenPopup(film) {
+    const filmPresenter = new FilmPresenter(null, this._handleViewAction, this._commentsModel, this._filterModel.getFilter(), this._api, this._popupOpenHandler, this._popupCloseHandler);
+    filmPresenter.init(film, this._setOfContainers, this._currentFilmID);
+  }
+
   _getFilms() {
     this._filterType = this._filterModel.getFilter();
     const films = this._filmsModel.getFilms();
-    for (let i = 0; i < films.length; i++) {
-      if (films[i].id === this._currentFilmID) {
-        console.log('true');
-        const filmPresenter = new FilmPresenter(null, this._handleViewAction, this._commentsModel, this._filterModel.getFilter(), this._api, this._popupOpenHandler, this._popupCloseHandler);
-        filmPresenter.init(films[i], this._setOfContainers, this._currentFilmID, true);
+    if (this._currentFilmID !== null) {
+      for (let i = 0; i < films.length; i++) {
+        if (films[i].id === this._currentFilmID) {
+          this._reopenPopup(films[i]);
+        }
       }
     }
+
     const filteredFilms = filter[this._filterType](films);
     switch (this._currentSortType) {
       case SortType.BY_DATE:
@@ -82,6 +89,20 @@ export default class FilmsBoard {
     return filteredFilms;
   }
 
+  _setFilmPresenterState(update, state) {
+    if (this._boardFilmPresenter.has(update.id)) {
+      this._boardFilmPresenter.get(update.id).setViewState(state);
+    }
+
+    if (this._topRatedFilmPresenter.has(update.id)) {
+      this._topRatedFilmPresenter.get(update.id).setViewState(state);
+    }
+
+    if (this._mostCommentedFilmPresenter.has(update.id)) {
+      this._mostCommentedFilmPresenter.get(update.id).setViewState(state);
+    }
+  }
+
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.BUTTON_CLICK:
@@ -90,9 +111,11 @@ export default class FilmsBoard {
         });
         break;
       case UserAction.DELETE_COMMENT:
+        this._setFilmPresenterState(update, FilmPresenterViewState.DELETING);
         this._filmsModel.updateFilm(updateType, update);
         break;
       case UserAction.ADD_COMMENT:
+        this._setFilmPresenterState(update, FilmPresenterViewState.POSTING);
         this._filmsModel.updateFilm(updateType, update);
     }
   }
@@ -205,7 +228,7 @@ export default class FilmsBoard {
       case this._getBoardFilmsListContainer():
         this._boardFilmPresenter.set(film.id, filmPresenter);
         break;
-      case  this._getTopRatedFilmsListContainer():
+      case this._getTopRatedFilmsListContainer():
         this._topRatedFilmPresenter.set(film.id, filmPresenter);
         break;
       case this._getMostCommentedFilmsListContainer():

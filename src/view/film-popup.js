@@ -130,7 +130,7 @@ const createPopupTemplate = (filmData, commentsData) => {
   const {isComments, comments, formNewComment, isDisabled, isDeleting} = filmData;
 
   return `<section class="film-details">
-  <form class="film-details__inner" action="" method="get">
+  <form class="film-details__inner" action="" method="get" ${isDisabled ? 'disabled' : ''}>
     <div class="film-details__top-container">
       <div class="film-details__close">
         <button class="film-details__close-btn" type="button">close</button>
@@ -205,14 +205,6 @@ export default class FilmPopup extends SmartView {
       CommentAction.DELETE_COMMENT,
       id,
     );
-  }
-
-  _popupOpenHandler(film) {
-    this._currentFilm = film;
-  }
-
-  _popupCloseHandler() {
-    this._currentFilm = null;
   }
 
   _getScrollPosition() {
@@ -354,12 +346,10 @@ export default class FilmPopup extends SmartView {
   _closeOnClickHandler(evt) {
     evt.preventDefault();
     this._callback.closePopup(evt);
-    // this._popupCloseHandler();
   }
 
   _closeOnKeyDownHandler(evt) {
     this._callback.closeEscPopup(evt);
-    // this._popupCloseHandler();
   }
 
   setCloseClickHandler(callback) {

@@ -5,6 +5,12 @@ import {CommentAction, UpdateType, UserAction} from '../utils/utils.js';
 import {FilterType} from '../utils/filter-utils.js';
 import {updateWatchingDate} from '../utils/film-utils.js';
 
+export const State = {
+  POSTING: 'POSTING',
+  DELETING: 'DELETING',
+  ABORTING: 'ABORTING',
+};
+
 export default class Film {
   constructor(filmListContainer, changeData, commentsModel, currentFilter, api, popupOpenHandler, popupCloseHandler) {
     this._filmListContainer = filmListContainer;
@@ -28,7 +34,7 @@ export default class Film {
     this._closePopupOnClickHandler = this._closePopupOnClickHandler.bind(this);
   }
 
-  init(film, containers, currentFilmID, isReopen = false) {
+  init(film, containers, currentFilmID) {
     this._film = film;
     const prevFilmComponent = this._filmComponent;
     this._filmComponent = new FilmCardView(film);
@@ -44,21 +50,20 @@ export default class Film {
 
     if (this._film.id === currentFilmID) {
       this._openPopupHandler();
+      return;
     }
 
-    if (!isReopen) {
-      if (prevFilmComponent === null) {
-        render(this._filmListContainer, this._filmComponent, RenderPlace.BEFOREEND);
-        return;
-      }
-
-      for (const container of containers.values()) {
-        if (container.contains(prevFilmComponent.getElement())) {
-          replace(this._filmComponent, prevFilmComponent);
-        }
-      }
-      remove(prevFilmComponent);
+    if (prevFilmComponent === null) {
+      render(this._filmListContainer, this._filmComponent, RenderPlace.BEFOREEND);
+      return;
     }
+
+    for (const container of containers.values()) {
+      if (container.contains(prevFilmComponent.getElement())) {
+        replace(this._filmComponent, prevFilmComponent);
+      }
+    }
+    remove(prevFilmComponent);
   }
 
 
@@ -188,5 +193,24 @@ export default class Film {
   destroy() {
     remove(this._filmComponent);
     remove(this._popupComponent);
+  }
+
+  setViewState(state) {
+    switch (state) {
+      case State.POSTING:
+        this._popupComponent.updateData({
+          isDisabled: true,
+          isPosting: true,
+        });
+        break;
+      case State.DELETING:
+        this._popupComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+
+    }
+
   }
 }
