@@ -302,7 +302,7 @@ export default class FilmsBoard {
   }
 
   _renderTopRatedFilms() {
-    const topRatedFilms = this._getFilms()
+    const topRatedFilms = this._getFilms()       //здесь если написать this._filmsModel.getFilms() чтобы взять у модели все 30 фильмов - сломается добавление\удаление комментов
       .slice()
       .sort((filmA, filmB) => filmB.rating - filmA.rating);
 
@@ -327,7 +327,7 @@ export default class FilmsBoard {
   }
 
   _renderMostCommentedFilms() {
-    const mostCommentedFilms = this._filmsModel.getFilms()
+    const mostCommentedFilms = this._getFilms() //тоже самое, как выше описал
       .slice()
       .sort((filmA, filmB) => filmB.comments.length - filmA.comments.length);
 

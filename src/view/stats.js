@@ -79,7 +79,6 @@ const createStatisticChart = (statisticCtx, data) => {
   });
 };
 
-
 const createStatisticsTemplate = (filmsData) => {
   const {films, dateFrom, dateTo, currentPeriod} = filmsData;
   const filmsByPeriod = getFilmsByPeriod(films, dateFrom, dateTo);
