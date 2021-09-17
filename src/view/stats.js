@@ -76,9 +76,7 @@ const createStatisticChart = (statisticCtx, data) => {
 const createStatisticsTemplate = (filmsData) => {
   const {films, dateFrom, dateTo, currentPeriod} = filmsData;
   const filmsByPeriod = getFilmsByPeriod(films, dateFrom, dateTo);
-
   const countOverallWatchedFilms = filter[FilterType.HISTORY](filmsByPeriod).length;
-
   const totalDurationHours = Math.floor(countTotalDuration(filmsByPeriod).as('hours'));
   const totalDurationMinutes = countTotalDuration(filmsByPeriod).minutes();
 
@@ -166,31 +164,31 @@ export default class Statistics extends SmartView {
             const TWO = 2;
             return dayjs().subtract(TWO, 'year');
           })(),
-          currentPeriod: Period.ALL_TIME,
+          currentPeriod: evt.target.value,
         });
         break;
       case Period.TODAY:
         this.updateData({
           dateFrom: dayjs().startOf('day'),
-          currentPeriod: Period.TODAY,
+          currentPeriod: evt.target.value,
         });
         break;
       case Period.WEEK:
         this.updateData({
           dateFrom: dayjs().startOf('week'),
-          currentPeriod: Period.WEEK,
+          currentPeriod: evt.target.value,
         });
         break;
       case Period.MONTH:
         this.updateData({
           dateFrom: dayjs().startOf('month'),
-          currentPeriod: Period.MONTH,
+          currentPeriod: evt.target.value,
         });
         break;
       case Period.YEAR:
         this.updateData({
           dateFrom: dayjs().startOf('year'),
-          currentPeriod: Period.YEAR,
+          currentPeriod: evt.target.value,
         });
         break;
     }
