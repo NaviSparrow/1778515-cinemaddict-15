@@ -4,7 +4,14 @@ import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {filter, FilterType} from '../utils/filter-utils.js';
-import {getGenresSet, countFilmsByGenre, countTotalDuration, getFilmsByPeriod, Period} from '../utils/utils.js';
+import {
+  getGenresSet,
+  countFilmsByGenre,
+  countTotalDuration,
+  getFilmsByPeriod,
+  Period,
+  getTopGenre
+} from '../utils/utils.js';
 
 dayjs.extend(isBetween);
 
@@ -80,6 +87,11 @@ const createStatisticsTemplate = (filmsData) => {
   const totalDurationHours = Math.floor(countTotalDuration(filmsByPeriod).as('hours'));
   const totalDurationMinutes = countTotalDuration(filmsByPeriod).minutes();
 
+  const uniqGenres = Array.from(getGenresSet(filmsByPeriod));
+  const filmsByGenreCount = uniqGenres.map((genre) => countFilmsByGenre(filmsByPeriod, genre));
+
+  const topGenre =  getTopGenre(uniqGenres, filmsByGenreCount);
+
   return (`<section class="statistic">
     <p class="statistic__rank">
       Your rank
@@ -117,7 +129,7 @@ const createStatisticsTemplate = (filmsData) => {
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>
-        <p class="statistic__item-text">Sci-Fi</p>
+        <p class="statistic__item-text">${topGenre}</p>
       </li>
     </ul>
 

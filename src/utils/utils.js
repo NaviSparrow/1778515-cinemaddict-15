@@ -93,6 +93,18 @@ const countTotalDuration = (films) => dayjs.duration(films.reduce((totalDuration
 
 const getFilmsByPeriod = (films, dateFrom, dateTo) => films.slice().filter((film) => dayjs(film.watchingDate).isBetween(dateFrom, dateTo));
 
+const getTopGenre = (genres, counts) => {
+  const keys = genres;
+  const values = counts;
+
+  const genresPerCount = {};
+  keys.forEach((key, i) => genresPerCount[key] = values[i]);
+
+  const sortableGenresPerCount = Object.fromEntries(
+    Object.entries(genresPerCount).sort(([,genreA],[,genreB]) => genreB - genreA),
+  );
+  return Object.keys(sortableGenresPerCount)[0];
+};
 
 export {
   SortType,
@@ -111,5 +123,6 @@ export {
   getGenresSet,
   countFilmsByGenre,
   countTotalDuration,
-  getFilmsByPeriod
+  getFilmsByPeriod,
+  getTopGenre
 };
