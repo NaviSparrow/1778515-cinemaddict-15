@@ -327,7 +327,7 @@ export default class FilmsBoard {
   }
 
   _renderMostCommentedFilms() {
-    const mostCommentedFilms = this._getFilms()
+    const mostCommentedFilms = this._filmsModel.getFilms()
       .slice()
       .sort((filmA, filmB) => filmB.comments.length - filmA.comments.length);
 

@@ -27,15 +27,17 @@ const UpdateType = {
   INIT: 'INIT',
 };
 
-const ButtonName = {
-  WATCHLIST: 'watchlist',
-  WATCHED: 'watched',
-  FAVORITES: 'favorite',
-};
-
 const MenuItem = {
   FILMS: '#all',
   STATISTICS: '#stats',
+};
+
+const Period = {
+  ALL_TIME: 'all-time',
+  TODAY: 'today',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
 };
 
 const sortByDate = (filmA, filmB) => {
@@ -89,13 +91,16 @@ const countFilmsByGenre = (films, genre) => {
 
 const countTotalDuration = (films) => dayjs.duration(films.reduce((totalDuration, film) => totalDuration + film.duration, 0), 'm');
 
+const getFilmsByPeriod = (films, dateFrom, dateTo) => films.slice().filter((film) => dayjs(film.watchingDate).isBetween(dateFrom, dateTo));
+
+
 export {
   SortType,
   UserAction,
   CommentAction,
   UpdateType,
-  ButtonName,
   MenuItem,
+  Period,
   sortByDate,
   sortByRating,
   getRandomFloat,
@@ -105,5 +110,6 @@ export {
   updateItem,
   getGenresSet,
   countFilmsByGenre,
-  countTotalDuration
+  countTotalDuration,
+  getFilmsByPeriod
 };

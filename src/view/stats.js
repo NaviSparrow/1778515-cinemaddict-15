@@ -1,12 +1,18 @@
 import SmartView from './smart.js';
 import Chart from 'chart.js';
+import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {filter, FilterType} from '../utils/filter-utils.js';
-import {getGenresSet, countFilmsByGenre, countTotalDuration} from '../utils/utils.js';
+import {getGenresSet, countFilmsByGenre, countTotalDuration, getFilmsByPeriod, Period} from '../utils/utils.js';
 
-const createStatisticChart = (statisticCtx, films) => {
-  const uniqGenres = Array.from(getGenresSet(films));
-  const filmsByGenreCount = uniqGenres.map((genre) => countFilmsByGenre(films, genre));
+dayjs.extend(isBetween);
+
+const createStatisticChart = (statisticCtx, data) => {
+  const {films, dateFrom, dateTo} = data;
+  const filmsByPeriod = getFilmsByPeriod(films, dateFrom, dateTo);
+  const uniqGenres = Array.from(getGenresSet(filmsByPeriod));
+  const filmsByGenreCount = uniqGenres.map((genre) => countFilmsByGenre(filmsByPeriod, genre));
 
   return new Chart(statisticCtx, {
     plugins: [ChartDataLabels],
@@ -68,9 +74,13 @@ const createStatisticChart = (statisticCtx, films) => {
 
 
 const createStatisticsTemplate = (filmsData) => {
-  const countOverallWatchedFilms = filter[FilterType.HISTORY](filmsData).length;
-  const totalDurationHours = Math.floor(countTotalDuration(filmsData).as('hours'));
-  const totalDurationMinutes = countTotalDuration(filmsData).minutes();
+  const {films, dateFrom, dateTo, currentPeriod} = filmsData;
+  const filmsByPeriod = getFilmsByPeriod(films, dateFrom, dateTo);
+
+  const countOverallWatchedFilms = filter[FilterType.HISTORY](filmsByPeriod).length;
+
+  const totalDurationHours = Math.floor(countTotalDuration(filmsByPeriod).as('hours'));
+  const totalDurationMinutes = countTotalDuration(filmsByPeriod).minutes();
 
   return (`<section class="statistic">
     <p class="statistic__rank">
@@ -82,19 +92,19 @@ const createStatisticsTemplate = (filmsData) => {
     <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
       <p class="statistic__filters-description">Show stats:</p>
 
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="all-time" checked>
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="all-time" ${currentPeriod === Period.ALL_TIME ? 'checked' : ''}>
       <label for="statistic-all-time" class="statistic__filters-label">All time</label>
 
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="today">
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="today" ${currentPeriod === Period.TODAY ? 'checked' : ''}>
       <label for="statistic-today" class="statistic__filters-label">Today</label>
 
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="week">
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="week" ${currentPeriod === Period.WEEK ? 'checked' : ''}>
       <label for="statistic-week" class="statistic__filters-label">Week</label>
 
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="month">
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="month" ${currentPeriod === Period.MONTH ? 'checked' : ''}>
       <label for="statistic-month" class="statistic__filters-label">Month</label>
 
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year">
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year" ${currentPeriod === Period.YEAR ? 'checked' : ''}>
       <label for="statistic-year" class="statistic__filters-label">Year</label>
     </form>
 
@@ -123,11 +133,22 @@ const createStatisticsTemplate = (filmsData) => {
 export default class Statistics extends SmartView {
   constructor(films) {
     super();
-    this._filmsData = films;
+    this._data = {
+      films,
+      dateFrom: (() => {
+        const TWO = 2;
+        return dayjs().subtract(TWO, 'year');
+      })(),
+      dateTo: dayjs(),
+      currentPeriod: Period.ALL_TIME,
+    };
 
     this._statisticChart = null;
 
+    this._dateChangeHandler = this._dateChangeHandler.bind(this);
+
     this._setChart();
+    this._setDateChangeHandler();
   }
 
   removeElement() {
@@ -137,14 +158,52 @@ export default class Statistics extends SmartView {
     }
   }
 
-  //TODO _dateChangeHandler() {}
+  _dateChangeHandler(evt) {
+    switch (evt.target.value) {
+      case Period.ALL_TIME:
+        this.updateData({
+          dateFrom: (() => {
+            const TWO = 2;
+            return dayjs().subtract(TWO, 'year');
+          })(),
+          currentPeriod: Period.ALL_TIME,
+        });
+        break;
+      case Period.TODAY:
+        this.updateData({
+          dateFrom: dayjs().startOf('day'),
+          currentPeriod: Period.TODAY,
+        });
+        break;
+      case Period.WEEK:
+        this.updateData({
+          dateFrom: dayjs().startOf('week'),
+          currentPeriod: Period.WEEK,
+        });
+        break;
+      case Period.MONTH:
+        this.updateData({
+          dateFrom: dayjs().startOf('month'),
+          currentPeriod: Period.MONTH,
+        });
+        break;
+      case Period.YEAR:
+        this.updateData({
+          dateFrom: dayjs().startOf('year'),
+          currentPeriod: Period.YEAR,
+        });
+        break;
+    }
+  }
 
   restoreHandlers() {
     this._setChart();
+    this._setDateChangeHandler();
+
   }
 
   getTemplate() {
-    return createStatisticsTemplate(this._filmsData);
+    return createStatisticsTemplate(this._data);
   }
 
   _setChart() {
@@ -153,6 +212,13 @@ export default class Statistics extends SmartView {
     }
     const statisticCtx = this.getElement().querySelector('.statistic__chart');
 
-    this._statisticChart = createStatisticChart(statisticCtx, this._filmsData);
+    this._statisticChart = createStatisticChart(statisticCtx, this._data);
+  }
+
+  _setDateChangeHandler() {
+    const statisticFilters = this.getElement().querySelectorAll('.statistic__filters');
+    for(const statisticFilter of statisticFilters) {
+      statisticFilter.addEventListener('change', this._dateChangeHandler);
+    }
   }
 }
