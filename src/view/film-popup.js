@@ -176,7 +176,7 @@ export default class FilmPopup extends SmartView {
     this._setInnerHandlers();
   }
 
-  getComments() {
+  showComments() {
     this._comments = this._commentsModel.getComments();
     this.updateData({
       serverComments: this._comments,

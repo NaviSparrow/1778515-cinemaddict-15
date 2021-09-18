@@ -35,7 +35,7 @@ export default class Film {
     this._handleCommentsLoad = this._handleCommentsLoad.bind(this);
   }
 
-  init(film, containers, currentFilmID) {
+  init(film, containers, currentFilmId) {
     this._film = film;
     const prevFilmComponent = this._filmComponent;
     this._filmComponent = new FilmCardView(film);
@@ -49,7 +49,7 @@ export default class Film {
     this._popupComponent.setCloseClickHandler(this._closePopupOnClickHandler);
     this._popupComponent.setCloseEscHandler(this._closePopupOnKeyDownHandler);
 
-    if (this._film.id === currentFilmID) {
+    if (this._film.id === currentFilmId) {
       this._openPopupHandler();
       return;
     }
@@ -68,7 +68,7 @@ export default class Film {
   }
 
   _handleCommentsLoad() {
-    this._popupComponent.getComments();
+    this._popupComponent.showComments();
   }
 
   _handleCommentsAction(actionType, update, film) {
