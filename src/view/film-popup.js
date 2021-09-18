@@ -95,7 +95,7 @@ const createCommentsListTemplate = (comments, isDisabled, isDeleting) => (
 
 const createNewCommentFormTemplate = (formNewComment, isDisabled) => (
   `<div class="film-details__new-comment">
-          <div class="film-details__add-emoji-label">${formNewComment.emotion !== null ? `<img src="./images/emoji/${formNewComment.emotion}.png" width="79" height="68">` : ''}</div>
+          <div class="film-details__add-emoji-label">${formNewComment.emotion !== null ? `<img src="./images/emoji/${formNewComment.emotion}.png" width="55" height="55">` : ''}</div>
 
           <label class="film-details__comment-label">
             <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isDisabled ? 'disabled' : ''}>${he.encode(formNewComment.comment)}</textarea>

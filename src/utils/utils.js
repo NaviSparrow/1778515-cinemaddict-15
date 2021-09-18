@@ -57,25 +57,6 @@ const getRandomInteger = (min, max) => getRandomFloat(min, max, 0);
 
 const getRandomArrayElement = (array) => array[getRandomInteger(0, array.length - 1)];
 
-const getRandomArray = (array, max, min = 1) => {
-  const newArray = array.slice().sort(() => Math.random() - 0.5);
-  return newArray.slice(0, getRandomInteger(min, max));
-};
-
-const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
-
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1),
-  ];
-};
-
 const getGenresSet = (films) => new Set(films.flatMap((film) => film.genres));
 
 const countFilmsByGenre = (films, genre) => {
@@ -106,6 +87,16 @@ const getTopGenre = (genres, counts) => {
   return Object.keys(sortableGenresPerCount)[0];
 };
 
+const deleteItem = (array, itemToDelete) => {
+  const index = array.findIndex((item) => item === itemToDelete);
+  array = [
+    ...array.slice(0, index),
+    ...array.slice(index + 1),
+  ];
+
+  return array;
+};
+
 export {
   SortType,
   UserAction,
@@ -118,11 +109,10 @@ export {
   getRandomFloat,
   getRandomInteger,
   getRandomArrayElement,
-  getRandomArray,
-  updateItem,
   getGenresSet,
   countFilmsByGenre,
   countTotalDuration,
   getFilmsByPeriod,
-  getTopGenre
+  getTopGenre,
+  deleteItem
 };

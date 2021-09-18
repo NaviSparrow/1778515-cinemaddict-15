@@ -108,7 +108,7 @@ export default class Film {
               ),
             );
 
-            this._commentsModel.addComment(response.comments);
+            this._commentsModel.addComment(response.comments[response.comments.length - 1]);
           })
           .catch(() => {
             this.setViewState(State.ABORTING);
