@@ -10,10 +10,11 @@ import {
   countTotalDuration,
   getFilmsByPeriod,
   Period,
-  getTopGenre
-} from '../utils/utils.js';
+  getTopGenre } from '../utils/utils.js';
 
 dayjs.extend(isBetween);
+
+const TWO_YEARS = 2;
 
 const createStatisticChart = (statisticCtx, data) => {
   const {films, dateFrom, dateTo} = data;
@@ -144,10 +145,7 @@ export default class Statistics extends SmartView {
     super();
     this._data = {
       films,
-      dateFrom: (() => {
-        const TWO = 2;
-        return dayjs().subtract(TWO, 'year');
-      })(),
+      dateFrom: (() => dayjs().subtract(TWO_YEARS, 'year'))(),
       dateTo: dayjs(),
       currentPeriod: Period.ALL_TIME,
     };
@@ -157,7 +155,7 @@ export default class Statistics extends SmartView {
     this._dateChangeHandler = this._dateChangeHandler.bind(this);
 
     this._setChart();
-    this._setDateChangeHandler();
+    this._setPeriodChangeHandler();
   }
 
   removeElement() {
@@ -171,10 +169,7 @@ export default class Statistics extends SmartView {
     switch (evt.target.value) {
       case Period.ALL_TIME:
         this.updateData({
-          dateFrom: (() => {
-            const TWO = 2;
-            return dayjs().subtract(TWO, 'year');
-          })(),
+          dateFrom: (() => dayjs().subtract(TWO_YEARS, 'year'))(),
           currentPeriod: evt.target.value,
         });
         break;
@@ -207,7 +202,7 @@ export default class Statistics extends SmartView {
 
   restoreHandlers() {
     this._setChart();
-    this._setDateChangeHandler();
+    this._setPeriodChangeHandler();
 
   }
 
@@ -224,7 +219,7 @@ export default class Statistics extends SmartView {
     this._statisticChart = createStatisticChart(statisticCtx, this._data);
   }
 
-  _setDateChangeHandler() {
+  _setPeriodChangeHandler() {
     const statisticFilters = this.getElement().querySelectorAll('.statistic__filters');
     for(const statisticFilter of statisticFilters) {
       statisticFilter.addEventListener('change', this._dateChangeHandler);

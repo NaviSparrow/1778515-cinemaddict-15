@@ -1,6 +1,6 @@
 import AbstractView from './abstract.js';
 
-const createNewCommentTemplate = (commentData, isDisabled) => {
+const createCommentFormTemplate = (commentData, isDisabled) => {
   const {author, comment, date, emotion} = commentData;
   return (
     `<li class="film-details__comment">
@@ -26,7 +26,7 @@ export default class CommentForm extends AbstractView {
   }
 
   getTemplate() {
-    return createNewCommentTemplate(this._commentData);
+    return createCommentFormTemplate(this._commentData);
   }
 
 }

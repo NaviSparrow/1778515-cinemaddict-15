@@ -16,7 +16,6 @@ const UserAction = {
 const CommentAction = {
   DELETE_COMMENT: 'DELETE_COMMENT',
   ADD_COMMENT: 'ADD_COMMENT',
-  CHANGE: 'CHANGE',
 };
 
 const UpdateType = {
@@ -72,7 +71,7 @@ const countFilmsByGenre = (films, genre) => {
 
 const countTotalDuration = (films) => dayjs.duration(films.reduce((totalDuration, film) => totalDuration + film.duration, 0), 'm');
 
-const getFilmsByPeriod = (films, dateFrom, dateTo) => films.slice().filter((film) => dayjs(film.watchingDate).isBetween(dateFrom, dateTo));
+const getFilmsByPeriod = (films, dateFrom, dateTo) => films.filter((film) => dayjs(film.watchingDate).isBetween(dateFrom, dateTo));
 
 const getTopGenre = (genres, counts) => {
   const keys = genres;

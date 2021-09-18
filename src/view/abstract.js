@@ -1,6 +1,7 @@
 import {createElement} from '../utils/dom-utils.js';
 
 const SHAKE_ANIMATION_TIMEOUT = 600;
+const MAX_SHAKE_ANIMATION_TIMEOUT = 1000;
 
 export default class Abstract  {
   constructor() {
@@ -27,7 +28,7 @@ export default class Abstract  {
   }
 
   shake(callback) {
-    this.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / MAX_SHAKE_ANIMATION_TIMEOUT}s`;
     setTimeout(() => {
       this.getElement().style.animation = '';
       callback();

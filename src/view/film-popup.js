@@ -93,12 +93,12 @@ const createCommentsListTemplate = (comments, isDisabled, isDeleting) => (
     </ul>`
 );
 
-const createNewCommentFormTemplate = (formNewComment, isDisabled) => (
+const createNewCommentFormTemplate = (newComment, isDisabled) => (
   `<div class="film-details__new-comment">
-          <div class="film-details__add-emoji-label">${formNewComment.emotion !== null ? `<img src="./images/emoji/${formNewComment.emotion}.png" width="55" height="55">` : ''}</div>
+          <div class="film-details__add-emoji-label">${newComment.emotion !== null ? `<img src="./images/emoji/${newComment.emotion}.png" width="55" height="55">` : ''}</div>
 
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isDisabled ? 'disabled' : ''}>${he.encode(formNewComment.comment)}</textarea>
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isDisabled ? 'disabled' : ''}>${he.encode(newComment.comment)}</textarea>
           </label>
 
           <div class="film-details__emoji-list">
@@ -127,7 +127,7 @@ const createNewCommentFormTemplate = (formNewComment, isDisabled) => (
 
 
 const createPopupTemplate = (filmData, commentsData) => {
-  const {isComments, comments, formNewComment, isPosting, isDisabled, isDeleting} = filmData;
+  const {isComments, comments, newComment, isPosting, isDisabled, isDeleting} = filmData;
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get" ${isPosting ? 'disabled' : ''}>
@@ -144,7 +144,7 @@ const createPopupTemplate = (filmData, commentsData) => {
         <ul class="film-details__comments-list">
         ${isComments ? createCommentsListTemplate(commentsData, isDisabled, isDeleting) : ''}
         </ul>
-        ${createNewCommentFormTemplate(formNewComment, isDisabled)}
+        ${createNewCommentFormTemplate(newComment, isDisabled)}
       </section>
     </div>
   </form>
@@ -189,7 +189,7 @@ export default class FilmPopup extends SmartView {
 
   _resetComment() {
     this.updateData({
-      formNewComment: {
+      newComment: {
         emotion: null,
         comment: '',
       },
@@ -273,9 +273,9 @@ export default class FilmPopup extends SmartView {
   _commentTextInputHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      formNewComment: Object.assign(
+      newComment: Object.assign(
         {},
-        this._data.formNewComment,
+        this._data.newComment,
         {comment: evt.target.value},
       ),
     }, this._getScrollPosition(), true);
@@ -285,9 +285,9 @@ export default class FilmPopup extends SmartView {
     evt.preventDefault();
 
     this.updateData({
-      formNewComment: Object.assign(
+      newComment: Object.assign(
         {},
-        this._data.formNewComment,
+        this._data.newComment,
         {emotion: evt.target.value},
       ),
     }, this._getScrollPosition());
@@ -300,7 +300,7 @@ export default class FilmPopup extends SmartView {
       {
         serverComments: serverComments,
         isComments: serverComments !== [],
-        formNewComment: {
+        newComment: {
           comment: '',
           emotion: null,
         },
@@ -330,11 +330,11 @@ export default class FilmPopup extends SmartView {
     if (isCtrlEnterEvent(evt)) {
       this._changeCommentsData(
         CommentAction.ADD_COMMENT,
-        this._data.formNewComment,
+        this._data.newComment,
         FilmPopup.parseDataToFilm(this._data),
       );
 
-      this._newCommentComponent = new CommentFormView(this._data.formNewComment, this._data.isDisabled);
+      this._newCommentComponent = new CommentFormView(this._data.newComment, this._data.isDisabled);
       render(this._getCommentsContainer(), this._newCommentComponent, RenderPlace.BEFOREEND);
     }
   }
