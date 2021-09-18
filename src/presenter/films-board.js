@@ -31,7 +31,7 @@ export default class FilmsBoard {
     this._currentSortType = SortType.BY_DEFAULT;
     this._isLoading = true;
     this._api = api;
-    this._currentFilmID = null;
+    this._currentFilmId = null;
 
     this._filmsSectionComponent = new FilmsSectionView();
     this._filmsListComponent = new FilmsListView();
@@ -67,15 +67,15 @@ export default class FilmsBoard {
 
   _reopenPopup(film) {
     const filmPresenter = new FilmPresenter(null, this._handleViewAction, this._commentsModel, this._filterModel.getFilter(), this._api, this._popupOpenHandler, this._popupCloseHandler);
-    filmPresenter.init(film, this._setOfContainers, this._currentFilmID);
+    filmPresenter.init(film, this._setOfContainers, this._currentFilmId);
   }
 
   _getFilms() {
     this._filterType = this._filterModel.getFilter();
     const films = this._filmsModel.getFilms();
-    if (this._currentFilmID !== null) {
+    if (this._currentFilmId !== null) {
       for (let i = 0; i < films.length; i++) {
-        if (films[i].id === this._currentFilmID) {
+        if (films[i].id === this._currentFilmId) {
           this._reopenPopup(films[i]);
         }
       }
@@ -91,17 +91,17 @@ export default class FilmsBoard {
     return filteredFilms;
   }
 
-  _setFilmPresenterState(filmID, state) {
-    if (this._boardFilmPresenter.has(filmID)) {
-      this._boardFilmPresenter.get(filmID).setViewState(state);
+  _setFilmPresenterState(filmId, state) {
+    if (this._boardFilmPresenter.has(filmId)) {
+      this._boardFilmPresenter.get(filmId).setViewState(state);
     }
 
-    if (this._topRatedFilmPresenter.has(filmID)) {
-      this._topRatedFilmPresenter.get(filmID).setViewState(state);
+    if (this._topRatedFilmPresenter.has(filmId)) {
+      this._topRatedFilmPresenter.get(filmId).setViewState(state);
     }
 
-    if (this._mostCommentedFilmPresenter.has(filmID)) {
-      this._mostCommentedFilmPresenter.get(filmID).setViewState(state);
+    if (this._mostCommentedFilmPresenter.has(filmId)) {
+      this._mostCommentedFilmPresenter.get(filmId).setViewState(state);
     }
   }
 
@@ -117,11 +117,11 @@ export default class FilmsBoard {
           });
         break;
       case UserAction.DELETE_COMMENT:
-        this._setFilmPresenterState(this._currentFilmID, FilmPresenterViewState.DELETING);
+        this._setFilmPresenterState(this._currentFilmId, FilmPresenterViewState.DELETING);
         this._filmsModel.updateFilm(updateType, update);
         break;
       case UserAction.ADD_COMMENT:
-        this._setFilmPresenterState(this._currentFilmID, FilmPresenterViewState.POSTING);
+        this._setFilmPresenterState(this._currentFilmId, FilmPresenterViewState.POSTING);
         this._filmsModel.updateFilm(updateType, update);
     }
   }
@@ -219,16 +219,16 @@ export default class FilmsBoard {
   }
 
   _popupOpenHandler(film) {
-    this._currentFilmID = film.id;
+    this._currentFilmId = film.id;
   }
 
   _popupCloseHandler() {
-    this._currentFilmID = null;
+    this._currentFilmId = null;
   }
 
   _renderFilm(film, container = this._getBoardFilmsListContainer()) {
     const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._commentsModel, this._filterModel.getFilter(), this._api, this._popupOpenHandler, this._popupCloseHandler);
-    filmPresenter.init(film, this._setOfContainers, this._currentFilmID);
+    filmPresenter.init(film, this._setOfContainers, this._currentFilmId);
 
     switch (container) {
       case this._getBoardFilmsListContainer():
