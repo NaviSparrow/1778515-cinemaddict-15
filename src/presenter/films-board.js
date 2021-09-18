@@ -92,16 +92,20 @@ export default class FilmsBoard {
   }
 
   _setFilmPresenterState(filmId, state) {
-    if (this._boardFilmPresenter.has(filmId)) {
-      this._boardFilmPresenter.get(filmId).setViewState(state);
+    const boardPresent = this._boardFilmPresenter.get(filmId);
+    const topRatedPresent = this._topRatedFilmPresenter.get(filmId);
+    const mostCommentedPresent = this._mostCommentedFilmPresenter.get(filmId);
+
+    if (boardPresent) {
+      boardPresent.setViewState(state);
     }
 
-    if (this._topRatedFilmPresenter.has(filmId)) {
-      this._topRatedFilmPresenter.get(filmId).setViewState(state);
+    if (topRatedPresent) {
+      topRatedPresent.setViewState(state);
     }
 
-    if (this._mostCommentedFilmPresenter.has(filmId)) {
-      this._mostCommentedFilmPresenter.get(filmId).setViewState(state);
+    if (mostCommentedPresent) {
+      mostCommentedPresent.setViewState(state);
     }
   }
 
