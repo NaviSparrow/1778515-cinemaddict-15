@@ -184,10 +184,10 @@ export default class Film {
   }
 
   _handleClosePopupClick() {
-    this._popupCloseHandler();
     remove(this._popupComponent);
     document.removeEventListener('keydown', this._closePopupOnKeyDownHandler);
     document.body.classList.remove('hide-overflow');
+    this._popupCloseHandler();
   }
 
   _closePopupOnKeyDownHandler() {
@@ -206,14 +206,7 @@ export default class Film {
   }
 
   setViewState(state) {
-    const resetFormState = () => {
-      this._popupComponent.updateData({
-        isDisabled: false,
-        isDeleting: false,
-        isPosting: false,
-      });
-
-    };
+    const resetFormState = () => this._popupComponent.updateData({isDisabled: false, isDeleting: false, isPosting: false});
     switch (state) {
       case State.POSTING:
         this._popupComponent.updateData({
