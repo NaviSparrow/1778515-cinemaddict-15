@@ -63,6 +63,8 @@ const replace = (newChild, oldChild) => {
 
 const isCtrlEnterEvent = (evt) => evt.ctrlKey && evt.keyCode === 13;
 
+const isCmdEnterEvent = (evt) => evt.metaKey && evt.keyCode === 13;
+
 export {
   RenderPlace,
   render,
@@ -70,5 +72,6 @@ export {
   createElement,
   isEscEvent,
   replace,
-  isCtrlEnterEvent
+  isCtrlEnterEvent,
+  isCmdEnterEvent
 };

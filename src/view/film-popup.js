@@ -4,7 +4,7 @@ import CommentFormView from './comment-form.js';
 import {FilterType} from '../utils/filter-utils';
 import {UpdateType, UserAction, CommentAction} from '../utils/utils.js';
 import {formatDuration, formatDate, createGenres, formatCommentDate, updateWatchingDate} from '../utils/film-utils.js';
-import {isCtrlEnterEvent, isEscEvent, render, RenderPlace} from '../utils/dom-utils.js';
+import {isCmdEnterEvent, isCtrlEnterEvent, isEscEvent, render, RenderPlace} from '../utils/dom-utils.js';
 
 
 const createPopupDetailsTemplate = (data) => {
@@ -327,7 +327,7 @@ export default class FilmPopup extends SmartView {
   }
 
   _formSubmitHandler(evt) {
-    if (isCtrlEnterEvent(evt)) {
+    if (isCtrlEnterEvent(evt) || isCmdEnterEvent(evt)) {
       this._changeCommentsData(
         CommentAction.ADD_COMMENT,
         this._data.newComment,
