@@ -79,12 +79,19 @@ export default class FilmsBoard {
       }
     }
 
-    const filteredFilms = filter[this._filterType](films);
+    let filteredFilms = filter[this._filterType](films);
     switch (this._currentSortType) {
       case SortType.BY_DATE:
         return filteredFilms.sort(sortByDate);
       case SortType.BY_RATING:
         return filteredFilms.sort(sortByRating);
+    }
+    if (this._currentFilmId) {
+      const currentOpenedFilm = films.find((film) => film.id === this._currentFilmId);
+      filteredFilms = [
+        currentOpenedFilm,
+        ...filteredFilms,
+      ];
     }
     return filteredFilms;
   }
@@ -305,7 +312,6 @@ export default class FilmsBoard {
 
   _renderTopRatedFilms() {
     const topRatedFilms = this._getFilms()       //здесь если написать this._filmsModel.getFilms() чтобы взять у модели все 30 фильмов - сломается добавление\удаление комментов
-      .slice()
       .sort((filmA, filmB) => filmB.rating - filmA.rating);
 
     const isEveryRatingNull = topRatedFilms
@@ -328,7 +334,6 @@ export default class FilmsBoard {
 
   _renderMostCommentedFilms() {
     const mostCommentedFilms = this._getFilms() //тоже самое, как выше описал
-      .slice()
       .sort((filmA, filmB) => filmB.comments.length - filmA.comments.length);
 
     const isEveryCommentsBlockNull = mostCommentedFilms
