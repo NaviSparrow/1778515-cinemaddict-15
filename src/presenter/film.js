@@ -1,6 +1,6 @@
 import FilmCardView from '../view/film-card.js';
 import FilmPopupView from '../view/film-popup.js';
-import {isEscEvent, remove, render, RenderPlace, replace} from '../utils/dom-utils.js';
+import {remove, render, RenderPlace, replace} from '../utils/dom-utils.js';
 import {CommentAction, deleteComment, UpdateType, UserAction} from '../utils/utils.js';
 import {FilterType} from '../utils/filter-utils.js';
 import {updateWatchingDate} from '../utils/film-utils.js';

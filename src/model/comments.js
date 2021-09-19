@@ -1,5 +1,5 @@
 import AbstractObserver from '../utils/abstract-observer.js';
-import {deleteComment} from "../utils/utils";
+import {deleteComment} from '../utils/utils';
 
 export default class Comments extends AbstractObserver {
   constructor() {
