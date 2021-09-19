@@ -67,11 +67,11 @@ export default class Film {
     remove(prevFilmComponent);
   }
 
-  _handleCommentsLoad() {
-    this._popupComponent.showComments();
+  _handleCommentsLoad(scrollPosition) {
+    this._popupComponent.showComments(scrollPosition);
   }
 
-  _handleCommentsAction(actionType, update, film) {
+  _handleCommentsAction(actionType, update, film, scrollPosition) {
     switch (actionType) {
       case CommentAction.DELETE_COMMENT:
         this._api.deleteComment(update)
@@ -86,7 +86,7 @@ export default class Film {
                 this._film,
               ),
             );
-            this._commentsModel.deleteComment(update);
+            this._commentsModel.deleteComment(update, scrollPosition);
           })
           .catch(() => {
             this.setViewState(State.ABORTING);
@@ -104,7 +104,7 @@ export default class Film {
               ),
             );
 
-            this._commentsModel.addComment(response.comments[response.comments.length - 1]);
+            this._commentsModel.addComment(response.comments[response.comments.length - 1], scrollPosition);
           })
           .catch(() => {
             this.setViewState(State.ABORTING);

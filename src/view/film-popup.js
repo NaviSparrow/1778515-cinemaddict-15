@@ -182,10 +182,11 @@ export default class FilmPopup extends SmartView {
     this._setInnerHandlers();
   }
 
-  showComments() {
+  showComments(scrollPosition) {
     this._comments = this._commentsModel.getComments();
     this.updateData({
       serverComments: this._comments,
+      scrollPosition,
     });
   }
 
@@ -208,6 +209,8 @@ export default class FilmPopup extends SmartView {
     this._changeCommentsData(
       CommentAction.DELETE_COMMENT,
       id,
+      null,
+      this._getScrollPosition(),
     );
   }
 
@@ -338,6 +341,7 @@ export default class FilmPopup extends SmartView {
         CommentAction.ADD_COMMENT,
         this._data.newComment,
         FilmPopup.parseDataToFilm(this._data),
+        this._getScrollPosition(),
       );
 
       this._newCommentComponent = new CommentFormView(createCommentFormTemplate, this._data.newComment, this._data.isDisabled, this);

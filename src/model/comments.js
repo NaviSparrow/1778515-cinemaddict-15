@@ -16,16 +16,16 @@ export default class Comments extends AbstractObserver {
     return this._comments;
   }
 
-  addComment(comment) {
+  addComment(comment, scrollPosition) {
     this._comments = [
       ...this._comments,
       comment,
     ];
-    this.notify();
+    this.notify(scrollPosition);
   }
 
-  deleteComment(update) {
+  deleteComment(update, scrollPosition) {
     this._comments = deleteComment(this._comments, update, false);
-    this.notify();
+    this.notify(scrollPosition);
   }
 }
