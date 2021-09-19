@@ -1,7 +1,7 @@
 import FilmCardView from '../view/film-card.js';
 import FilmPopupView from '../view/film-popup.js';
 import {isEscEvent, remove, render, RenderPlace, replace} from '../utils/dom-utils.js';
-import {CommentAction, UpdateType, UserAction} from '../utils/utils.js';
+import {CommentAction, deleteComment, UpdateType, UserAction} from '../utils/utils.js';
 import {FilterType} from '../utils/filter-utils.js';
 import {updateWatchingDate} from '../utils/film-utils.js';
 
@@ -76,11 +76,7 @@ export default class Film {
       case CommentAction.DELETE_COMMENT:
         this._api.deleteComment(update)
           .then(() => {
-            const index = this._film.comments.findIndex((comment) => comment === update);
-            this._film.comments = [
-              ...this._film.comments.slice(0, index),
-              ...this._film.comments.slice(index + 1),
-            ];
+            this._film.comments = deleteComment(this._film.comments, update, true);
 
             this._changeFilmData(
               UserAction.DELETE_COMMENT,

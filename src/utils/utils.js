@@ -86,14 +86,14 @@ const getTopGenre = (genres, counts) => {
   return Object.keys(sortableGenresPerCount)[0];
 };
 
-const deleteItem = (array, itemToDelete) => {
-  const index = array.findIndex((item) => item === itemToDelete);
-  array = [
-    ...array.slice(0, index),
-    ...array.slice(index + 1),
-  ];
+const deleteComment = (comments, update,  isAlreadyId = true) => {
+  const index = comments.findIndex((comment) => isAlreadyId ? comment : comment.id === update);
 
-  return array;
+  comments = [
+    ...comments.slice(0, index),
+    ...comments.slice(index + 1),
+  ];
+  return comments;
 };
 
 export {
@@ -113,5 +113,5 @@ export {
   countTotalDuration,
   getFilmsByPeriod,
   getTopGenre,
-  deleteItem
+  deleteComment
 };
