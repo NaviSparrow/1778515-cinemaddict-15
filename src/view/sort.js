@@ -3,7 +3,7 @@ import {SortType} from '../utils/utils.js';
 
 const createSortTemplate = () => (
   `<ul class="sort">
-<li><a href="#" class="sort__button" data-sort-type="${SortType.BY_DEFAULT}">Sort by default</a></li>
+<li><a href="#" class="sort__button sort__button--active" data-sort-type="${SortType.BY_DEFAULT}">Sort by default</a></li>
 <li><a href="#" class="sort__button" data-sort-type="${SortType.BY_DATE}">Sort by date</a></li>
 <li><a href="#" class="sort__button" data-sort-type="${SortType.BY_RATING}">Sort by rating</a></li>
 </ul>`
@@ -28,6 +28,18 @@ export default class Sort extends AbstractView {
 
     evt.preventDefault();
     this._callback.sortTypeClick(evt.target.dataset.sortType);
+
+    const sortButtonActiveClassName = 'sort__button--active';
+    const currentActiveSortItem = this.getElement().querySelector('.sort__button--active');
+    const sortItem = evt.target;
+
+    if (!sortItem.classList.contains(sortButtonActiveClassName)) {
+      sortItem.classList.add(sortButtonActiveClassName);
+      currentActiveSortItem.classList.remove(sortButtonActiveClassName);
+    } else {
+      sortItem.classList.remove(sortButtonActiveClassName);
+    }
+
   }
 
   setSortTypeClickHandler(callback) {
