@@ -75,9 +75,10 @@ const createPopupDetailsTemplate = (data) => {
   );
 };
 
-const createCommentsListTemplate = (comments, isDisabled, isDeleting) => (
-  `<ul class="film-details__comments-list">
-        ${comments.map(({id, author, comment, date, emotion}) => `<li class="film-details__comment">
+const createCommentFormTemplate = (commentData, isDisabled, isDeleting) => {
+  const {id, author, comment, date, emotion} = commentData;
+  return (
+    `<li class="film-details__comment">
             <span class="film-details__comment-emoji">
               <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
             </span>
@@ -89,7 +90,12 @@ const createCommentsListTemplate = (comments, isDisabled, isDeleting) => (
                 <button class="film-details__comment-delete" data-comment-id="${id}" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'deleting...' : 'delete'}</button>
               </p>
             </div>
-          </li>`).join('')}
+          </li>`);
+};
+
+const createCommentsListTemplate = (comments, isDisabled, isDeleting) => (
+  `<ul class="film-details__comments-list">
+        ${comments.map((comment) => createCommentFormTemplate(comment, isDisabled, isDeleting)).join('')}
     </ul>`
 );
 
@@ -334,7 +340,7 @@ export default class FilmPopup extends SmartView {
         FilmPopup.parseDataToFilm(this._data),
       );
 
-      this._newCommentComponent = new CommentFormView(this._data.newComment, this._data.isDisabled);
+      this._newCommentComponent = new CommentFormView(createCommentFormTemplate, this._data.newComment, this._data.isDisabled, this);
       render(this._getCommentsContainer(), this._newCommentComponent, RenderPlace.BEFOREEND);
     }
   }
