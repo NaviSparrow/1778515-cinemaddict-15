@@ -14,9 +14,8 @@ const UserAction = {
 };
 
 const CommentAction = {
-  DELETE: 'DELETE',
-  ADD: 'ADD',
-  LOAD: 'LOAD',
+  DELETE_COMMENT: 'DELETE_COMMENT',
+  ADD_COMMENT: 'ADD_COMMENT',
 };
 
 const UpdateType = {
@@ -27,15 +26,17 @@ const UpdateType = {
   INIT: 'INIT',
 };
 
-const ButtonName = {
-  WATCHLIST: 'watchlist',
-  WATCHED: 'watched',
-  FAVORITES: 'favorite',
-};
-
 const MenuItem = {
   FILMS: '#all',
   STATISTICS: '#stats',
+};
+
+const Period = {
+  ALL_TIME: 'all-time',
+  TODAY: 'today',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
 };
 
 const sortByDate = (filmA, filmB) => {
@@ -55,25 +56,6 @@ const getRandomInteger = (min, max) => getRandomFloat(min, max, 0);
 
 const getRandomArrayElement = (array) => array[getRandomInteger(0, array.length - 1)];
 
-const getRandomArray = (array, max, min = 1) => {
-  const newArray = array.slice().sort(() => Math.random() - 0.5);
-  return newArray.slice(0, getRandomInteger(min, max));
-};
-
-const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
-
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1),
-  ];
-};
-
 const getGenresSet = (films) => new Set(films.flatMap((film) => film.genres));
 
 const countFilmsByGenre = (films, genre) => {
@@ -89,21 +71,47 @@ const countFilmsByGenre = (films, genre) => {
 
 const countTotalDuration = (films) => dayjs.duration(films.reduce((totalDuration, film) => totalDuration + film.duration, 0), 'm');
 
+const getFilmsByPeriod = (films, dateFrom, dateTo) => films.filter((film) => dayjs(film.watchingDate).isBetween(dateFrom, dateTo));
+
+const getTopGenre = (genres, counts) => {
+  const keys = genres;
+  const values = counts;
+
+  const genresPerCount = {};
+  keys.forEach((key, i) => genresPerCount[key] = values[i]);
+
+  const sortableGenresPerCount = Object.fromEntries(
+    Object.entries(genresPerCount).sort(([,genreA],[,genreB]) => genreB - genreA),
+  );
+  return Object.keys(sortableGenresPerCount)[0];
+};
+
+const deleteComment = (comments, update,  isAlreadyId = true) => {
+  const index = comments.findIndex((comment) => isAlreadyId ? comment === update : comment.id === update);
+
+  comments = [
+    ...comments.slice(0, index),
+    ...comments.slice(index + 1),
+  ];
+  return comments;
+};
+
 export {
   SortType,
   UserAction,
   CommentAction,
   UpdateType,
-  ButtonName,
   MenuItem,
+  Period,
   sortByDate,
   sortByRating,
   getRandomFloat,
   getRandomInteger,
   getRandomArrayElement,
-  getRandomArray,
-  updateItem,
   getGenresSet,
   countFilmsByGenre,
-  countTotalDuration
+  countTotalDuration,
+  getFilmsByPeriod,
+  getTopGenre,
+  deleteComment
 };

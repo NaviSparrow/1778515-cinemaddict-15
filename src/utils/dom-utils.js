@@ -7,7 +7,7 @@ const RenderPlace = {
   AFTEREND: 'afterend',
 };
 
-const render = (container, child, place) => {
+const render = (container, child, place = RenderPlace.BEFOREEND) => {
   if (container instanceof AbstractView) {
     container = container.getElement();
   }
@@ -27,6 +27,9 @@ const render = (container, child, place) => {
 };
 
 const remove = (component) => {
+  if (component === null) {
+    return;
+  }
   if (!(component instanceof AbstractView)) {
     throw new Error('Can remove only components');
   }
@@ -63,6 +66,8 @@ const replace = (newChild, oldChild) => {
 
 const isCtrlEnterEvent = (evt) => evt.ctrlKey && evt.keyCode === 13;
 
+const isCmdEnterEvent = (evt) => evt.metaKey && evt.keyCode === 13;
+
 export {
   RenderPlace,
   render,
@@ -70,5 +75,6 @@ export {
   createElement,
   isEscEvent,
   replace,
-  isCtrlEnterEvent
+  isCtrlEnterEvent,
+  isCmdEnterEvent
 };
