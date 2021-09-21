@@ -11,67 +11,143 @@ export const State = {
   ABORTING: 'ABORTING',
 };
 
+const Mode = {
+  DEFAULT: 'Default',
+  POPUP: 'Popup',
+};
+
 export default class Film {
-  constructor(filmListContainer, changeData, commentsModel, currentFilter, api, popupOpenHandler, popupCloseHandler) {
-    this._filmListContainer = filmListContainer;
-    this._popupOpenHandler = popupOpenHandler;
-    this._popupCloseHandler = popupCloseHandler;
+  constructor(container, changeData, popupOpenHandler, popupCloseHandler, commentsModel, currentFilter, api) {
+    this._container = container;
     this._commentsModel = commentsModel;
     this._changeFilmData = changeData;
     this._currentFilter = currentFilter;
     this._api = api;
 
+    this._mode = Mode.DEFAULT;
+    this._popupOpenHandler = popupOpenHandler;
+    this._popupCloseHandler = popupCloseHandler;
+
     this._filmComponent = null;
     this._popupComponent = null;
 
-    this._openPopupHandler = this._openPopupHandler.bind(this);
+    this.showPopup = this.showPopup.bind(this);
+
     this._handleWatchListClick = this._handleWatchListClick.bind(this);
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleFavoritesClick = this._handleFavoritesClick.bind(this);
+
     this._handleCommentsAction = this._handleCommentsAction.bind(this);
+    this._handleCommentsLoad = this._handleCommentsLoad.bind(this);
+
     this._handleClosePopupClick = this._handleClosePopupClick.bind(this);
     this._closePopupOnKeyDownHandler = this._closePopupOnKeyDownHandler.bind(this);
     this._closePopupOnClickHandler = this._closePopupOnClickHandler.bind(this);
-    this._handleCommentsLoad = this._handleCommentsLoad.bind(this);
   }
 
-  init(film, containers, currentFilmId) {
+  init(film) {
     this._film = film;
-    const prevFilmComponent = this._filmComponent;
-    this._filmComponent = new FilmCardView(film);
-    this._popupComponent = new FilmPopupView(this._film, this._changeFilmData, this._handleCommentsAction, this._currentFilter, this._commentsModel);
 
-    this._filmComponent.setClickHandler(this._openPopupHandler);
+    const prevFilmComponent = this._filmComponent;
+    const prevPopupComponent = this._popupComponent;
+
+    this._filmComponent = new FilmCardView(film);
+    this._popupComponent = new FilmPopupView(this._film, this._handleCommentsAction);
+
+    this._filmComponent.setClickHandler(this.showPopup);
+
     this._filmComponent.setAddToWatchListClickHandler(this._handleWatchListClick);
     this._filmComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._filmComponent.setFavoriteClickHandler(this._handleFavoritesClick);
 
-    this._popupComponent.setCloseClickHandler(this._closePopupOnClickHandler);
-    this._popupComponent.setCloseEscHandler(this._closePopupOnKeyDownHandler);
+    this._popupComponent.setAddToWatchListClickHandler(this._handleWatchListClick);
+    this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
+    this._popupComponent.setFavoriteClickHandler(this._handleFavoritesClick);
 
-    if (this._film.id === currentFilmId) {
-      this._openPopupHandler();
-      return;
-    }
+    this._popupComponent.setCloseClickHandler(this._closePopupOnClickHandler);
 
     if (prevFilmComponent === null) {
-      render(this._filmListContainer, this._filmComponent, RenderPlace.BEFOREEND);
+      render(this._container, this._filmComponent);
+    } else {
+      replace(this._filmComponent, prevFilmComponent);
+    }
+
+    if (this._mode === Mode.POPUP) {
+      this.showPopup();
+    }
+
+    remove(prevFilmComponent);
+    remove(prevPopupComponent);
+  }
+
+  resetState() {
+    this._mode = Mode.DEFAULT;
+    this._popupComponent.getElement().remove();
+  }
+
+  destroy() {
+    this._commentsModel.removeObserver(this._handleCommentsLoad);
+    document.removeEventListener('keydown', this._closePopupOnKeyDownHandler);
+    remove(this._filmComponent);
+    remove(this._popupComponent);
+  }
+
+  setViewState(state) {
+    if (this._mode === Mode.DEFAULT) {
       return;
     }
-
-    for (const container of containers.values()) {
-      if (container.contains(prevFilmComponent.getElement())) {
-        replace(this._filmComponent, prevFilmComponent);
-      }
+    switch (state) {
+      case State.POSTING:
+        this._popupComponent.updateData({
+          isDisabled: true,
+          isPosting: true,
+        });
+        break;
+      case State.DELETING:
+        this._popupComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+      case State.ABORTING:
+        this._popupComponent.shake(() => this._popupComponent.updateData({
+          isDisabled: false,
+          isDeleting: false,
+          isPosting: false,
+        }));
     }
-    remove(prevFilmComponent);
   }
 
-  _handleCommentsLoad(scrollPosition) {
-    this._popupComponent.showComments(scrollPosition);
+  showPopup() {
+    this._popupOpenHandler(this._film.id);
+    this._mode = Mode.POPUP;
+
+    render(document.body, this._popupComponent, RenderPlace.BEFOREEND);
+    document.body.classList.add('hide-overflow');
+
+    this._popupComponent.setCloseEscHandler(this._closePopupOnKeyDownHandler);
+    this._commentsModel.addObserver(this._handleCommentsLoad);
+
+    const modelComments = this._commentsModel.getComments();
+    if (modelComments.length === 0 || !this._film.comments.includes(modelComments[0].id)) {
+      this._api.getComments(this._film)
+        .then((comments) => {
+          this._commentsModel.setComments(comments);
+        });
+    } else {
+      this._popupComponent.showComments(modelComments);
+    }
   }
 
-  _handleCommentsAction(actionType, update, film, scrollPosition) {
+  _handleCommentsLoad() {
+    if (this._mode === Mode.DEFAULT) {
+      return;
+    }
+    const comments = this._commentsModel.getComments().filter((comment) => this._film.comments.includes(comment.id));
+    this._popupComponent.showComments(comments);
+  }
+
+  _handleCommentsAction(actionType, update, film) {
     switch (actionType) {
       case CommentAction.DELETE_COMMENT:
         this._api.deleteComment(update)
@@ -86,7 +162,7 @@ export default class Film {
                 this._film,
               ),
             );
-            this._commentsModel.deleteComment(update, scrollPosition);
+            this._commentsModel.deleteComment(update);
           })
           .catch(() => {
             this.setViewState(State.ABORTING);
@@ -104,7 +180,7 @@ export default class Film {
               ),
             );
 
-            this._commentsModel.addComment(response.comments[response.comments.length - 1], scrollPosition);
+            this._commentsModel.addComment(response.comments[response.comments.length - 1], 0);
           })
           .catch(() => {
             this.setViewState(State.ABORTING);
@@ -146,7 +222,7 @@ export default class Film {
   _handleFavoritesClick() {
     this._changeFilmData(
       UserAction.BUTTON_CLICK,
-      this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MINOR, //TODO поменять на isFilterTypeAll
+      this._getCommentUpdateType(),
       Object.assign(
         {},
         this._film,
@@ -157,29 +233,12 @@ export default class Film {
     );
   }
 
-  _isPopUpExist() {
-    return Boolean(document.body.querySelector('.film-details'));
-  }
-
-  _removePopUp() {
-    document.body.removeChild(document.body.querySelector('.film-details'));
-  }
-
-  _openPopupHandler() {
-    if (this._isPopUpExist()) {
-      this._removePopUp();
-    }
-    this._api.getComments(this._film)
-      .then((comments) => {
-        this._commentsModel.addObserver(this._handleCommentsLoad);
-        this._commentsModel.setComments(comments);
-      });
-    render(document.body, this._popupComponent, RenderPlace.BEFOREEND);
-    document.body.classList.add('hide-overflow');
-    this._popupOpenHandler(this._film);
+  _getCommentUpdateType() {
+    return this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MINOR;
   }
 
   _handleClosePopupClick() {
+    this._mode = Mode.DEFAULT;
     remove(this._popupComponent);
     document.removeEventListener('keydown', this._closePopupOnKeyDownHandler);
     document.body.classList.remove('hide-overflow');
@@ -188,38 +247,10 @@ export default class Film {
 
   _closePopupOnKeyDownHandler() {
     this._handleClosePopupClick();
-
   }
 
   _closePopupOnClickHandler(evt) {
     evt.preventDefault();
     this._handleClosePopupClick();
-  }
-
-  destroy() {
-    remove(this._filmComponent);
-    remove(this._popupComponent);
-  }
-
-  setViewState(state) {
-    const resetFormState = () => this._popupComponent.updateData({isDisabled: false, isDeleting: false, isPosting: false});
-    switch (state) {
-      case State.POSTING:
-        this._popupComponent.updateData({
-          isDisabled: true,
-          isPosting: true,
-        });
-        break;
-      case State.DELETING:
-        this._popupComponent.updateData({
-          isDisabled: true,
-          isDeleting: true,
-        });
-        break;
-      case State.ABORTING:
-        this._popupComponent.shake(resetFormState);
-
-    }
-
   }
 }

@@ -7,7 +7,7 @@ const RenderPlace = {
   AFTEREND: 'afterend',
 };
 
-const render = (container, child, place) => {
+const render = (container, child, place = RenderPlace.BEFOREEND) => {
   if (container instanceof AbstractView) {
     container = container.getElement();
   }
@@ -27,6 +27,9 @@ const render = (container, child, place) => {
 };
 
 const remove = (component) => {
+  if (component === null) {
+    return;
+  }
   if (!(component instanceof AbstractView)) {
     throw new Error('Can remove only components');
   }

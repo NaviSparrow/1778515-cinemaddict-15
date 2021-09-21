@@ -87,7 +87,7 @@ const getTopGenre = (genres, counts) => {
 };
 
 const deleteComment = (comments, update,  isAlreadyId = true) => {
-  const index = comments.findIndex((comment) => isAlreadyId ? comment : comment.id === update);
+  const index = comments.findIndex((comment) => isAlreadyId ? comment === update : comment.id === update);
 
   comments = [
     ...comments.slice(0, index),
