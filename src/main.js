@@ -65,8 +65,8 @@ api.getFilms()
     filmsModel.setFilms(UpdateType.INIT, films);
     render(footerStatistics, new StatisticsFooterView(films.length), RenderPlace.BEFOREEND);
 
+  })
+  .catch(() => {
+    filmsModel.setFilms(UpdateType.INIT, []);
   });
-// .catch(() => {
-//   filmsModel.setFilms(UpdateType.INIT, []);
-// });
 
