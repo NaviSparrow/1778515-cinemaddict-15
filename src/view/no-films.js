@@ -9,11 +9,7 @@ const noFilmsTextType = {
 };
 
 const createNoFilmsTemplate = (currentFilter) => (
-  `<section class="films">
-    <section class="films-list">
-      <h2 class="films-list__title">${noFilmsTextType[currentFilter]}</h2>
-    </section>
-  </section>`
+  `<h2 class="films-list__title">${noFilmsTextType[currentFilter]}</h2>`
 );
 
 export default class NoFilmsInDatabase extends AbstractView {

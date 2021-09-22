@@ -303,6 +303,8 @@ export default class FilmsBoard {
   _clearBoard({resetRenderedTaskCount = false, resetSortType = false} = {}) {
     remove(this._sortComponent);
     this._clearFilmsSection(resetRenderedTaskCount);
+    remove(this._topRatedListComponent);
+    remove(this._mostCommentedListComponent);
 
     if (this._noFilmsComponent) {
       remove(this._noFilmsComponent);
@@ -321,7 +323,7 @@ export default class FilmsBoard {
 
   _renderNoFilms() {
     this._noFilmsComponent = new NoFilmsView(this._filterType);
-    render(this._boardContainer, this._noFilmsComponent);
+    render(this._filmsListComponent, this._noFilmsComponent);
   }
 
   _renderBoardFilms() {
