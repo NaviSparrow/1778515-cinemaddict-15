@@ -292,12 +292,9 @@ export default class FilmPopup extends AbstractFilmView {
         this._data.newComment,
         {emotion: evt.target.value},
       ),
-    }, 0);
+    }, this.getScrollPosition());
   }
 
-  _getCommentsContainer() {
-    return this.getElement().querySelector('.film-details__comments-list');
-  }
 
   _formSubmitHandler(evt) {
     if (isCtrlEnterEvent(evt) || isCmdEnterEvent(evt)) {

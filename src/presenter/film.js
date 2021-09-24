@@ -166,9 +166,7 @@ export default class Film {
         this._api.deleteComment(update)
           .then(() => {
             this._commentsModel.deleteComment(update);
-
             this._film.comments = deleteComment(this._film.comments, update, true);
-
             this._changeFilmData(
               UserAction.DELETE_COMMENT,
               UpdateType.MINOR_COMMENTS,
@@ -185,6 +183,7 @@ export default class Film {
       case CommentAction.ADD_COMMENT:
         this._api.addComment(update, film)
           .then((response) => {
+            this._commentsModel.addComment(response.comments[response.comments.length - 1]);
             this._changeFilmData(
               UserAction.ADD_COMMENT,
               UpdateType.MINOR_COMMENTS,
@@ -193,8 +192,6 @@ export default class Film {
                 response.film,
               ),
             );
-
-            this._commentsModel.addComment(response.comments[response.comments.length - 1], 0);
           })
           .catch(() => {
             this.setViewState(State.ABORTING);
