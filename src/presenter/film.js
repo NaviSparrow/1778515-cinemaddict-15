@@ -47,9 +47,16 @@ export default class Film {
     this._closePopupOnClickHandler = this._closePopupOnClickHandler.bind(this);
   }
 
-  init(film) {
+  init(film, isJustPopup = false, mostCommentedFlag) {
     this._film = film;
-
+    if (isJustPopup) {
+      this._popupComponent = new FilmPopupView(this._film, this._handleCommentsAction);
+      this._popupComponent.setAddToWatchListClickHandler(this._handleWatchListClick);
+      this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
+      this._popupComponent.setFavoriteClickHandler(this._handleFavoritesClick);
+      this._popupComponent.setCloseClickHandler(this._closePopupOnClickHandler);
+      return;
+    }
     const prevFilmComponent = this._filmComponent;
     const prevPopupComponent = this._popupComponent;
     if (prevPopupComponent !== null) {
@@ -61,7 +68,6 @@ export default class Film {
     this._popupComponent = new FilmPopupView(this._film, this._handleCommentsAction);
 
     this._filmComponent.setClickHandler(this.showPopup);
-
     this._filmComponent.setAddToWatchListClickHandler(this._handleWatchListClick);
     this._filmComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._filmComponent.setFavoriteClickHandler(this._handleFavoritesClick);
@@ -69,7 +75,6 @@ export default class Film {
     this._popupComponent.setAddToWatchListClickHandler(this._handleWatchListClick);
     this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._popupComponent.setFavoriteClickHandler(this._handleFavoritesClick);
-
     this._popupComponent.setCloseClickHandler(this._closePopupOnClickHandler);
 
     if (prevFilmComponent === null) {
@@ -130,8 +135,10 @@ export default class Film {
     }
   }
 
-  showPopup() {
-    this._popupOpenHandler(this._film.id);
+  showPopup(isNotReopen = true) {
+    if(isNotReopen) {
+      this._popupOpenHandler(this._film.id);
+    }
     this._mode = Mode.POPUP;
 
     render(document.body, this._popupComponent, RenderPlace.BEFOREEND);

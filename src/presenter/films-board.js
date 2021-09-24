@@ -34,6 +34,8 @@ export default class FilmsBoard {
     this._mostCommentedFilmPresenter = new Map();
 
     this._isLoading = true;
+    this._isJustPopup = false;
+    this._isMostCommentedFlag = false;
     this._currentFilmId = null;
 
     this._filmsSectionComponent = new FilmsSectionView();
@@ -71,7 +73,7 @@ export default class FilmsBoard {
   _reopenPopup() {
     const boardPresenter = this._boardFilmPresenter.get(this._currentFilmId);
     if (boardPresenter) {
-      boardPresenter.showPopup();
+      boardPresenter.showPopup(false);
       return;
     }
 
@@ -88,6 +90,9 @@ export default class FilmsBoard {
   }
 
   _popupOpenHandler(filmId) {
+    if (this._currentFilmId === filmId) {
+      return;
+    }
     this._currentFilmId = filmId;
     [this._boardFilmPresenter, this._topRatedFilmPresenter, this._mostCommentedFilmPresenter]
       .flatMap((map) => [...map.values()])
@@ -101,14 +106,14 @@ export default class FilmsBoard {
   _getFilms() {
     this._filterType = this._filterModel.getFilter();
     const sourceFilms = this._filmsModel.getFilms();
-    // const currentFilm = sourceFilms.find((film) => film.id === this._currentFilmId);
-    const filteredFilms = filter[this._filterType](sourceFilms);
-    // if (currentFilm !== null) {
-    //   filteredFilms = [
-    //     currentFilm,
-    //     ...filteredFilms,
-    //   ];
-    // }
+    let filteredFilms = filter[this._filterType](sourceFilms);
+    if (this._currentFilmId !== null && this._filterType !== FilterType.ALL) {
+      const currentFilm = sourceFilms.find((film) => film.id === this._currentFilmId);
+      filteredFilms = [
+        currentFilm,
+        ...filteredFilms,
+      ];
+    }
     switch (this._currentSortType) {
       case SortType.BY_DEFAULT:
         return filteredFilms;
@@ -143,10 +148,10 @@ export default class FilmsBoard {
         this._api.updateFilm(film)
           .then((response) => {
             this._filmsModel.updateFilm(updateType, response);
-          })
-          .catch(() => {
-            this._setFilmPresenterState(film.id, FilmPresenterViewState.ABORTING);
           });
+        // .catch(() => {
+        //   this._setFilmPresenterState(film.id, FilmPresenterViewState.ABORTING);
+        // });
         break;
       case UserAction.DELETE_COMMENT:
         this._setFilmPresenterState(film.id, FilmPresenterViewState.DELETING);
@@ -200,6 +205,7 @@ export default class FilmsBoard {
     }
 
     const mostCommentedPresenter = this._mostCommentedFilmPresenter.get(film.id);
+    console.log(this._mostCommentedFilmPresenter);
     if (mostCommentedPresenter) {
       mostCommentedPresenter.init(film);
     }
@@ -259,6 +265,11 @@ export default class FilmsBoard {
   }
 
   _renderFilm(film, container = this._getBoardFilmsListContainer()) {
+    if (film.id === this._currentFilmId && this._filterType !== FilterType.ALL) {
+      this._isJustPopup = true;
+    } else {
+      this._isJustPopup = false;
+    }
     const filmPresenter = new FilmPresenter(
       container,
       this._handleViewAction,
@@ -267,8 +278,7 @@ export default class FilmsBoard {
       this._commentsModel,
       this._filterModel.getFilter(),
       this._api);
-
-    filmPresenter.init(film);
+    filmPresenter.init(film, this._isJustPopup);
 
     switch (container) {
       case this._getBoardFilmsListContainer():
