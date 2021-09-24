@@ -1,9 +1,8 @@
 import he from 'he';
 import AbstractFilmView from './abstract-film-view';
-import CommentFormView from './comment-form.js';
 import {CommentAction} from '../utils/utils.js';
 import {createGenres, formatCommentDate, formatDate, formatDuration} from '../utils/film-utils.js';
-import {isCmdEnterEvent, isCtrlEnterEvent, isEscEvent, render, RenderPlace} from '../utils/dom-utils.js';
+import {isCmdEnterEvent, isCtrlEnterEvent, isEscEvent} from '../utils/dom-utils.js';
 
 const createPopupDetailsTemplate = (data) => {
   const {
@@ -192,16 +191,23 @@ export default class FilmPopup extends AbstractFilmView {
     this._setInnerHandlers();
   }
 
-  showComments(comments) {
+  getNewCommentFormState()  {
+    return this._data.newComment;
+  }
+
+  showComments(comments, scrollPosition) {
     this._comments = comments;
     this.updateData({
       serverComments: this._comments,
-      scrollPosition: this.getElement().scrollTop,
-    });
+    }, scrollPosition);
   }
 
   getTemplate() {
     return createPopupTemplate(this._data, this._comments);
+  }
+
+  getScrollPosition() {
+    return this.getElement().scrollTop;
   }
 
 
@@ -239,6 +245,12 @@ export default class FilmPopup extends AbstractFilmView {
 
   _getFavoriteControl() {
     return this.getElement().querySelector('.film-details__control-button--favorite');
+  }
+
+  restoreForm(formState, scrollPosition) {
+    this.updateData({
+      newComment: formState,
+    }, scrollPosition);
   }
 
   _resetComment() {
@@ -293,9 +305,6 @@ export default class FilmPopup extends AbstractFilmView {
         CommentAction.ADD_COMMENT,
         this._data.newComment,
         FilmPopup.parseDataToFilm(this._data));
-
-      this._newCommentComponent = new CommentFormView(createCommentFromTemplate, this._data.newComment, this._data.isDisabled, this);
-      render(this._getCommentsContainer(), this._newCommentComponent, RenderPlace.BEFOREEND);
     }
   }
 

@@ -30,6 +30,8 @@ export default class Film {
 
     this._filmComponent = null;
     this._popupComponent = null;
+    this._formState = null;
+    this._scrollPosition = null;
 
     this.showPopup = this.showPopup.bind(this);
 
@@ -50,6 +52,10 @@ export default class Film {
 
     const prevFilmComponent = this._filmComponent;
     const prevPopupComponent = this._popupComponent;
+    if (prevPopupComponent !== null) {
+      this._formState = prevPopupComponent.getNewCommentFormState();
+      this._scrollPosition = prevPopupComponent.getScrollPosition();
+    }
 
     this._filmComponent = new FilmCardView(film);
     this._popupComponent = new FilmPopupView(this._film, this._handleCommentsAction);
@@ -92,6 +98,12 @@ export default class Film {
     remove(this._popupComponent);
   }
 
+  _getPopupScrollPosition() {
+    if (this._popupComponent) {
+      return this._popupComponent.getScrollPosition();
+    }
+  }
+
   setViewState(state) {
     if (this._mode === Mode.DEFAULT) {
       return;
@@ -101,13 +113,13 @@ export default class Film {
         this._popupComponent.updateData({
           isDisabled: true,
           isPosting: true,
-        });
+        }, this._getPopupScrollPosition());
         break;
       case State.DELETING:
         this._popupComponent.updateData({
           isDisabled: true,
           isDeleting: true,
-        });
+        }, this._getPopupScrollPosition());
         break;
       case State.ABORTING:
         this._popupComponent.shake(() => this._popupComponent.updateData({
@@ -132,10 +144,11 @@ export default class Film {
     if (modelComments.length === 0 || !this._film.comments.includes(modelComments[0].id)) {
       this._api.getComments(this._film)
         .then((comments) => {
-          this._commentsModel.setComments(comments);
+          this._commentsModel.setComments(comments,  this._scrollPosition);
         });
     } else {
-      this._popupComponent.showComments(modelComments);
+      this._popupComponent.showComments(modelComments, this._scrollPosition);
+      this._popupComponent.restoreForm(this._formState, this._scrollPosition);
     }
   }
 
@@ -144,7 +157,7 @@ export default class Film {
       return;
     }
     const comments = this._commentsModel.getComments().filter((comment) => this._film.comments.includes(comment.id));
-    this._popupComponent.showComments(comments);
+    this._popupComponent.showComments(comments, this._getPopupScrollPosition());
   }
 
   _handleCommentsAction(actionType, update, film) {
@@ -152,6 +165,8 @@ export default class Film {
       case CommentAction.DELETE_COMMENT:
         this._api.deleteComment(update)
           .then(() => {
+            this._commentsModel.deleteComment(update);
+
             this._film.comments = deleteComment(this._film.comments, update, true);
 
             this._changeFilmData(
@@ -162,7 +177,6 @@ export default class Film {
                 this._film,
               ),
             );
-            this._commentsModel.deleteComment(update);
           })
           .catch(() => {
             this.setViewState(State.ABORTING);
@@ -204,6 +218,9 @@ export default class Film {
   }
 
   _handleWatchedClick() {
+    this._popupComponent.updateData({
+      isWatched: !this._film.isWatched,
+    });
     const watchingDate = updateWatchingDate(this._film);
     this._changeFilmData(
       UserAction.BUTTON_CLICK,

@@ -10,7 +10,7 @@ export default class CommentForm extends AbstractView {
   }
 
   getTemplate() {
-    return this._createCommentFormTemplate(this._commentData, this._isDeleting, this._isDeleting);
+    return this._createCommentFormTemplate(this._commentData, this._isDisabled, this._isDeleting);
   }
 
 }

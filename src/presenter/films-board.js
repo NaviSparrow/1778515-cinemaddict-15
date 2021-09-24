@@ -101,8 +101,14 @@ export default class FilmsBoard {
   _getFilms() {
     this._filterType = this._filterModel.getFilter();
     const sourceFilms = this._filmsModel.getFilms();
-
+    // const currentFilm = sourceFilms.find((film) => film.id === this._currentFilmId);
     const filteredFilms = filter[this._filterType](sourceFilms);
+    // if (currentFilm !== null) {
+    //   filteredFilms = [
+    //     currentFilm,
+    //     ...filteredFilms,
+    //   ];
+    // }
     switch (this._currentSortType) {
       case SortType.BY_DEFAULT:
         return filteredFilms;
@@ -111,7 +117,6 @@ export default class FilmsBoard {
       case SortType.BY_RATING:
         return filteredFilms.sort(sortByRating);
     }
-
     return sourceFilms;
   }
 
