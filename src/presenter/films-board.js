@@ -125,10 +125,10 @@ export default class FilmsBoard {
         this._api.updateFilm(film)
           .then((response) => {
             this._filmsModel.updateFilm(updateType, response);
-          });
-        // .catch(() => {
-        //   this._setFilmPresenterState(film.id, FilmPresenterViewState.ABORTING);
-        // });
+          })
+        .catch(() => {
+          this._setFilmPresenterState(film.id, FilmPresenterViewState.ABORTING);
+        });
         break;
       case UserAction.DELETE_COMMENT:
         this._setFilmPresenterState(film.id, FilmPresenterViewState.DELETING);
@@ -143,7 +143,7 @@ export default class FilmsBoard {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH: {
-        this._updatePresenters(data);
+        this._updatePresenter(data);
         this._updateUserProfile();
         break;
       }
@@ -162,8 +162,7 @@ export default class FilmsBoard {
         this._reopenPopup();
         break;
       case UpdateType.MINOR_COMMENTS:
-        this._updatePresenters(data);
-        this._reopenPopup();
+        this._updatePresenter(data);
         break;
       case UpdateType.INIT:
         this._isLoading = false;
@@ -183,7 +182,7 @@ export default class FilmsBoard {
     this._popupForm = boardPresenter.getPopupFormState();
   }
 
-  _updatePresenters(film) {
+  _updatePresenter(film) {
     const boardPresenter = this._boardFilmPresenter.get(film.id);
     if (boardPresenter) {
       boardPresenter.init(film);
