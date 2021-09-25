@@ -20,9 +20,6 @@ export default class FilmsBoard {
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
     this._commentsModel = commentsModel;
-    this._poppScroll = null;
-    this._popupForm = null;
-
     this._api = api;
 
     this._currentSortType = SortType.BY_DEFAULT;
@@ -35,6 +32,9 @@ export default class FilmsBoard {
     this._isLoading = true;
     this._isJustPopup = false;
     this._currentFilmId = null;
+    this._currentFilm = null;
+    this._poppScroll = null;
+    this._popupForm = null;
 
     this._filmsSectionComponent = new FilmsSectionView();
     this._filmsListComponent = new FilmsListView();
@@ -96,10 +96,12 @@ export default class FilmsBoard {
     let filteredFilms = filter[this._filterType](sourceFilms);
     if (this._currentFilmId !== null && this._filterType !== FilterType.ALL) {
       const currentFilm = sourceFilms.find((film) => film.id === this._currentFilmId);
-      filteredFilms = [
-        currentFilm,
-        ...filteredFilms,
-      ];
+      if (!filteredFilms.includes(currentFilm)) {
+        filteredFilms = [
+          currentFilm,
+          ...filteredFilms,
+        ];
+      }
     }
     switch (this._currentSortType) {
       case SortType.BY_DEFAULT:
@@ -151,6 +153,7 @@ export default class FilmsBoard {
         if(this._currentFilmId !== null) {
           this.getPopupScroll();
           this.getPopupForm();
+          this._currentFilm = this._boardFilmPresenter.get(this._currentFilmId);
         }
         this._clearBoard();
         this._renderBoard();
@@ -226,10 +229,22 @@ export default class FilmsBoard {
 
   _renderFilm(film, container = this._getBoardFilmsListContainer()) {
     if (film.id === this._currentFilmId && this._filterType !== FilterType.ALL) {
-      this._isJustPopup = true;
+
+      switch (this._filterType) {
+        case FilterType.HISTORY:
+          this._isJustPopup = !!this._currentFilm.isPopupWatchedButtonActive();
+          break;
+        case FilterType.WATCHLIST:
+          this._isJustPopup = !!this._currentFilm.isPopupWatchListButtonActive();
+          break;
+        case FilterType.FAVORITES:
+          this._isJustPopup = !!this._currentFilm.isPopupFavoritesButtonActive();
+          break;
+      }
     } else {
       this._isJustPopup = false;
     }
+
     const filmPresenter = new FilmPresenter(
       container,
       this._handleViewAction,

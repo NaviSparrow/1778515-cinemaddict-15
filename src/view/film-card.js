@@ -1,10 +1,12 @@
 import { formatDuration, formatYear } from '../utils/film-utils.js';
 import AbstractFilmView from './abstract-film-view';
 
+const SHORT_DESCRIPTION_SYMBOLS = 139;
+
 const createFilmCardTemplate = (film) => {
   const {title, rating, releaseDate, duration, genres, poster, description, comments, isInWatchList, isWatched, isFavorite} = film;
   const fullDescription = description;
-  const getShortDescription = () => `${fullDescription.slice(0, 139)}...`;
+  const getShortDescription = () => `${fullDescription.slice(0, SHORT_DESCRIPTION_SYMBOLS)}...`;
 
   return `<article class="film-card">
     <h3 class="film-card__title">${title}</h3>

@@ -174,6 +174,21 @@ export default class Film {
     }
   }
 
+  isPopupWatchedButtonActive() {
+    const watchedButton = this._popupComponent.getElement().querySelector('.film-details__control-button--watched');
+    return watchedButton.classList.contains('film-details__control-button--active');
+  }
+
+  isPopupWatchListButtonActive() {
+    const watchListButton = this._popupComponent.getElement().querySelector('.film-details__control-button--watchlist');
+    return watchListButton.classList.contains('film-details__control-button--active');
+  }
+
+  isPopupFavoritesButtonActive() {
+    const favoritesButton = this._popupComponent.getElement().querySelector('.film-details__control-button--favorite');
+    return favoritesButton.classList.contains('film-details__control-button--active');
+  }
+
   _handleCommentsLoad() {
     if (this._mode === Mode.DEFAULT) {
       return;
@@ -237,9 +252,6 @@ export default class Film {
   }
 
   _handleWatchedClick() {
-    this._popupComponent.updateData({
-      isWatched: !this._film.isWatched,
-    },  this.getPopupScrollPosition());
     const watchingDate = updateWatchingDate(this._film);
     this._changeFilmData(
       UserAction.BUTTON_CLICK,
