@@ -26,6 +26,5 @@ export default class Comments extends AbstractObserver {
 
   deleteComment(update) {
     this._comments = deleteComment(this._comments, update, false);
-    this.notify();
   }
 }

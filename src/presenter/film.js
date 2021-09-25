@@ -47,7 +47,7 @@ export default class Film {
     this._closePopupOnClickHandler = this._closePopupOnClickHandler.bind(this);
   }
 
-  init(film, isJustPopup = false, mostCommentedFlag) {
+  init(film, isJustPopup = false) {
     this._film = film;
     if (isJustPopup) {
       this._popupComponent = new FilmPopupView(this._film, this._handleCommentsAction);
@@ -55,6 +55,8 @@ export default class Film {
       this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
       this._popupComponent.setFavoriteClickHandler(this._handleFavoritesClick);
       this._popupComponent.setCloseClickHandler(this._closePopupOnClickHandler);
+      this._formState = this._popupComponent.getNewCommentFormState();
+      this._scrollPosition = this._popupComponent.getScrollPosition();
       return;
     }
     const prevFilmComponent = this._filmComponent;

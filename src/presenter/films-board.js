@@ -211,7 +211,6 @@ export default class FilmsBoard {
     }
 
     const mostCommentedPresenter = this._mostCommentedFilmPresenter.get(film.id);
-    console.log(this._mostCommentedFilmPresenter);
     if (mostCommentedPresenter) {
       mostCommentedPresenter.init(film);
     }
