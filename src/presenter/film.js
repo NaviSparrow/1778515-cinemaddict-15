@@ -224,7 +224,7 @@ export default class Film {
   _handleWatchedClick() {
     this._popupComponent.updateData({
       isWatched: !this._film.isWatched,
-    });
+    },  this._getPopupScrollPosition());
     const watchingDate = updateWatchingDate(this._film);
     this._changeFilmData(
       UserAction.BUTTON_CLICK,
