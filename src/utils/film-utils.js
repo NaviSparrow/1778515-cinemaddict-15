@@ -4,6 +4,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
+const HOUR = 60;
 const EmojiState = {
   NULL: null,
   SMILE: 'smile',
@@ -14,7 +15,7 @@ const EmojiState = {
 
 const formatDuration = (time) => {
   let filmDuration = dayjs.duration(time, 'm');
-  time < 60
+  time < HOUR
     ? filmDuration = filmDuration.format('m[m]')
     : filmDuration = filmDuration.format('H[h] m[m]');
   return filmDuration;

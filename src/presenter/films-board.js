@@ -126,9 +126,9 @@ export default class FilmsBoard {
           .then((response) => {
             this._filmsModel.updateFilm(updateType, response);
           })
-        .catch(() => {
-          this._setFilmPresenterState(film.id, FilmPresenterViewState.ABORTING);
-        });
+          .catch(() => {
+            this._setFilmPresenterState(film.id, FilmPresenterViewState.ABORTING);
+          });
         break;
       case UserAction.DELETE_COMMENT:
         this._setFilmPresenterState(film.id, FilmPresenterViewState.DELETING);

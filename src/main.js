@@ -1,4 +1,3 @@
-import UserProfileView from './view/user-profile.js';
 import StatisticsFooterView from './view/statistics.js';
 import StatisticsView from './view/stats.js';
 import FilmsBoardPresenter from './presenter/films-board';

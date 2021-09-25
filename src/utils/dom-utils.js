@@ -1,5 +1,7 @@
 import AbstractView from '../view/abstract.js';
 
+const ENTER_KEY_CODE = 13;
+
 const RenderPlace = {
   BEFOREBEGIN: 'beforebegin',
   BEFOREEND: 'beforeend',
@@ -64,9 +66,9 @@ const replace = (newChild, oldChild) => {
   parent.replaceChild(newChild, oldChild);
 };
 
-const isCtrlEnterEvent = (evt) => evt.ctrlKey && evt.keyCode === 13;
+const isCtrlEnterEvent = (evt) => evt.ctrlKey && evt.keyCode === ENTER_KEY_CODE;
 
-const isCmdEnterEvent = (evt) => evt.metaKey && evt.keyCode === 13;
+const isCmdEnterEvent = (evt) => evt.metaKey && evt.keyCode === ENTER_KEY_CODE;
 
 export {
   RenderPlace,
