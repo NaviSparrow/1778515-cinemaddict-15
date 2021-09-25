@@ -7,16 +7,19 @@ import MostCommentedFilmsView from '../view/most-commented-films.js';
 import SortView from '../view/sort.js';
 import NoFilmsView from '../view/no-films';
 import LoadingView from '../view/loading.js';
+import UserProfileView from '../view/user-profile.js';
 import {remove, render} from '../utils/dom-utils.js';
 import {filter, FilterType} from '../utils/filter-utils.js';
-import {sortByDate, sortByRating, SortType, UpdateType, UserAction} from '../utils/utils.js';
+import {FilmsCount, sortByDate, sortByRating, SortType, UpdateType, UserAction} from '../utils/utils.js';
+import Films from "../model/films";
 
 const CARDS_PER_STEP = 5;
 const EXTRA_CARDS_COUNT = 2;
 
 export default class FilmsBoard {
-  constructor(boardContainer, filmsModel, filterModel, commentsModel, api) {
+  constructor(boardContainer, profileRatingContainer, filmsModel, filterModel, commentsModel, api) {
     this._boardContainer = boardContainer;
+    this._profileRatingContainer = profileRatingContainer;
 
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
@@ -45,6 +48,7 @@ export default class FilmsBoard {
     this._loadingComponent = new LoadingView();
     this._sortComponent = null;
     this._showMoreButtonComponent = null;
+    this._userProfileComponent = null;
 
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -53,6 +57,7 @@ export default class FilmsBoard {
     this._popupOpenHandler = this._popupOpenHandler.bind(this);
     this._popupCloseHandler = this._popupCloseHandler.bind(this);
     this._setFilmPresenterState = this._setFilmPresenterState.bind(this);
+    this._updateUserProfile = this._updateUserProfile.bind(this);
   }
 
   init() {
@@ -167,6 +172,7 @@ export default class FilmsBoard {
     switch (updateType) {
       case UpdateType.PATCH: {
         this._updatePresenters(data);
+        this._updateUserProfile();
         break;
       }
       case UpdateType.MINOR:
@@ -320,6 +326,7 @@ export default class FilmsBoard {
     this._clearFilmsSection(resetRenderedTaskCount);
     remove(this._topRatedListComponent);
     remove(this._mostCommentedListComponent);
+    remove(this._userProfileComponent);
 
     if (this._noFilmsComponent) {
       remove(this._noFilmsComponent);
@@ -415,6 +422,21 @@ export default class FilmsBoard {
     render(this._filmsListComponent, this._showMoreButtonComponent);
   }
 
+  _renderUserProfile() {
+    const films = this._filmsModel.getFilms();
+    const watchedFilms = filter[FilterType.HISTORY](films);
+    if (watchedFilms.length === FilmsCount.NULL) {
+      return;
+    }
+    this._userProfileComponent = new UserProfileView(watchedFilms.length);
+    render(this._profileRatingContainer, this._userProfileComponent);
+  }
+
+  _updateUserProfile() {
+    remove(this._userProfileComponent);
+    this._renderUserProfile();
+  }
+
   _renderBoard() {
     if (this._isLoading) {
       this._renderLoading();
@@ -438,5 +460,6 @@ export default class FilmsBoard {
 
     this._renderMostCommentedList();
     this._renderMostCommentedFilms();
+    this._renderUserProfile();
   }
 }

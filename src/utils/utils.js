@@ -39,6 +39,15 @@ const Period = {
   YEAR: 'year',
 };
 
+const FilmsCount = {
+  NULL: 0,
+  ONE: 1,
+  TEN: 10,
+  ELEVEN: 11,
+  TWENTY: 20,
+  TWENTY_ONE: 21,
+};
+
 const sortByDate = (filmA, filmB) => {
   const dateOfFilmB = dayjs(filmB.releaseDate);
   const dateOfFilmA = dayjs(filmA.releaseDate);
@@ -103,6 +112,7 @@ export {
   UpdateType,
   MenuItem,
   Period,
+  FilmsCount,
   sortByDate,
   sortByRating,
   getRandomFloat,
