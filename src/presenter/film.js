@@ -30,8 +30,11 @@ export default class Film {
 
     this._filmComponent = null;
     this._popupComponent = null;
-    this._formState = null;
     this._scrollPosition = null;
+    this._formState = {
+      comment: '',
+      emotion: null,
+    };
 
     this.showPopup = this.showPopup.bind(this);
 
@@ -65,7 +68,6 @@ export default class Film {
       this._formState = prevPopupComponent.getNewCommentFormState();
       this._scrollPosition = prevPopupComponent.getScrollPosition();
     }
-
     this._filmComponent = new FilmCardView(film);
     this._popupComponent = new FilmPopupView(this._film, this._handleCommentsAction);
 
@@ -88,7 +90,6 @@ export default class Film {
     if (this._mode === Mode.POPUP) {
       this.showPopup();
     }
-
     remove(prevFilmComponent);
     remove(prevPopupComponent);
   }
@@ -105,10 +106,21 @@ export default class Film {
     remove(this._popupComponent);
   }
 
-  _getPopupScrollPosition() {
+  getPopupScrollPosition() {
     if (this._popupComponent) {
       return this._popupComponent.getScrollPosition();
     }
+  }
+
+  getPopupFormState() {
+    if (this._popupComponent) {
+      return this._popupComponent.getNewCommentFormState();
+    }
+  }
+
+  setPopupState(scroll, form) {
+    this._scrollPosition = scroll;
+    this._formState = form;
   }
 
   setViewState(state) {
@@ -120,13 +132,13 @@ export default class Film {
         this._popupComponent.updateData({
           isDisabled: true,
           isPosting: true,
-        }, this._getPopupScrollPosition());
+        }, this.getPopupScrollPosition());
         break;
       case State.DELETING:
         this._popupComponent.updateData({
           isDisabled: true,
           isDeleting: true,
-        }, this._getPopupScrollPosition());
+        }, this.getPopupScrollPosition());
         break;
       case State.ABORTING:
         this._popupComponent.shake(() => this._popupComponent.updateData({
@@ -144,6 +156,7 @@ export default class Film {
     this._mode = Mode.POPUP;
 
     render(document.body, this._popupComponent, RenderPlace.BEFOREEND);
+    this._popupComponent.restoreForm(this._formState, this._scrollPosition);
     document.body.classList.add('hide-overflow');
 
     this._popupComponent.setCloseEscHandler(this._closePopupOnKeyDownHandler);
@@ -166,7 +179,7 @@ export default class Film {
       return;
     }
     const comments = this._commentsModel.getComments().filter((comment) => this._film.comments.includes(comment.id));
-    this._popupComponent.showComments(comments, this._getPopupScrollPosition());
+    this._popupComponent.showComments(comments, this.getPopupScrollPosition());
   }
 
   _handleCommentsAction(actionType, update, film) {
@@ -226,7 +239,7 @@ export default class Film {
   _handleWatchedClick() {
     this._popupComponent.updateData({
       isWatched: !this._film.isWatched,
-    },  this._getPopupScrollPosition());
+    },  this.getPopupScrollPosition());
     const watchingDate = updateWatchingDate(this._film);
     this._changeFilmData(
       UserAction.BUTTON_CLICK,

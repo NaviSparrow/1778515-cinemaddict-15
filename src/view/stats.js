@@ -10,7 +10,8 @@ import {
   countTotalDuration,
   getFilmsByPeriod,
   Period,
-  getTopGenre } from '../utils/utils.js';
+  getTopGenre, getRating
+} from '../utils/utils.js';
 
 dayjs.extend(isBetween);
 
@@ -82,6 +83,7 @@ const createStatisticChart = (statisticCtx, data) => {
 
 const createStatisticsTemplate = (filmsData) => {
   const {films, dateFrom, dateTo, currentPeriod} = filmsData;
+  const statisticRank = getRating(filter[FilterType.HISTORY](films).length);
   const filmsByPeriod = getFilmsByPeriod(films, dateFrom, dateTo);
   const countOverallWatchedFilms = filter[FilterType.HISTORY](filmsByPeriod).length;
   const totalDurationHours = Math.floor(countTotalDuration(filmsByPeriod).as('hours'));
@@ -90,13 +92,13 @@ const createStatisticsTemplate = (filmsData) => {
   const uniqGenres = Array.from(getGenresSet(filmsByPeriod));
   const filmsByGenreCount = uniqGenres.map((genre) => countFilmsByGenre(filmsByPeriod, genre));
 
-  const topGenre =  getTopGenre(uniqGenres, filmsByGenreCount);
+  const topGenre = getTopGenre(uniqGenres, filmsByGenreCount);
 
   return (`<section class="statistic">
     <p class="statistic__rank">
       Your rank
       <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-      <span class="statistic__rank-label">Movie buff</span>
+      <span class="statistic__rank-label">${statisticRank}</span>
     </p>
 
     <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">

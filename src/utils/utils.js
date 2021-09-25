@@ -48,6 +48,12 @@ const FilmsCount = {
   TWENTY_ONE: 21,
 };
 
+const ProfileRating = {
+  NOVICE: 'novice',
+  FAN: 'fan',
+  MOVIE_BUFF: 'movie buff',
+};
+
 const sortByDate = (filmA, filmB) => {
   const dateOfFilmB = dayjs(filmB.releaseDate);
   const dateOfFilmA = dayjs(filmA.releaseDate);
@@ -55,15 +61,6 @@ const sortByDate = (filmA, filmB) => {
 };
 
 const sortByRating = (filmA ,filmB) => filmB.rating - filmA.rating;
-
-const getRandomFloat = (min, max, precision) => {
-  const result = (Math.random() * (max - min + 0.1)) + min;
-  return Number(result.toFixed(precision));
-};
-
-const getRandomInteger = (min, max) => getRandomFloat(min, max, 0);
-
-const getRandomArrayElement = (array) => array[getRandomInteger(0, array.length - 1)];
 
 const getGenresSet = (films) => new Set(films.flatMap((film) => film.genres));
 
@@ -105,6 +102,20 @@ const deleteComment = (comments, update,  isAlreadyId = true) => {
   return comments;
 };
 
+const getRating = (films) => {
+  let rating = '';
+  if (films >= FilmsCount.ONE && films <= FilmsCount.TEN) {
+    rating = ProfileRating.NOVICE;
+  }
+  if (films >= FilmsCount.ELEVEN && films <= FilmsCount.TWENTY) {
+    rating = ProfileRating.FAN;
+  }
+  if (films >= FilmsCount.TWENTY_ONE) {
+    rating = ProfileRating.MOVIE_BUFF;
+  }
+  return rating;
+};
+
 export {
   SortType,
   UserAction,
@@ -115,13 +126,11 @@ export {
   FilmsCount,
   sortByDate,
   sortByRating,
-  getRandomFloat,
-  getRandomInteger,
-  getRandomArrayElement,
   getGenresSet,
   countFilmsByGenre,
   countTotalDuration,
   getFilmsByPeriod,
   getTopGenre,
-  deleteComment
+  deleteComment,
+  getRating
 };

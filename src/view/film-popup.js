@@ -260,7 +260,7 @@ export default class FilmPopup extends AbstractFilmView {
         emotion: null,
         comment: '',
       },
-    });
+    }, this.getScrollPosition());
   }
 
   _deleteClickHandler(evt) {

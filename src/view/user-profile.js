@@ -1,5 +1,5 @@
 import AbstractView from './abstract.js';
-import {FilmsCount} from '../utils/utils.js';
+import {getRating} from '../utils/utils.js';
 
 const createUserProfileTemplate = (rating) => (
   `<section class="header__profile profile">
@@ -7,12 +7,6 @@ const createUserProfileTemplate = (rating) => (
   <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
 </section>`
 );
-
-const ProfileRating = {
-  NOVICE: 'novice',
-  FAN: 'fan',
-  MOVIE_BUFF: 'movie buff',
-};
 
 export default class UserProfile extends AbstractView {
   constructor(films) {
@@ -24,15 +18,7 @@ export default class UserProfile extends AbstractView {
   }
 
   _setProfileRating(films) {
-    if (films >= FilmsCount.ONE && films <= FilmsCount.TEN) {
-      this._rating = ProfileRating.NOVICE;
-    }
-    if (films >= FilmsCount.ELEVEN && films <= FilmsCount.TWENTY) {
-      this._rating = ProfileRating.FAN;
-    }
-    if (films >= FilmsCount.TWENTY_ONE) {
-      this._rating = ProfileRating.MOVIE_BUFF;
-    }
+    this._rating = getRating(films);
   }
 
   getTemplate() {
