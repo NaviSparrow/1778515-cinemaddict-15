@@ -1,7 +1,7 @@
 import FilmCardView from '../view/film-card.js';
 import FilmPopupView from '../view/film-popup.js';
 import {remove, render, RenderPlace, replace} from '../utils/dom-utils.js';
-import {CommentAction, deleteComment, UpdateType, UserAction} from '../utils/utils.js';
+import {addComment, CommentAction, deleteComment, UpdateType, UserAction} from '../utils/utils.js';
 import {FilterType} from '../utils/filter-utils.js';
 import {updateWatchingDate} from '../utils/film-utils.js';
 
@@ -101,7 +101,6 @@ export default class Film {
     this._popupComponent = new FilmPopupView(film, this._handleCommentsAction);
     this._formState = prevPopupComponent.getNewCommentFormState();
     this._scrollPosition = prevPopupComponent.getScrollPosition();
-    this._popupComponent = new FilmPopupView(this._film, this._handleCommentsAction);
     this._popupComponent.setAddToWatchListClickHandler(this._handleWatchListClick);
     this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._popupComponent.setFavoriteClickHandler(this._handleFavoritesClick);
@@ -231,15 +230,16 @@ export default class Film {
                 this._film,
               ),
             );
+          })
+          .catch(() => {
+            this.setViewState(State.ABORTING);
           });
-        // .catch(() => {
-        //   this.setViewState(State.ABORTING);
-        // });
         break;
       case CommentAction.ADD_COMMENT:
         this._api.addComment(update, film)
           .then((response) => {
             this._commentsModel.addComment(response.comments[response.comments.length - 1]);
+            this._film.comments = addComment(this._film.comments, response.comments[response.comments.length - 1].id);
             this._changeFilmData(
               UserAction.ADD_COMMENT,
               UpdateType.MINOR_COMMENTS,
@@ -248,10 +248,10 @@ export default class Film {
                 response.film,
               ),
             );
+          })
+          .catch(() => {
+            this.setViewState(State.ABORTING);
           });
-        // .catch(() => {
-        //   this.setViewState(State.ABORTING);
-        // });
         break;
     }
   }

@@ -108,6 +108,14 @@ const deleteComment = (comments, update,  isAlreadyId = true) => {
   return comments;
 };
 
+const addComment = (comments, newComment) => {
+  comments = [
+    newComment,
+    ...comments,
+  ];
+  return comments;
+};
+
 const getRating = (films) => {
   let rating = '';
   if (films >= FilmsCount.ONE && films <= FilmsCount.TEN) {
@@ -146,6 +154,7 @@ export {
   getFilmsByPeriod,
   getTopGenre,
   deleteComment,
+  addComment,
   getRating,
   isJustPopup
 };
