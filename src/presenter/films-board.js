@@ -168,7 +168,6 @@ export default class FilmsBoard {
         break;
       case UpdateType.MINOR_COMMENTS:
         this._currentFilm = this._boardFilmPresenter.get(this._currentFilmId);
-        console.log(this._currentFilm);
         this._updatePresenter(data);
         break;
       case UpdateType.INIT:
