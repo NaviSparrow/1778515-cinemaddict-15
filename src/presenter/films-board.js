@@ -11,7 +11,7 @@ import {filter, FilterType} from '../utils/filter-utils.js';
 import {FilmsCount, sortByDate, sortByRating, SortType, UpdateType, UserAction, ButtonName, isJustPopup} from '../utils/utils.js';
 
 const CARDS_PER_STEP = 5;
-
+const NO_FILMS = 1;
 
 export default class FilmsBoard {
   constructor(boardContainer, profileRatingContainer, filmsModel, filterModel, commentsModel, api) {
@@ -293,6 +293,9 @@ export default class FilmsBoard {
   }
 
   _renderFilms(films, container) {
+    if (films.length === NO_FILMS) {
+      this._renderNoFilms();
+    }
     films.forEach((film) => {
       this._renderFilm(film, container);
     });

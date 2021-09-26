@@ -362,9 +362,10 @@ export default class FilmPopup extends AbstractFilmView {
     data = Object.assign({}, data);
     delete data.isComments;
     delete data.serverComments;
-    delete data.localComment;
+    delete data.newComment;
     delete data.isDisabled;
     delete data.isDeleting;
+    delete data.isPosting;
 
     return data;
   }
