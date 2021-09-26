@@ -62,8 +62,10 @@ export default class Film {
       this._scrollPosition = this._popupComponent.getScrollPosition();
       return;
     }
+
     const prevFilmComponent = this._filmComponent;
     const prevPopupComponent = this._popupComponent;
+
     if (prevPopupComponent !== null) {
       this._formState = prevPopupComponent.getNewCommentFormState();
       this._scrollPosition = prevPopupComponent.getScrollPosition();
@@ -91,6 +93,23 @@ export default class Film {
       this.showPopup();
     }
     remove(prevFilmComponent);
+    remove(prevPopupComponent);
+  }
+
+  initOnlyPopup(film) {
+    const prevPopupComponent = this._popupComponent;
+    this._popupComponent = new FilmPopupView(film, this._handleCommentsAction);
+    this._formState = prevPopupComponent.getNewCommentFormState();
+    this._scrollPosition = prevPopupComponent.getScrollPosition();
+    this._popupComponent = new FilmPopupView(this._film, this._handleCommentsAction);
+    this._popupComponent.setAddToWatchListClickHandler(this._handleWatchListClick);
+    this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
+    this._popupComponent.setFavoriteClickHandler(this._handleFavoritesClick);
+    this._popupComponent.setCloseClickHandler(this._closePopupOnClickHandler);
+
+    if (this._mode === Mode.POPUP) {
+      this.showPopup();
+    }
     remove(prevPopupComponent);
   }
 
@@ -212,10 +231,10 @@ export default class Film {
                 this._film,
               ),
             );
-          })
-          .catch(() => {
-            this.setViewState(State.ABORTING);
           });
+        // .catch(() => {
+        //   this.setViewState(State.ABORTING);
+        // });
         break;
       case CommentAction.ADD_COMMENT:
         this._api.addComment(update, film)
@@ -229,10 +248,10 @@ export default class Film {
                 response.film,
               ),
             );
-          })
-          .catch(() => {
-            this.setViewState(State.ABORTING);
           });
+        // .catch(() => {
+        //   this.setViewState(State.ABORTING);
+        // });
         break;
     }
   }
@@ -283,6 +302,10 @@ export default class Film {
 
   _getCommentUpdateType() {
     return this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MINOR;
+  }
+
+  closePopUp() {
+    remove(this._popupComponent);
   }
 
   _handleClosePopupClick() {

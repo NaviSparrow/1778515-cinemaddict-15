@@ -11,7 +11,6 @@ import {filter, FilterType} from '../utils/filter-utils.js';
 import {FilmsCount, sortByDate, sortByRating, SortType, UpdateType, UserAction, ButtonName, isJustPopup} from '../utils/utils.js';
 
 const CARDS_PER_STEP = 5;
-const NO_FILMS = 1;
 
 export default class FilmsBoard {
   constructor(boardContainer, profileRatingContainer, filmsModel, filterModel, commentsModel, api) {
@@ -168,6 +167,8 @@ export default class FilmsBoard {
         this._reopenPopup();
         break;
       case UpdateType.MINOR_COMMENTS:
+        this._currentFilm = this._boardFilmPresenter.get(this._currentFilmId);
+        console.log(this._currentFilm);
         this._updatePresenter(data);
         break;
       case UpdateType.INIT:
@@ -190,8 +191,11 @@ export default class FilmsBoard {
 
   _updatePresenter(film) {
     const boardPresenter = this._boardFilmPresenter.get(film.id);
-    if (this._filterType !== FilterType.ALL && this._currentFilm.isPopupWatchListButtonActive()) {
-      boardPresenter.init(film, true);
+    if (this._filterType !== FilterType.ALL && this._currentFilmId === film.id
+      && (this._currentFilm.isPopupWatchListButtonActive() === false
+        || this._currentFilm.isPopupWatchedButtonActive() === false
+        || this._currentFilm.isPopupFavoritesButtonActive() === false)) {
+      this._currentFilm.initOnlyPopup(film);
     } else {
       boardPresenter.init(film);
     }
