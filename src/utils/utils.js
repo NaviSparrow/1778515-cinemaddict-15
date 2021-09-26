@@ -54,6 +54,12 @@ const ProfileRating = {
   MOVIE_BUFF: 'movie buff',
 };
 
+const ButtonName = {
+  WATCHLIST: 'watchlist',
+  WATCHED: 'watched',
+  FAVORITE: 'favorite',
+};
+
 const sortByDate = (filmA, filmB) => {
   const dateOfFilmB = dayjs(filmB.releaseDate);
   const dateOfFilmA = dayjs(filmA.releaseDate);
@@ -124,6 +130,7 @@ export {
   MenuItem,
   Period,
   FilmsCount,
+  ButtonName,
   sortByDate,
   sortByRating,
   getGenresSet,

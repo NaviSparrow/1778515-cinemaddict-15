@@ -34,17 +34,17 @@ export default class AbstractFilmView extends SmartView {
 
   _watchedClickHandler(evt) {
     evt.preventDefault();
-    this._callback.watchedClick();
+    this._callback.watchedClick(evt);
   }
 
   _addToWatchListClickHandler(evt) {
     evt.preventDefault();
-    this._callback.addToWatchListClick();
+    this._callback.addToWatchListClick(evt);
   }
 
   _favoriteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.favoriteClick();
+    this._callback.favoriteClick(evt);
   }
 
   _getWatchedControl() {

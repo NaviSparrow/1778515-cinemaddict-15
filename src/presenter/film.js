@@ -237,7 +237,7 @@ export default class Film {
     }
   }
 
-  _handleWatchListClick() {
+  _handleWatchListClick(evt) {
     this._changeFilmData(
       UserAction.BUTTON_CLICK,
       this._currentFilter === FilterType.ALL ? UpdateType.PATCH : UpdateType.MINOR,
@@ -247,11 +247,11 @@ export default class Film {
         {
           isInWatchList: !this._film.isInWatchList,
         },
-      ),
+      ), evt,
     );
   }
 
-  _handleWatchedClick() {
+  _handleWatchedClick(evt) {
     const watchingDate = updateWatchingDate(this._film);
     this._changeFilmData(
       UserAction.BUTTON_CLICK,
@@ -263,11 +263,11 @@ export default class Film {
           isWatched: !this._film.isWatched,
           watchingDate,
         },
-      ),
+      ), evt,
     );
   }
 
-  _handleFavoritesClick() {
+  _handleFavoritesClick(evt) {
     this._changeFilmData(
       UserAction.BUTTON_CLICK,
       this._getCommentUpdateType(),
@@ -277,7 +277,7 @@ export default class Film {
         {
           isFavorite: !this._film.isFavorite,
         },
-      ),
+      ), evt,
     );
   }
 

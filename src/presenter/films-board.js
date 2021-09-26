@@ -8,9 +8,10 @@ import LoadingView from '../view/loading.js';
 import UserProfileView from '../view/user-profile.js';
 import {remove, render} from '../utils/dom-utils.js';
 import {filter, FilterType} from '../utils/filter-utils.js';
-import {FilmsCount, sortByDate, sortByRating, SortType, UpdateType, UserAction} from '../utils/utils.js';
+import {FilmsCount, sortByDate, sortByRating, SortType, UpdateType, UserAction, ButtonName} from '../utils/utils.js';
 
 const CARDS_PER_STEP = 5;
+
 
 export default class FilmsBoard {
   constructor(boardContainer, profileRatingContainer, filmsModel, filterModel, commentsModel, api) {
@@ -35,6 +36,7 @@ export default class FilmsBoard {
     this._currentFilm = null;
     this._poppScroll = null;
     this._popupForm = null;
+    this._clickEvent = null;
 
     this._filmsSectionComponent = new FilmsSectionView();
     this._filmsListComponent = new FilmsListView();
@@ -121,9 +123,10 @@ export default class FilmsBoard {
     }
   }
 
-  _handleViewAction(actionType, updateType, film) {
+  _handleViewAction(actionType, updateType, film, evt) {
     switch (actionType) {
       case UserAction.BUTTON_CLICK:
+        this._clickEvent = evt.target.id;
         this._api.updateFilm(film)
           .then((response) => {
             this._filmsModel.updateFilm(updateType, response);
@@ -229,16 +232,15 @@ export default class FilmsBoard {
 
   _renderFilm(film, container = this._getBoardFilmsListContainer()) {
     if (film.id === this._currentFilmId && this._filterType !== FilterType.ALL) {
-
       switch (this._filterType) {
         case FilterType.HISTORY:
-          this._isJustPopup = !!this._currentFilm.isPopupWatchedButtonActive();
+          this._isJustPopup = this._clickEvent === ButtonName.WATCHED && this._currentFilm.isPopupWatchedButtonActive();
           break;
         case FilterType.WATCHLIST:
-          this._isJustPopup = !!this._currentFilm.isPopupWatchListButtonActive();
+          this._isJustPopup = this._clickEvent === ButtonName.WATCHLIST && this._currentFilm.isPopupWatchListButtonActive();
           break;
         case FilterType.FAVORITES:
-          this._isJustPopup = !!this._currentFilm.isPopupFavoritesButtonActive();
+          this._isJustPopup = this._clickEvent === ButtonName.FAVORITE && this._currentFilm.isPopupFavoritesButtonActive();
           break;
       }
     } else {
@@ -361,7 +363,6 @@ export default class FilmsBoard {
     }
 
     this._renderSort();
-
     this._renderFilmsSection();
     this._renderFilmsList();
     this._renderBoardFilms();
