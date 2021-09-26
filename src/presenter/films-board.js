@@ -190,7 +190,9 @@ export default class FilmsBoard {
 
   _updatePresenter(film) {
     const boardPresenter = this._boardFilmPresenter.get(film.id);
-    if (boardPresenter) {
+    if (this._filterType !== FilterType.ALL && this._currentFilm.isPopupWatchListButtonActive()) {
+      boardPresenter.init(film, true);
+    } else {
       boardPresenter.init(film);
     }
   }
@@ -229,7 +231,6 @@ export default class FilmsBoard {
   _getBoardFilmsListContainer() {
     return this._filmsListComponent.getElement().querySelector('.films-list__container');
   }
-
 
   _renderFilm(film, container = this._getBoardFilmsListContainer()) {
     if (film.id === this._currentFilmId && this._filterType !== FilterType.ALL) {
@@ -293,9 +294,9 @@ export default class FilmsBoard {
   }
 
   _renderFilms(films, container) {
-    if (films.length === NO_FILMS) {
-      this._renderNoFilms();
-    }
+    // if (films.length === NO_FILMS) {
+    //   this._renderNoFilms();
+    // }
     films.forEach((film) => {
       this._renderFilm(film, container);
     });
