@@ -8,7 +8,7 @@ import LoadingView from '../view/loading.js';
 import UserProfileView from '../view/user-profile.js';
 import {remove, render} from '../utils/dom-utils.js';
 import {filter, FilterType} from '../utils/filter-utils.js';
-import {FilmsCount, sortByDate, sortByRating, SortType, UpdateType, UserAction, ButtonName} from '../utils/utils.js';
+import {FilmsCount, sortByDate, sortByRating, SortType, UpdateType, UserAction, ButtonName, isJustPopup} from '../utils/utils.js';
 
 const CARDS_PER_STEP = 5;
 
@@ -230,18 +230,19 @@ export default class FilmsBoard {
     return this._filmsListComponent.getElement().querySelector('.films-list__container');
   }
 
+
   _renderFilm(film, container = this._getBoardFilmsListContainer()) {
     if (film.id === this._currentFilmId && this._filterType !== FilterType.ALL) {
+
       switch (this._filterType) {
         case FilterType.HISTORY:
-          this._isJustPopup = this._clickEvent === ButtonName.WATCHED && this._currentFilm.isPopupWatchedButtonActive();
+          this._isJustPopup = isJustPopup(this._currentFilm.isPopupWatchedButtonActive(), this._clickEvent, ButtonName.WATCHED);
           break;
         case FilterType.WATCHLIST:
-          this._isJustPopup = this._clickEvent === ButtonName.WATCHLIST && this._currentFilm.isPopupWatchListButtonActive();
+          this._isJustPopup = isJustPopup(this._currentFilm.isPopupWatchListButtonActive(), this._clickEvent, ButtonName.WATCHLIST);
           break;
         case FilterType.FAVORITES:
-          this._isJustPopup = this._clickEvent === ButtonName.FAVORITE && this._currentFilm.isPopupFavoritesButtonActive();
-          break;
+          this._isJustPopup = isJustPopup(this._currentFilm.isPopupFavoritesButtonActive(), this._clickEvent, ButtonName.FAVORITE);
       }
     } else {
       this._isJustPopup = false;

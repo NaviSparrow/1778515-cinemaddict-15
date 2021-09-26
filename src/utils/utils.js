@@ -122,6 +122,13 @@ const getRating = (films) => {
   return rating;
 };
 
+const isJustPopup = (isButtonActive, eventName, buttonName) => {
+  if (isButtonActive) {
+    return eventName === buttonName;
+  }
+  return !isButtonActive && eventName !== buttonName;
+};
+
 export {
   SortType,
   UserAction,
@@ -139,5 +146,6 @@ export {
   getFilmsByPeriod,
   getTopGenre,
   deleteComment,
-  getRating
+  getRating,
+  isJustPopup
 };

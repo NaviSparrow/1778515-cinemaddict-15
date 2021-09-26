@@ -2,6 +2,7 @@ import { formatDuration, formatYear } from '../utils/film-utils.js';
 import AbstractFilmView from './abstract-film-view';
 
 const SHORT_DESCRIPTION_SYMBOLS = 139;
+const MAX_SYMBOLS = 140;
 
 const createFilmCardTemplate = (film) => {
   const {title, rating, releaseDate, duration, genres, poster, description, comments, isInWatchList, isWatched, isFavorite} = film;
@@ -17,7 +18,7 @@ const createFilmCardTemplate = (film) => {
       <span class="film-card__genre">${genres[0]}</span>
     </p>
     <img src=${poster} alt="" class="film-card__poster">
-    <p class="film-card__description">${fullDescription.length > 140 ? getShortDescription() : fullDescription}</p>
+    <p class="film-card__description">${fullDescription.length > MAX_SYMBOLS ? getShortDescription() : fullDescription}</p>
     <a class="film-card__comments">${comments.length} comments</a>
     <div class="film-card__controls">
       <button class="film-card__controls-item ${isInWatchList ? 'film-card__controls-item--active' : ''} film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
