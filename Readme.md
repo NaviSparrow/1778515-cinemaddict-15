@@ -1,5 +1,4 @@
-#PET PROJECT ["CINEMADDICT"](https://1778515-cinemaddict-15.vercel.app/)
-
+# PET PROJECT ["CINEMADDICT"](https://1778515-cinemaddict-15.vercel.app/)
 ---
 <img width="769" alt="cinemaaddict app" src="https://up.htmlacademy.ru/assets/intensives/ecmascript/15/projects/cinemaddict/image.v202110010158.png">
 
