@@ -1,6 +1,6 @@
 # PET PROJECT ["CINEMADDICT"](https://1778515-cinemaddict-15.vercel.app/)
 
-<img width="769" alt="cinemaaddict app" src="https://up.htmlacademy.ru/assets/intensives/ecmascript/15/projects/cinemaddict/image.v202110010158.png">
+<img alt="cinemaaddict app" src="https://up.htmlacademy.ru/assets/intensives/ecmascript/15/projects/cinemaddict/image.v202110010158.png">
 
 [Here](https://github.com/NaviSparrow/1778515-cinemaddict-15/tree/master/src) you can review the code written by me on JavaScript.<br>
 HTML and CSS code was written by [HTML Academy](https://htmlacademy.ru).
