@@ -6,11 +6,12 @@
 HTML and CSS code was written by [HTML Academy](https://htmlacademy.ru).
 
 ---
+
 Cinemaaddict is an SPA for fans of the movies. You can find detailed information about the movies,
 sort them by date or rating, form your own watch list, or favorites list. 
 All movie cards have comments section, where you can leave or delete comments.
 Also, you can check the statistics.
----
+
 ### On this project I used and learned:
 * **JavaScript** (ES 2015)
 * DOM
